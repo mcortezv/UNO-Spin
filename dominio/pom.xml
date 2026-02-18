@@ -3,18 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.unospin</groupId>
+        <artifactId>uno-spin-parent</artifactId>
+        <version>1.0</version>
+    </parent>
 
-    <groupId>com.unospin</groupId>
-    <artifactId>uno-spin-parent</artifactId>
-    <version>1.0</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>controlador</module>
-        <module>vista</module>
-        <module>dominio</module>
-        <module>modelo</module>
-        <module>assembler</module>
-    </modules>
+    <artifactId>dominio</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
