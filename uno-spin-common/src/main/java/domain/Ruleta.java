@@ -5,7 +5,7 @@ import enums.TipoEventoRuleta;
  * The type Ruleta.
  */
 public class Ruleta {
-    private TipoEventoRuleta eventoRuleta;
+    private EventoRuleta eventoRuleta;
 
     /**
      * Instantiates a new Ruleta.
@@ -17,7 +17,7 @@ public class Ruleta {
      *
      * @param eventoRuleta the evento ruleta
      */
-    public Ruleta(TipoEventoRuleta eventoRuleta) {
+    public Ruleta(EventoRuleta eventoRuleta) {
         this.eventoRuleta = eventoRuleta;
     }
 
@@ -26,7 +26,7 @@ public class Ruleta {
      *
      * @return the evento ruleta
      */
-    public TipoEventoRuleta getEventoRuleta() {
+    public EventoRuleta getEventoRuleta() {
         return eventoRuleta;
     }
 
@@ -35,7 +35,7 @@ public class Ruleta {
      *
      * @param eventoRuleta the evento ruleta
      */
-    public void setEventoRuleta(TipoEventoRuleta eventoRuleta) {
+    public void setEventoRuleta(EventoRuleta eventoRuleta) {
         this.eventoRuleta = eventoRuleta;
     }
 }
