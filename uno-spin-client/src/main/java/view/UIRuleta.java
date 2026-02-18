@@ -1,5 +1,6 @@
 package view;
 
-public class UIRuleta
-{
+import interfaces.IComponent;
+
+public class UIRuleta implements IComponent {
 }

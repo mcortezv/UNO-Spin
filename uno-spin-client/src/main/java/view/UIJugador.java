@@ -1,4 +1,6 @@
 package view;
 
-public class UIJugador {
+import interfaces.IComponent;
+
+public class UIJugador implements IComponent {
 }
