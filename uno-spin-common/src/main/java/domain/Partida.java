@@ -10,6 +10,8 @@ public class Partida {
     private EstadoPartida estadoPartida;
     private int indiceJugadorActual;
     private boolean sentidoHorario;
+    private ConfiguracionPartida configuracionPartida;
+    private Tablero tablero;
 
     /**
      * Instantiates a new Partida.
@@ -101,5 +103,21 @@ public class Partida {
      */
     public void setSentidoHorario(boolean sentidoHorario) {
         this.sentidoHorario = sentidoHorario;
+    }
+
+    public ConfiguracionPartida getConfiguracionPartida() {
+        return configuracionPartida;
+    }
+
+    public void setConfiguracionPartida(ConfiguracionPartida configuracionPartida) {
+        this.configuracionPartida = configuracionPartida;
+    }
+
+    public Tablero getTablero() {
+        return tablero;
+    }
+
+    public void setTablero(Tablero tablero) {
+        this.tablero = tablero;
     }
 }
