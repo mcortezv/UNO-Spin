@@ -1,4 +1,4 @@
-package view;
+package MVC;
 
 import dto.CartaDTO;
 

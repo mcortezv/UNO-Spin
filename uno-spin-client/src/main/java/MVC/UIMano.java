@@ -1,4 +1,4 @@
-package view;
+package MVC;
 
 public class UIMano {
 }

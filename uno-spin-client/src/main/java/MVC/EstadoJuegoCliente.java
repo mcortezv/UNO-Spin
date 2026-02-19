@@ -1,4 +1,4 @@
-package model;
+package MVC;
 
 public class EstadoJuegoCliente {
 

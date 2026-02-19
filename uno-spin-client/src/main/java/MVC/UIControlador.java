@@ -1,6 +1,4 @@
-package controller;
-
-import interfaces.IModeloEscritura;
+package MVC;
 
 public class UIControlador {
     private IModeloEscritura iModeloEscritura;

@@ -1,4 +1,4 @@
-package network;
+package MVC;
 
 public class ConexionCliente {
 }

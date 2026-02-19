@@ -1,4 +1,4 @@
-package interfaces;
+package MVC;
 
 public interface ISuscriptor {
 }
