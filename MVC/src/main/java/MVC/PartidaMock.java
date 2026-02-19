@@ -1,11 +1,9 @@
 package MVC;
-
 import domain.Carta;
 import domain.Jugador;
 import domain.Mano;
 import domain.Partida;
 import enums.TipoCarta;
-
 import java.util.ArrayList;
 import java.util.List;
 

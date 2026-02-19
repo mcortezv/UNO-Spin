@@ -1,5 +1,4 @@
 package MVC;
-
 import MVC.interfaces.IModeloLectura;
 import MVC.interfaces.ISuscriptor;
 import dto.CartaDTO;
@@ -8,7 +7,6 @@ import java.awt.*;
 import java.util.List;
 
 public class VentanaPrueba extends JFrame implements ISuscriptor {
-
     private final Controlador controlador;
     private IModeloLectura modeloLectura;
     private final JLabel lblDescarte;
