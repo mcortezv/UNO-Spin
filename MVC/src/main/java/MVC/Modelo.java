@@ -1,5 +1,4 @@
 package MVC;
-
 import MVC.interfaces.IModeloControlador;
 import MVC.interfaces.IModeloLectura;
 import MVC.interfaces.ISuscriptor;
@@ -8,12 +7,10 @@ import domain.Jugador;
 import domain.Partida;
 import domain.Tablero;
 import dto.CartaDTO;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Modelo implements IModeloControlador, IModeloLectura {
-
     private final Partida partida;
     private final Tablero tablero;
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
@@ -21,6 +18,11 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     public Modelo() {
         this.partida = new PartidaMock();
         this.tablero = new TableroMock();
+    }
+
+    @Override
+    public void cartaSeleccionada(CartaDTO cartaDTO) {
+
     }
 
     @Override

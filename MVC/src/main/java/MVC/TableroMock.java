@@ -1,10 +1,8 @@
 package MVC;
-
 import domain.Carta;
 import domain.Descarte;
 import domain.Tablero;
 import enums.TipoCarta;
-
 import java.util.ArrayList;
 import java.util.List;
 
