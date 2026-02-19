@@ -105,6 +105,9 @@ public class Partida implements IDominio {
         this.sentidoHorario = sentidoHorario;
     }
 
+
+
+
     @Override
     public boolean validarJugada(Carta carta) {
         return false;
