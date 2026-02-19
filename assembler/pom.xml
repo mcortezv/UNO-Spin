@@ -12,19 +12,7 @@
     <dependencies>
         <dependency>
             <groupId>com.unospin</groupId>
-            <artifactId>modelo</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.unospin</groupId>
-            <artifactId>controlador</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.unospin</groupId>
-            <artifactId>vista</artifactId>
+            <artifactId>MVC</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>

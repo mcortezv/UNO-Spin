@@ -1,9 +1,8 @@
+import MVC.Controlador;
+import MVC.Modelo;
+import MVC.VentanaPrueba;
 
-import classes.Modelo;
-import controllers.Controlador;
-import view.VentanaPrueba;
-
-    public class App {
+public class App {
 
         public static void main(String[] args) {
             Modelo modelo = new Modelo();

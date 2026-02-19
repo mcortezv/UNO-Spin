@@ -1,11 +1,13 @@
 package domain;
 import enums.EstadoPartida;
+import interfaces.IDominio;
+
 import java.util.List;
 
 /**
  * The type Partida.
  */
-public class Partida {
+public class Partida implements IDominio {
     private List<Jugador> jugadores;
     private EstadoPartida estadoPartida;
     private int indiceJugadorActual;
@@ -101,5 +103,13 @@ public class Partida {
      */
     public void setSentidoHorario(boolean sentidoHorario) {
         this.sentidoHorario = sentidoHorario;
+    }
+
+
+
+
+    @Override
+    public boolean validarJugada(Carta carta) {
+        return false;
     }
 }
