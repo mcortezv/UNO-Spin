@@ -1,4 +1,4 @@
-package controller;
+package MVC;
 
 public class ControladorConexion {
 }

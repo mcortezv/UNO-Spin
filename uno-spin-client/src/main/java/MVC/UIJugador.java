@@ -1,6 +1,4 @@
-package view;
-
-import interfaces.IComponent;
+package MVC;
 
 public class UIJugador implements IComponent {
 }
