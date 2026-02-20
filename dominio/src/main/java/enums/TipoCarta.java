@@ -1,5 +1,5 @@
 package enums;
 
 public enum TipoCarta {
-    NUMERICA
+    NUMERICA, TOMA_DOS, TOMA_CUATRO, REVERSA, BLOQUEO, CAMBIO_COLOR
 }
