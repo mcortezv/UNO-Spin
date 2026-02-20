@@ -7,10 +7,13 @@ import domain.Jugador;
 import domain.Partida;
 import domain.Tablero;
 import dto.CartaDTO;
+import interfaces.IDominio;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Modelo implements IModeloControlador, IModeloLectura {
+    private IDominio iDominio;
     private final Partida partida;
     private final Tablero tablero;
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
