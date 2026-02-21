@@ -1,6 +1,7 @@
 package MVC;
 import MVC.interfaces.IModeloLectura;
 import MVC.interfaces.ISuscriptor;
+import domain.Descarte;
 import dto.CartaDTO;
 import javax.swing.*;
 import java.awt.*;
@@ -32,6 +33,7 @@ public class VentanaPrueba extends JFrame implements ISuscriptor {
     @Override
     public void update(IModeloLectura modelo) {
         System.out.println("La vista detectó un cambio y se está actualizando...");
+
         List<CartaDTO> descarte = modelo.getDescarte();
         if (descarte != null && !descarte.isEmpty()) {
             CartaDTO cartaCentro = descarte.get(0); // Tomamos la primera carta
