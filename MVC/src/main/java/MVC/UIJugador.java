@@ -8,6 +8,10 @@ public class UIJugador implements IComponent {
     private JLabel lblAvatar;
     private JLabel lblCantidadCartas;
 
+    public UIJugador(UIMano uiMano) {
+        this.uiMano = uiMano;
+    }
+
     @Override
     public void execute(){}
 }
