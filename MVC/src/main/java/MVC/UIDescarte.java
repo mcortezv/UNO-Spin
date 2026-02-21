@@ -1,9 +1,12 @@
 package MVC;
 import MVC.interfaces.IComponent;
+import dto.CartaDTO;
+
 import javax.swing.*;
 
-public class UIDescarte implements IComponent {
-    private JLabel lblCartaTope;
+public class UIDescarte extends JLabel implements IComponent{
+    private CartaDTO lblCartaTope;
+
 
     @Override
     public void execute(){}
