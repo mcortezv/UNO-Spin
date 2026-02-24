@@ -1,5 +1,6 @@
 package domain;
 import enums.EstadoPartida;
+import enums.TipoEventoRuleta;
 import interfaces.IDominio;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public class Partida implements IDominio {
     private EstadoPartida estadoPartida;
     private int indiceJugadorActual;
     private boolean sentidoHorario;
+    private Tablero tablero;
 
     /**
      * Instantiates a new Partida.
@@ -111,5 +113,78 @@ public class Partida implements IDominio {
     @Override
     public boolean validarJugada(Carta carta) {
         return false;
+    }
+
+    public TipoEventoRuleta procesarGiroRuleta() throws Exception {
+        if (this.estadoPartida != EstadoPartida.GIRO_PENDIENTE) {
+            throw new Exception("No es momento de girar la ruleta.");
+        }
+
+        TipoEventoRuleta evento = tablero.getRuleta().girar();
+        Jugador jugador = jugadores.get(indiceJugadorActual);
+
+        switch (evento) {
+            case CASI_UNO:
+                aplicarCasiUno(jugador);
+                break;
+            case ROBAR_HASTA_AZUL:
+                robarHastaColor(jugador, "Azul");
+                break;
+            case ROBAR_HASTA_ROJO:
+                robarHastaColor(jugador, "Rojo");
+                break;
+            case INTERCAMBIO_DE_MANOS:
+                intercambiarManos();
+                break;
+            case GUERRA:
+                this.estadoPartida = EstadoPartida.EN_PROCESO;
+                break;
+            case MOSTRAR_LA_MANO:
+            case PUNTUACION_MAS_BAJA:
+            case DESCARTAR_POR_COLOR:
+                break;
+        }
+        if (evento != TipoEventoRuleta.GUERRA && evento != TipoEventoRuleta.DESCARTAR_POR_COLOR) {
+            this.estadoPartida = EstadoPartida.EN_PROCESO;
+            avanzarTurno();
+        }
+
+        return evento;
+    }
+
+    private void aplicarCasiUno(Jugador jugador) {
+        while (jugador.getMano().getCartas().size() > 2) {
+            Carta cartaEliminada = jugador.getMano().getCartas().remove(0); // Quita la primera
+            tablero.getDescarte().getCartas().add(cartaEliminada); // La pone en el descarte
+        }
+    }
+
+    private void robarHastaColor(Jugador jugador, String colorObjetivo) throws Exception {
+        boolean encontroColor = false;
+        while (!encontroColor) {
+            Carta cartaRobada = tablero.getMazo().robarCarta();
+            jugador.getMano().getCartas().add(cartaRobada);
+            if (cartaRobada.getColor() != null && cartaRobada.getColor().equalsIgnoreCase(colorObjetivo)) {
+                encontroColor = true;
+            }
+        }
+    }
+
+    private void intercambiarManos() {
+        int cantidadJugadores = jugadores.size();
+
+        if (this.sentidoHorario) {
+            Mano manoTemporal = jugadores.get(cantidadJugadores - 1).getMano();
+            for (int i = cantidadJugadores - 1; i > 0; i--) {
+                jugadores.get(i).setMano(jugadores.get(i - 1).getMano());
+            }
+            jugadores.get(0).setMano(manoTemporal);
+        } else {
+            Mano manoTemporal = jugadores.get(0).getMano();
+            for (int i = 0; i < cantidadJugadores - 1; i++) {
+                jugadores.get(i).setMano(jugadores.get(i + 1).getMano());
+            }
+            jugadores.get(cantidadJugadores - 1).setMano(manoTemporal);
+        }
     }
 }

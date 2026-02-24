@@ -1,6 +1,8 @@
 package domain;
 import enums.TipoEventoRuleta;
 
+import java.util.Random;
+
 /**
  * The type Ruleta.
  */
@@ -37,5 +39,11 @@ public class Ruleta {
      */
     public void setEventoRuleta(TipoEventoRuleta eventoRuleta) {
         this.eventoRuleta = eventoRuleta;
+    }
+
+    public TipoEventoRuleta girar(){
+        TipoEventoRuleta[] eventos = TipoEventoRuleta.values();
+        int indice = new Random().nextInt(eventos.length);
+        return this.eventoRuleta = eventos[indice];
     }
 }
