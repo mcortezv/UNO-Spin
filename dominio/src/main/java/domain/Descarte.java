@@ -45,4 +45,19 @@ public class Descarte {
     public List<CartaDTO> obtenerCartasDTO(){
         return MapperCarta.toDTO(this.cartas);
     }
+
+    public boolean validarCartaEntrante(Carta entrada){
+        Carta ultima = getUltimaCarta();
+        if (ultima.getColor() == entrada.getColor() || ultima.getNumero() == entrada.getNumero() || entrada.getTipoCarta() == ultima.getTipoCarta()){
+            return true;
+        }else if(entrada.esComodin()){
+            return true;
+        }
+        return false;
+    }
+
+    public Carta getUltimaCarta(){
+        return getCartas().getLast();
+    }
+
 }
