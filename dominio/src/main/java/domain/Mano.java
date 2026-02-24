@@ -46,4 +46,8 @@ public class Mano {
     public List<CartaDTO>cartaDTOS () {
         return  MapperCarta.toDTO(this.cartas);
     }
+
+    public boolean tieneCarta(Carta carta){
+        return cartas.contains(carta);
+    }
 }

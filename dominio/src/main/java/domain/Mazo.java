@@ -1,4 +1,5 @@
 package domain;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,4 +39,17 @@ public class Mazo {
     public void setCartas(List<Carta> cartas) {
         this.cartas = cartas;
     }
+
+    public void mezclar(){
+        Collections.shuffle(this.cartas);
+    }
+
+    public Carta robarCarta() throws Exception{
+        if (this.cartas.isEmpty()){
+            throw new Exception("El mazo no tiene cartas");
+        }
+        int ultimaPosicion = cartas.size() - 1;
+        return cartas.remove(ultimaPosicion);
+    }
+
 }
