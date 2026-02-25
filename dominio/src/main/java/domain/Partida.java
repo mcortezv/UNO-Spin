@@ -180,9 +180,9 @@ public class Partida implements IDominio {
             for (int i = cantidadJugadores - 1; i > 0; i--) {
                 jugadores.get(i).setMano(jugadores.get(i - 1).getMano());
             }
-            jugadores.get(0).setMano(manoTemporal);
+            jugadores.getFirst().setMano(manoTemporal);
         } else {
-            Mano manoTemporal = jugadores.get(0).getMano();
+            Mano manoTemporal = jugadores.getFirst().getMano();
             for (int i = 0; i < cantidadJugadores - 1; i++) {
                 jugadores.get(i).setMano(jugadores.get(i + 1).getMano());
             }

@@ -1,7 +1,9 @@
 package MVC;
 import MVC.interfaces.IComponent;
 
-public class UIMazo implements IComponent {
+import javax.swing.*;
+
+public class UIMazo extends JPanel implements IComponent {
 
     @Override
     public void execute(){}
