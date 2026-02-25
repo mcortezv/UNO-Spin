@@ -1,4 +1,5 @@
 package domain;
+import enums.ColorCarta;
 import enums.EstadoPartida;
 import enums.TipoEventoRuleta;
 import interfaces.IDominio;
@@ -128,10 +129,10 @@ public class Partida implements IDominio {
                 aplicarCasiUno(jugador);
                 break;
             case ROBAR_HASTA_AZUL:
-                robarHastaColor(jugador, "Azul");
+                robarHastaColor(jugador, ColorCarta.AZUL);
                 break;
             case ROBAR_HASTA_ROJO:
-                robarHastaColor(jugador, "Rojo");
+                robarHastaColor(jugador, ColorCarta.ROJO);
                 break;
             case INTERCAMBIO_DE_MANOS:
                 intercambiarManos();
@@ -140,6 +141,7 @@ public class Partida implements IDominio {
                 this.estadoPartida = EstadoPartida.EN_PROCESO;
                 break;
             case MOSTRAR_LA_MANO:
+
             case PUNTUACION_MAS_BAJA:
             case DESCARTAR_POR_COLOR:
                 break;
@@ -159,12 +161,12 @@ public class Partida implements IDominio {
         }
     }
 
-    private void robarHastaColor(Jugador jugador, String colorObjetivo) throws Exception {
+    private void robarHastaColor(Jugador jugador, ColorCarta colorObjetivo) throws Exception {
         boolean encontroColor = false;
         while (!encontroColor) {
             Carta cartaRobada = tablero.getMazo().robarCarta();
             jugador.getMano().getCartas().add(cartaRobada);
-            if (cartaRobada.getColor() != null && cartaRobada.getColor().equalsIgnoreCase(colorObjetivo)) {
+            if (cartaRobada.getColor() != null && cartaRobada.getColor().equalsIgnoreCase(String.valueOf(colorObjetivo))) {
                 encontroColor = true;
             }
         }
@@ -178,13 +180,16 @@ public class Partida implements IDominio {
             for (int i = cantidadJugadores - 1; i > 0; i--) {
                 jugadores.get(i).setMano(jugadores.get(i - 1).getMano());
             }
-            jugadores.get(0).setMano(manoTemporal);
+            jugadores.getFirst().setMano(manoTemporal);
         } else {
-            Mano manoTemporal = jugadores.get(0).getMano();
+            Mano manoTemporal = jugadores.getFirst().getMano();
             for (int i = 0; i < cantidadJugadores - 1; i++) {
                 jugadores.get(i).setMano(jugadores.get(i + 1).getMano());
             }
             jugadores.get(cantidadJugadores - 1).setMano(manoTemporal);
         }
+    }
+    public void avanzarTurno(){
+
     }
 }
