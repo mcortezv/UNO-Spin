@@ -1,7 +1,9 @@
 package MVC;
 import MVC.interfaces.IComponent;
 
-public class UITablero implements IComponent {
+import javax.swing.*;
+
+public class UITablero extends JPanel implements IComponent {
 
     @Override
     public void execute() {}
