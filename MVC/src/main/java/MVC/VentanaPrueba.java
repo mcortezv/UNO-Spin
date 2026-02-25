@@ -1,7 +1,6 @@
 package MVC;
 import MVC.interfaces.IModeloLectura;
 import MVC.interfaces.ISuscriptor;
-import domain.Descarte;
 import dto.CartaDTO;
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +24,7 @@ public class VentanaPrueba extends JFrame implements ISuscriptor {
         lblDescarte.setFont(new Font("Arial", Font.BOLD, 24));
         add(lblDescarte, BorderLayout.CENTER);
         panelMano = new JPanel();
-        panelMano.setLayout(new FlowLayout()); // Pone los botones uno al lado del otro
+        panelMano.setLayout(new FlowLayout());
         panelMano.setBackground(Color.LIGHT_GRAY);
         add(panelMano, BorderLayout.SOUTH);
     }
@@ -36,7 +35,7 @@ public class VentanaPrueba extends JFrame implements ISuscriptor {
 
         List<CartaDTO> descarte = modelo.getDescarte();
         if (descarte != null && !descarte.isEmpty()) {
-            CartaDTO cartaCentro = descarte.get(0); // Tomamos la primera carta
+            CartaDTO cartaCentro = descarte.get(0);
             lblDescarte.setText("DESCARTE: " + cartaCentro.getNumero() + " " + cartaCentro.getColor());
         }
         panelMano.removeAll();
