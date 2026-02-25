@@ -10,7 +10,6 @@ import java.util.List;
 public class PartidaMock extends Partida {
     public PartidaMock() {
         super();
-
         Jugador jugadorFalso = new Jugador();
         jugadorFalso.setNombre("Jugador de Prueba");
         List<Carta> cartasMano = new ArrayList<>();
