@@ -36,14 +36,14 @@ public class VentanaPrueba extends JFrame implements ISuscriptor {
         List<CartaDTO> descarte = modelo.getDescarte();
         if (descarte != null && !descarte.isEmpty()) {
             CartaDTO cartaCentro = descarte.get(0);
-            lblDescarte.setText("DESCARTE: " + cartaCentro.getNumero() + " " + cartaCentro.getColor());
+            lblDescarte.setText("DESCARTE: " + cartaCentro.getValor() + " " + cartaCentro.getColor());
         }
         panelMano.removeAll();
 
         List<CartaDTO> mano = modelo.getManoJugador();
         if (mano != null) {
             for (CartaDTO carta : mano) {
-                JButton btnCarta = new JButton("Jugar: " + carta.getColor() + " " + carta.getNumero());
+                JButton btnCarta = new JButton("Jugar: " + carta.getColor() + " " + carta.getValor());
                 btnCarta.addActionListener(e -> {
                     System.out.println("Clic en botón: " + carta.getColor());
                     controlador.jugarCarta(carta);
