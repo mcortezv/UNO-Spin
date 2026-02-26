@@ -1,9 +1,12 @@
 package domain;
+import dto.CartaDTO;
 import enums.ColorCarta;
 import enums.EstadoPartida;
 import enums.TipoEventoRuleta;
 import interfaces.IDominio;
+import mappers.MapperCarta;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -138,9 +141,10 @@ public class Partida implements IDominio {
                 intercambiarManos();
                 break;
             case GUERRA:
-                this.estadoPartida = EstadoPartida.EN_PROCESO;
+                aplicarGuerra();
                 break;
             case MOSTRAR_LA_MANO:
+
 
             case PUNTUACION_MAS_BAJA:
             case DESCARTAR_POR_COLOR:
@@ -189,6 +193,28 @@ public class Partida implements IDominio {
             jugadores.get(cantidadJugadores - 1).setMano(manoTemporal);
         }
     }
+
+    private void aplicarGuerra(){
+        int numeroGanador = -1;
+
+        for(Jugador jugador : jugadores){
+            Carta cartaMasAlta = jugador.getMano().getHighest();
+            if(cartaMasAlta != null && cartaMasAlta.getNumero() > numeroGanador){
+                numeroGanador = cartaMasAlta.getNumero();
+            }
+        }
+
+        if(numeroGanador != -1){
+            for(Jugador jugador : jugadores){
+                Carta carta = jugador.getMano().getHighest();
+                if(carta != null && carta.getNumero() == numeroGanador){
+                    List<Carta> cartasDescartadas = jugador.getMano().descartarCartasPorNumero(numeroGanador);
+                    tablero.getDescarte().getCartas().addAll(cartasDescartadas);
+                }
+            }
+        }
+    }
+
     public void avanzarTurno(){
 
     }
