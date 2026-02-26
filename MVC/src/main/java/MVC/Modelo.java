@@ -7,6 +7,7 @@ import domain.Jugador;
 import domain.Partida;
 import domain.Tablero;
 import dto.CartaDTO;
+import dto.JugadorRivalDTO;
 import interfaces.IDominio;
 
 import java.util.ArrayList;
@@ -50,6 +51,31 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     @Override
     public Jugador getJugadorEnTurno() {
         return partida.getJugadores().get(partida.getIndiceJugadorActual());
+    }
+
+    @Override
+    public List<CartaDTO> getManoJugadorActual() {
+        return List.of();
+    }
+
+    @Override
+    public CartaDTO getCartaCima() {
+        return null;
+    }
+
+    @Override
+    public String getNombreTurnoActual() {
+        return "";
+    }
+
+    @Override
+    public List<JugadorRivalDTO> getJugadoresRivales() {
+        return List.of();
+    }
+
+    @Override
+    public boolean isSpinActivo() {
+        return false;
     }
 
     public void subscribe(ISuscriptor suscriptor) {

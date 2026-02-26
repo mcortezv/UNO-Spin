@@ -1,14 +1,16 @@
 import MVC.*;
+import MVC.styles.CustomScrollPane;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class App {
 
         public static void main(String[] args) {
-            Modelo modelo = new Modelo();
+            //Modelo modelo = new Modelo();
+            ModeloMock modelo = new ModeloMock();
             Controlador controlador = new Controlador(modelo);
-
-            UITurnoJugador turnoJugador = new UITurnoJugador(controlador, modelo);
-            VentanaPrueba ventana = new VentanaPrueba(controlador, modelo);
-
+            UITurnoJugador ventana = new UITurnoJugador(controlador, modelo);
             modelo.subscribe(ventana);
             ventana.update(modelo);
             ventana.setVisible(true);
