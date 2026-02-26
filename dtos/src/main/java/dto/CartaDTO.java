@@ -1,37 +1,15 @@
 package dto;
 
 public class CartaDTO {
-    private Integer numero;
-    private String tipoCarta;
+    private String valor;
     private String color;
-    private int valor;
 
-    public CartaDTO(Integer numero, String tipoCarta, String color, int valor) {
-        this.numero = numero;
-        this.tipoCarta = tipoCarta;
+    public CartaDTO(String color, String valor) {
         this.color = color;
         this.valor = valor;
     }
 
-    public CartaDTO() {
-
-    }
-
-    public Integer getNumero() {
-        return numero;
-    }
-
-    public void setNumero(Integer numero) {
-        this.numero = numero;
-    }
-
-    public String getTipoCarta() {
-        return tipoCarta;
-    }
-
-    public void setTipoCarta(String tipoCarta) {
-        this.tipoCarta = tipoCarta;
-    }
+    public CartaDTO() {}
 
     public String getColor() {
         return color;
@@ -41,11 +19,11 @@ public class CartaDTO {
         this.color = color;
     }
 
-    public int getValor() {
+    public String getValor() {
         return valor;
     }
 
-    public void setValor(int valor) {
+    public void setValor(String valor) {
         this.valor = valor;
     }
 }
