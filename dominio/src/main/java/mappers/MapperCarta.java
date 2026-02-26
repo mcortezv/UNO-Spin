@@ -2,6 +2,7 @@ package mappers;
 
 import domain.Carta;
 import dto.CartaDTO;
+import enums.TipoCarta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class MapperCarta {
                 CartaDTO dto = new CartaDTO();
                 dto.setColor(c.getColor());
                 dto.setNumero(c.getNumero());
-                dto.setTipoCarta(c.getTipoCarta());
+                dto.setTipoCarta(String.valueOf(c.getTipoCarta()));
                 dto.setValor(c.getValor());
                 listaDTO.add(dto);
             }

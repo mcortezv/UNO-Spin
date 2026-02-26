@@ -1,14 +1,12 @@
 package dto;
 
-import enums.TipoCarta;
-
 public class CartaDTO {
     private Integer numero;
-    private TipoCarta tipoCarta;
+    private String tipoCarta;
     private String color;
     private int valor;
 
-    public CartaDTO(Integer numero, TipoCarta tipoCarta, String color, int valor) {
+    public CartaDTO(Integer numero, String tipoCarta, String color, int valor) {
         this.numero = numero;
         this.tipoCarta = tipoCarta;
         this.color = color;
@@ -27,11 +25,11 @@ public class CartaDTO {
         this.numero = numero;
     }
 
-    public TipoCarta getTipoCarta() {
+    public String getTipoCarta() {
         return tipoCarta;
     }
 
-    public void setTipoCarta(TipoCarta tipoCarta) {
+    public void setTipoCarta(String tipoCarta) {
         this.tipoCarta = tipoCarta;
     }
 

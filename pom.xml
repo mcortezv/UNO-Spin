@@ -12,6 +12,7 @@
         <module>dominio</module>
         <module>assembler</module>
         <module>MVC</module>
+        <module>dtos</module>
     </modules>
 
     <properties>
