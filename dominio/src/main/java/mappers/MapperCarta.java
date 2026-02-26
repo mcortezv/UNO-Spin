@@ -22,4 +22,12 @@ public class MapperCarta {
         }
         return listaDTO;
     }
+    public static CartaDTO toDTO(Carta c) {
+        CartaDTO dto = new CartaDTO();
+        dto.setColor(c.getColor());
+        dto.setNumero(c.getNumero());
+        dto.setTipoCarta(String.valueOf(c.getTipoCarta()));
+        dto.setValor(c.getValor());
+        return dto;
+    }
 }
