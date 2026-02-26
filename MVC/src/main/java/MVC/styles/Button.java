@@ -7,49 +7,44 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class Button extends JButton {
-    private static final int CORNER_RADIUS = 8;
-    private boolean hovered = false;
+    private final Color fondoBase;
 
-    public Button(String text) {
-        super(text);
-        setFont(Style.BUTTON_FONT);
+    public Button(String texto, Color fondoBase) {
+        super(texto);
+        this.fondoBase = fondoBase;
+
         setForeground(Color.WHITE);
-        setBackground(Style.BUTTON_COLOR);
-        setFocusPainted(false);
+        setFont(new Font("Arial", Font.BOLD, 13));
         setContentAreaFilled(false);
         setBorderPainted(false);
+        setFocusPainted(false);
         setOpaque(false);
-        setBorder(BorderFactory.createEmptyBorder(10, 26, 10, 26));
+        setBorder(BorderFactory.createEmptyBorder(8, 20, 8, 20));
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        addMouseListener(new MouseAdapter() {
-            @Override public void mouseEntered(MouseEvent e) { hovered = true;  repaint(); }
-            @Override public void mouseExited (MouseEvent e) { hovered = false; repaint(); }
-        });
-        setUI(new BasicButtonUI());
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(hovered ? Style.BUTTON_COLOR_HOVER : Style.BUTTON_COLOR);
-        g2.fillRoundRect(0, 0, getWidth(), getHeight(),
-                CORNER_RADIUS, CORNER_RADIUS);
-        super.paintComponent(g);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Cambia de color dependiendo de si el ratón está encima o presionando
+        Color fondo = getModel().isPressed()
+                ? fondoBase.darker()
+                : getModel().isRollover()
+                ? fondoBase.brighter()
+                : fondoBase;
+
+        g2.setColor(fondo);
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
+
+        g2.setColor(new Color(255, 255, 255, 60));
+        g2.setStroke(new BasicStroke(1f));
+        g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 12, 12);
+
         g2.dispose();
-    }
 
-    @Override
-    public void paintBorder(Graphics g) {
-    }
-
-    @Override
-    public void updateUI() {
-        setUI(new BasicButtonUI());
-    }
-
-    public void setPreferredSize(int i, int i1) {
-
+        // Dibuja el texto del botón encima de nuestro fondo
+        super.paintComponent(g);
     }
 }

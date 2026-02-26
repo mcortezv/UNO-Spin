@@ -1,12 +1,9 @@
 package domain;
-import dto.CartaDTO;
-import enums.ColorCarta;
 import enums.EstadoPartida;
 import enums.TipoEventoRuleta;
 import interfaces.IDominio;
-import mappers.MapperCarta;
 
-import java.util.ArrayList;
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -165,7 +162,7 @@ public class Partida implements IDominio {
         }
     }
 
-    private void robarHastaColor(Jugador jugador, ColorCarta colorObjetivo) throws Exception {
+    private void robarHastaColor(Jugador jugador, Color colorObjetivo) throws Exception {
         boolean encontroColor = false;
         while (!encontroColor) {
             Carta cartaRobada = tablero.getMazo().robarCarta();
