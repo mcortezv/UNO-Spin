@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class Style {
     public static boolean DARK_MODE = true;
-    public static final Color PANEL_COLOR = DARK_MODE ? new Color( 23, 23, 23) : new Color(250, 250, 252);
+    public static final Color PANEL_COLOR = new Color( 23, 23, 23);
     public static final Color BACKGROUND_COLOR = DARK_MODE ? new Color(60, 60, 60) : new Color(240, 240, 245);
     public static final Color BUTTON_COLOR = DARK_MODE ? new Color(19, 21, 26) : new Color(44, 62, 80);
     public static final Color BUTTON_COLOR_HOVER = DARK_MODE ? new Color(23, 23, 23) : new Color(52, 73, 94);

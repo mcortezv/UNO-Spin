@@ -1,6 +1,7 @@
 package MVC.interfaces;
 import domain.Jugador;
 import dto.CartaDTO;
+import dto.JugadorRivalDTO;
 
 import java.util.List;
 
@@ -11,4 +12,16 @@ public interface IModeloLectura {
      List<CartaDTO> getManoJugador();
 
      Jugador getJugadorEnTurno();
+
+     ///
+     ///
+     List<CartaDTO> getManoJugadorActual();
+
+     CartaDTO getCartaCima();
+
+     String getNombreTurnoActual();
+
+     List<JugadorRivalDTO> getJugadoresRivales();
+
+     boolean isSpinActivo();
 }
