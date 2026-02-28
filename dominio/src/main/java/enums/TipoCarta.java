@@ -1,5 +1,0 @@
-package enums;
-
-public enum TipoCarta {
-    NUMERICA, TOMA_DOS, TOMA_CUATRO, REVERSA, BLOQUEO, CAMBIO_COLOR, NUMERO_SPIN
-}

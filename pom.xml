@@ -4,21 +4,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.unospin</groupId>
-    <artifactId>uno-spin-parent</artifactId>
+    <groupId>com.itson</groupId>
+    <artifactId>UNO-Spin</artifactId>
     <version>1.0</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>dominio</module>
-        <module>assembler</module>
-        <module>MVC</module>
-        <module>dtos</module>
-    </modules>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <mainClass>assembler.Main</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
