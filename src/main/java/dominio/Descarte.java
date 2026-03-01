@@ -1,6 +1,6 @@
 package dominio;
 import dto.CartaDTO;
-import mappers.MapperCarta;
+import mappers.CartaMapper;
 import java.util.List;
 
 /**
@@ -41,20 +41,35 @@ public class Descarte {
         this.cartas = cartas;
     }
 
+    /**
+     * Obtener cartas dto list.
+     *
+     * @return the list
+     */
     public List<CartaDTO> obtenerCartasDTO(){
-        return MapperCarta.toDTO(this.cartas);
+        return CartaMapper.toDTO(this.cartas);
     }
 
+    /**
+     * Validar carta entrante boolean.
+     *
+     * @param entrada the entrada
+     * @return the boolean
+     */
     public boolean validarCartaEntrante(Carta entrada){
         Carta ultima = getUltimaCarta();
-        if (ultima.getColor() == entrada.getColor() || ultima.getNumero() == entrada.getNumero() || entrada.getTipoCarta() == ultima.getTipoCarta()){
-            return true;
-        }else if(entrada.esComodin()){
+        if (ultima.getColor() == entrada.getColor() || ultima.getNumero() == entrada.getNumero() ||
+                entrada.getTipoCarta() == ultima.getTipoCarta() || entrada.esComodin()){
             return true;
         }
         return false;
     }
 
+    /**
+     * Get ultima carta carta.
+     *
+     * @return the carta
+     */
     public Carta getUltimaCarta(){
         return getCartas().getLast();
     }

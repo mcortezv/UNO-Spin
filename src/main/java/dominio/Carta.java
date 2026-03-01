@@ -102,17 +102,32 @@ public class Carta {
         this.valor = valor;
     }
 
+    /**
+     * Es comodin boolean.
+     *
+     * @return the boolean
+     */
     public boolean esComodin(){
         return this.tipoCarta == TipoCarta.CAMBIO_COLOR ||
                 this.tipoCarta == TipoCarta.TOMA_CUATRO;
     }
 
+    /**
+     * Efecto especial boolean.
+     *
+     * @return the boolean
+     */
     public boolean efectoEspecial(){
         return this.tipoCarta == TipoCarta.REVERSA ||
                 this.tipoCarta == TipoCarta.TOMA_DOS ||
                 this.tipoCarta == TipoCarta.BLOQUEO;
     }
 
+    /**
+     * Es spin boolean.
+     *
+     * @return the boolean
+     */
     public boolean esSpin(){
         return this.tipoCarta == TipoCarta.NUMERO_SPIN;
     }

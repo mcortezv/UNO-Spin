@@ -115,6 +115,12 @@ public class Partida implements IDominio {
         return false;
     }
 
+    /**
+     * Procesar giro ruleta tipo evento ruleta.
+     *
+     * @return the tipo evento ruleta
+     * @throws Exception the exception
+     */
     public TipoEventoRuleta procesarGiroRuleta() throws Exception {
         if (this.estadoPartida != EstadoPartida.GIRO_PENDIENTE) {
             throw new Exception("No es momento de girar la ruleta.");
@@ -211,6 +217,17 @@ public class Partida implements IDominio {
         }
     }
 
+    public Tablero getTablero() {
+        return tablero;
+    }
+
+    public void setTablero(Tablero tablero) {
+        this.tablero = tablero;
+    }
+
+    /**
+     * Avanzar turno.
+     */
     public void avanzarTurno(){
 
     }

@@ -3,8 +3,22 @@ import mvc.interfaces.IComponent;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The type Ui mano rival.
+ */
 public class UIManoRival extends JPanel implements IComponent {
-    public enum Orientacion {HORIZONTAL, VERTICAL}
+    /**
+     * The enum Orientacion.
+     */
+    public enum Orientacion {
+        /**
+         * Horizontal orientacion.
+         */
+        HORIZONTAL,
+        /**
+         * Vertical orientacion.
+         */
+        VERTICAL}
 
     private static final int SOLAPAMIENTO = 16;
     private static final int MAX_VISIBLES = 4;
@@ -19,6 +33,12 @@ public class UIManoRival extends JPanel implements IComponent {
     private final Orientacion orientacion;
     private final Image logoUno;
 
+    /**
+     * Instantiates a new Ui mano rival.
+     *
+     * @param cantidadCartas the cantidad cartas
+     * @param orientacion    the orientacion
+     */
     public UIManoRival(int cantidadCartas, Orientacion orientacion) {
         this.cantidadCartas = cantidadCartas;
         this.orientacion = orientacion;
@@ -98,6 +118,11 @@ public class UIManoRival extends JPanel implements IComponent {
         g2.drawString(texto, bx + (bw - tw) / 2, by + th + 1);
     }
 
+    /**
+     * Sets cantidad cartas.
+     *
+     * @param cantidad the cantidad
+     */
     public void setCantidadCartas(int cantidad) {
         this.cantidadCartas = cantidad;
         recalcularTamano();

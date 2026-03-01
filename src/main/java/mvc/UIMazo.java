@@ -5,6 +5,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * The type Ui mazo.
+ */
 public class UIMazo extends JPanel implements IComponent {
     private static final int CAPAS = 5;
     private static final int OFFSET = 2;
@@ -20,6 +23,9 @@ public class UIMazo extends JPanel implements IComponent {
     private boolean hover = false;
     private Runnable onPedirCarta;
 
+    /**
+     * Instantiates a new Ui mazo.
+     */
     public UIMazo() {
         this.logoUno = CargadorAssets.getInstance().getReverso().getImage();
         int w = UICarta.ANCHO + (CAPAS - 1) * OFFSET + 4;
@@ -101,6 +107,11 @@ public class UIMazo extends JPanel implements IComponent {
         }
     }
 
+    /**
+     * Sets on pedir carta.
+     *
+     * @param callback the callback
+     */
     public void setOnPedirCarta(Runnable callback) {
         this.onPedirCarta = callback;
     }

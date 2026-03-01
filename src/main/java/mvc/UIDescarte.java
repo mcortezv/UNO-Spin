@@ -4,6 +4,9 @@ import dto.CartaDTO;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The type Ui descarte.
+ */
 public class UIDescarte extends JPanel implements IComponent{
     private static final int ANCHO  = UICarta.ANCHO + 16;
     private static final int ALTO   = UICarta.ALTO  + 16;
@@ -17,11 +20,19 @@ public class UIDescarte extends JPanel implements IComponent{
     private CartaDTO cartaTope;
     private Image    imagenTope;
 
+    /**
+     * Instantiates a new Ui descarte.
+     */
     public UIDescarte() {
         setOpaque(false);
         setPreferredSize(new Dimension(ANCHO + 6, ALTO + 6));
     }
 
+    /**
+     * Sets carta tope.
+     *
+     * @param carta the carta
+     */
     public void setCartaTope(CartaDTO carta) {
         this.cartaTope  = carta;
         this.imagenTope = CargadorAssets.getInstance()

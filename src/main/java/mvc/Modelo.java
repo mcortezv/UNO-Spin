@@ -1,23 +1,31 @@
 package mvc;
 import dominio.interfaces.IDominio;
+import dto.JugadorDTO;
+import mappers.JugadorMapper;
 import mvc.interfaces.IModeloControlador;
 import mvc.interfaces.IModeloLectura;
 import mvc.interfaces.ISuscriptor;
 import dominio.Carta;
-import dominio.Jugador;
 import dominio.Partida;
 import dominio.Tablero;
 import dto.CartaDTO;
-import dto.JugadorRivalDTO;
+import mvc.mock.PartidaMock;
+import mvc.mock.TableroMock;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Modelo.
+ */
 public class Modelo implements IModeloControlador, IModeloLectura {
     private IDominio iDominio;
     private final Partida partida;
     private final Tablero tablero;
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
 
+    /**
+     * Instantiates a new Modelo.
+     */
     public Modelo() {
         this.partida = new PartidaMock();
         this.tablero = new TableroMock();
@@ -43,13 +51,12 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public List<CartaDTO> getManoJugador() {
-        Jugador jTurno = getJugadorEnTurno();
-        return jTurno.getMano().cartaDTOS();
+        return null;
     }
 
     @Override
-    public Jugador getJugadorEnTurno() {
-        return partida.getJugadores().get(partida.getIndiceJugadorActual());
+    public JugadorDTO getJugadorEnTurno() {
+        return JugadorMapper.toDTO(partida.getJugadores().get(partida.getIndiceJugadorActual()));
     }
 
     @Override
@@ -68,7 +75,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     }
 
     @Override
-    public List<JugadorRivalDTO> getJugadoresRivales() {
+    public List<JugadorDTO> getJugadoresRivales() {
         return List.of();
     }
 
@@ -77,10 +84,20 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         return false;
     }
 
+    /**
+     * Subscribe.
+     *
+     * @param suscriptor the suscriptor
+     */
     public void subscribe(ISuscriptor suscriptor) {
         this.suscriptores.add(suscriptor);
     }
 
+    /**
+     * Unsubscribe.
+     *
+     * @param suscriptor the suscriptor
+     */
     public void unsubscribe(ISuscriptor suscriptor) {
         this.suscriptores.remove(suscriptor);
     }
@@ -89,5 +106,10 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         for (ISuscriptor suscriptor : suscriptores) {
             suscriptor.update(this);
         }
+    }
+
+    @Override
+    public PartidaMock getPartidaMock() {
+        return null;
     }
 }
