@@ -10,10 +10,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * The type Ui carta.
+ */
 public class UICarta extends JPanel implements IComponent {
 
+    /**
+     * The constant ANCHO.
+     */
     public static final int ANCHO = 78;
+    /**
+     * The constant ALTO.
+     */
     public static final int ALTO = 112;
+    /**
+     * The constant ELEVACION.
+     */
     public static final int ELEVACION = 14;
     private static final int ARCO = 14;
 
@@ -33,6 +45,11 @@ public class UICarta extends JPanel implements IComponent {
 
     private final List<Runnable> onSeleccionListeners = new ArrayList<>();
 
+    /**
+     * Instantiates a new Ui carta.
+     *
+     * @param carta the carta
+     */
     public UICarta(CartaDTO carta) {
         this.carta = carta;
 
@@ -144,14 +161,29 @@ public class UICarta extends JPanel implements IComponent {
         });
     }
 
+    /**
+     * Gets carta.
+     *
+     * @return the carta
+     */
     public CartaDTO getCarta() {
         return carta;
     }
 
+    /**
+     * Is seleccionada boolean.
+     *
+     * @return the boolean
+     */
     public boolean isSeleccionada() {
         return seleccionada;
     }
 
+    /**
+     * Sets seleccionada.
+     *
+     * @param s the s
+     */
     public void setSeleccionada(boolean s) {
         this.seleccionada = s;
         repaint();
@@ -163,6 +195,11 @@ public class UICarta extends JPanel implements IComponent {
 //        repaint();
 //    }
 
+    /**
+     * Add on seleccion listener.
+     *
+     * @param listener the listener
+     */
     public void addOnSeleccionListener(Runnable listener) {
         onSeleccionListeners.add(listener);
     }

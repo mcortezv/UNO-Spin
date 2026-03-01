@@ -7,6 +7,9 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Arc2D;
 import javax.swing.Timer;
 
+/**
+ * The type Ui ruleta.
+ */
 public class UIRuleta extends JPanel implements IComponent {
 
     private static final int DIAMETRO = 140;
@@ -33,7 +36,7 @@ public class UIRuleta extends JPanel implements IComponent {
     private static final Color COLOR_FLECHA = new Color(30, 15, 5);
     private static final Color COLOR_SOMBRA = new Color(0, 0, 0, 80);
     private static final Color COLOR_HOVER = new Color(255, 240, 180, 50);
-
+    private boolean isActive = false;
     private double anguloActual = 0;
     private double velocidad = 0;
     private boolean girando = false;
@@ -43,6 +46,9 @@ public class UIRuleta extends JPanel implements IComponent {
     private boolean hover = false;
 
 
+    /**
+     * Instantiates a new Ui ruleta.
+     */
     public UIRuleta() {
         int tam = DIAMETRO + 24;
         setPreferredSize(new Dimension(tam, tam + 30));
@@ -55,19 +61,25 @@ public class UIRuleta extends JPanel implements IComponent {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                hover = true;
-                repaint();
+                if (isActive){
+                    hover = true;
+                    repaint();
+                }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                hover = false;
-                repaint();
+                if (isActive){
+                    hover = false;
+                    repaint();
+                }
             }
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                girar();
+                if (isActive){
+                    girar();
+                }
             }
         });
     }
@@ -166,6 +178,9 @@ public class UIRuleta extends JPanel implements IComponent {
         g2.fillOval(cx - r, cy - r, DIAMETRO, DIAMETRO);
     }
 
+    /**
+     * Girar.
+     */
     public void girar() {
         if (girando) return;
         girando = true;
@@ -187,15 +202,29 @@ public class UIRuleta extends JPanel implements IComponent {
         timerGiro.start();
     }
 
+    /**
+     * Sets on giro completo.
+     *
+     * @param callback the callback
+     */
     public void setOnGiroCompleto(Runnable callback) {
         this.onGiroCompleto = callback;
     }
 
+    /**
+     * Is girando boolean.
+     *
+     * @return the boolean
+     */
     public boolean isGirando() {
         return girando;
     }
 
     @Override
     public void execute() {
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

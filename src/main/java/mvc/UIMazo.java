@@ -5,11 +5,14 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * The type Ui mazo.
+ */
 public class UIMazo extends JPanel implements IComponent {
     private static final int CAPAS = 5;
     private static final int OFFSET = 2;
     private static final int ARCO = 14;
-
+    private boolean isActive = false;
     private static final Color COLOR_CARTA = new Color(22, 22, 22);
     private static final Color COLOR_BORDE = new Color(170, 170, 170);
     private static final Color COLOR_SOMBRA = new Color(0, 0, 0, 70);
@@ -20,6 +23,9 @@ public class UIMazo extends JPanel implements IComponent {
     private boolean hover = false;
     private Runnable onPedirCarta;
 
+    /**
+     * Instantiates a new Ui mazo.
+     */
     public UIMazo() {
         this.logoUno = CargadorAssets.getInstance().getReverso().getImage();
         int w = UICarta.ANCHO + (CAPAS - 1) * OFFSET + 4;
@@ -34,19 +40,24 @@ public class UIMazo extends JPanel implements IComponent {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                hover = true;
-                repaint();
+                if (isActive){
+                    hover = true;
+                    repaint();
+                }
             }
-
             @Override
             public void mouseExited(MouseEvent e) {
-                hover = false;
-                repaint();
+                if (isActive){
+                    hover = false;
+                    repaint();
+                }
             }
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (onPedirCarta != null) onPedirCarta.run();
+                if (isActive){
+                    if (onPedirCarta != null) onPedirCarta.run();
+                }
             }
         });
     }
@@ -101,11 +112,20 @@ public class UIMazo extends JPanel implements IComponent {
         }
     }
 
+    /**
+     * Sets on pedir carta.
+     *
+     * @param callback the callback
+     */
     public void setOnPedirCarta(Runnable callback) {
         this.onPedirCarta = callback;
     }
 
     @Override
     public void execute() {
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }
