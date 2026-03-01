@@ -1,24 +1,59 @@
 package mvc.interfaces;
-import dominio.Jugador;
 import dto.CartaDTO;
-import dto.JugadorRivalDTO;
+import dto.JugadorDTO;
 import java.util.List;
 
+/**
+ * The interface Modelo lectura.
+ */
 public interface IModeloLectura {
 
+     /**
+      * Gets descarte.
+      *
+      * @return the descarte
+      */
      List<CartaDTO> getDescarte();
 
+     /**
+      * Gets mano jugador.
+      *
+      * @return the mano jugador
+      */
      List<CartaDTO> getManoJugador();
 
-     Jugador getJugadorEnTurno();
-
-     List<CartaDTO> getManoJugadorActual();
-
+     /**
+      * Gets carta cima.
+      *
+      * @return the carta cima
+      */
      CartaDTO getCartaCima();
 
+     /**
+      * Gets nombre turno actual.
+      *
+      * @return the nombre turno actual
+      */
      String getNombreTurnoActual();
 
-     List<JugadorRivalDTO> getJugadoresRivales();
+     /**
+      * Gets jugadores rivales.
+      *
+      * @return the jugadores rivales
+      */
+     List<JugadorDTO> getJugadoresRivales();
 
+     /**
+      * Is turno activo boolean.
+      *
+      * @return the boolean
+      */
+     boolean isTurnoActivo();
+
+     /**
+      * Is spin activo boolean.
+      *
+      * @return the boolean
+      */
      boolean isSpinActivo();
 }

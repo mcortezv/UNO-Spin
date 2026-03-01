@@ -6,12 +6,21 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * The type Ventana prueba.
+ */
 public class VentanaPrueba extends JFrame implements ISuscriptor {
     private final Controlador controlador;
     private IModeloLectura modeloLectura;
     private final JLabel lblDescarte;
     private final JPanel panelMano;
 
+    /**
+     * Instantiates a new Ventana prueba.
+     *
+     * @param controlador   the controlador
+     * @param modeloLectura the modelo lectura
+     */
     public VentanaPrueba(Controlador controlador, IModeloLectura modeloLectura) {
         this.controlador = controlador;
         this.modeloLectura = modeloLectura;

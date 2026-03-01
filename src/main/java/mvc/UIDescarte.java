@@ -4,6 +4,9 @@ import dto.CartaDTO;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The type Ui descarte.
+ */
 public class UIDescarte extends JPanel implements IComponent{
     private static final int ANCHO  = UICarta.ANCHO + 16;
     private static final int ALTO   = UICarta.ALTO  + 16;
@@ -15,13 +18,21 @@ public class UIDescarte extends JPanel implements IComponent{
     private static final Color COLOR_BORDE    = Color.WHITE;
 
     private CartaDTO cartaTope;
-    private Image    imagenTope;
+    private Image imagenTope;
 
+    /**
+     * Instantiates a new Ui descarte.
+     */
     public UIDescarte() {
         setOpaque(false);
         setPreferredSize(new Dimension(ANCHO + 6, ALTO + 6));
     }
 
+    /**
+     * Sets carta tope.
+     *
+     * @param carta the carta
+     */
     public void setCartaTope(CartaDTO carta) {
         this.cartaTope  = carta;
         this.imagenTope = CargadorAssets.getInstance()
@@ -56,7 +67,7 @@ public class UIDescarte extends JPanel implements IComponent{
             g2.setColor(COLOR_BORDE);
             g2.setStroke(new BasicStroke(2.5f));
             g2.drawRoundRect(cx + 1, cy + 1, ANCHO - 2, ALTO - 2, ARCO, ARCO);
-            g2.drawImage(imagenTope, cx + MARGEN, cy + MARGEN, null);
+            g2.drawImage(imagenTope, cx + MARGEN, cy + MARGEN, this);
         }
 
         g2.dispose();

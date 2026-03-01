@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * The type Ui mano.
+ */
 public class UIMano extends JPanel implements IComponent {
 
     private static final int GAP_ENTRE_CARTAS = 6;
@@ -20,6 +23,9 @@ public class UIMano extends JPanel implements IComponent {
     private final List<UICarta> cartasUI = new ArrayList<>();
     private Consumer<CartaDTO> onCartaClickada;
 
+    /**
+     * Instantiates a new Ui mano.
+     */
     public UIMano() {
         setLayout(new BorderLayout());
         setOpaque(false);
@@ -46,6 +52,11 @@ public class UIMano extends JPanel implements IComponent {
         return sp;
     }
 
+    /**
+     * Sets cartas.
+     *
+     * @param cartas the cartas
+     */
     public void setCartas(List<CartaDTO> cartas) {
         panelCartas.removeAll();
         cartasUI.clear();
@@ -71,6 +82,11 @@ public class UIMano extends JPanel implements IComponent {
 //        });
 //    }
 
+    /**
+     * Gets carta seleccionada.
+     *
+     * @return the carta seleccionada
+     */
     public CartaDTO getCartaSeleccionada() {
         return cartasUI.stream()
                 .filter(UICarta::isSeleccionada)

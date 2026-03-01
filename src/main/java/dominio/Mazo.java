@@ -40,10 +40,19 @@ public class Mazo {
         this.cartas = cartas;
     }
 
+    /**
+     * Mezclar.
+     */
     public void mezclar(){
         Collections.shuffle(this.cartas);
     }
 
+    /**
+     * Robar carta carta.
+     *
+     * @return the carta
+     * @throws Exception the exception
+     */
     public Carta robarCarta() throws Exception{
         if (this.cartas.isEmpty()){
             throw new Exception("El mazo no tiene cartas");
