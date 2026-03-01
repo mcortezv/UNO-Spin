@@ -40,6 +40,11 @@ public class Ruleta {
         this.eventoRuleta = eventoRuleta;
     }
 
+    /**
+     * Girar tipo evento ruleta.
+     *
+     * @return the tipo evento ruleta
+     */
     public TipoEventoRuleta girar(){
         TipoEventoRuleta[] eventos = TipoEventoRuleta.values();
         int indice = new Random().nextInt(eventos.length);

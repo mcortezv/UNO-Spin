@@ -1,7 +1,8 @@
 package dominio;
 import dto.CartaDTO;
-import mappers.MapperCarta;
+import mappers.CartaMapper;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The type Descarte.
@@ -41,20 +42,38 @@ public class Descarte {
         this.cartas = cartas;
     }
 
+    /**
+     * Obtener cartas dto list.
+     *
+     * @return the list
+     */
     public List<CartaDTO> obtenerCartasDTO(){
-        return MapperCarta.toDTO(this.cartas);
+        return CartaMapper.toDTO(this.cartas);
     }
 
+    /**
+     * Validar carta entrante boolean.
+     *
+     * @param entrada the entrada
+     * @return the boolean
+     */
     public boolean validarCartaEntrante(Carta entrada){
         Carta ultima = getUltimaCarta();
-        if (ultima.getColor() == entrada.getColor() || ultima.getNumero() == entrada.getNumero() || entrada.getTipoCarta() == ultima.getTipoCarta()){
-            return true;
-        }else if(entrada.esComodin()){
+        boolean mismoColor = Objects.equals(ultima.getColor(), entrada.getColor());
+        boolean mismoNumero = ultima.getNumero() != null && entrada.getNumero() != null && Objects.equals(ultima.getNumero(), entrada.getNumero());
+        boolean mismoTipoEspecial = entrada.getTipoCarta() != dominio.enums.TipoCarta.NUMERICA && entrada.getTipoCarta() == ultima.getTipoCarta();
+        if (mismoColor || mismoNumero || mismoTipoEspecial || entrada.esComodin()){
             return true;
         }
         return false;
     }
 
+
+    /**
+     * Get ultima carta carta.
+     *
+     * @return the carta
+     */
     public Carta getUltimaCarta(){
         return getCartas().getLast();
     }
