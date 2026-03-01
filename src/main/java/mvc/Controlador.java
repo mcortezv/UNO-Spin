@@ -21,12 +21,9 @@ public class Controlador implements IControlador {
         this.modelo = modelo;
     }
 
-    public void jugarCarta(CartaDTO carta) {
-        modelo.jugarCarta(carta);
-    }
-
-    public void seleccionar(CartaDTO carta) {
-        modelo.cartaSeleccionada(carta);
+    @Override
+    public boolean jugarCarta(CartaDTO carta) {
+        return modelo.jugarCarta(carta);
     }
 
     /**
@@ -43,6 +40,7 @@ public class Controlador implements IControlador {
      */
     public void onPedirCarta() {
         System.out.println("Pedir carta del mazo");
+        modelo.pedirCarta();
     }
 
     /**
@@ -57,5 +55,6 @@ public class Controlador implements IControlador {
      */
     public void onSpinCompletado() {
         System.out.println("Spin completado");
+        modelo.girarRuleta();
     }
 }

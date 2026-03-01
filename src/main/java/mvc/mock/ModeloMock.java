@@ -1,5 +1,7 @@
 package mvc.mock;
+import dominio.Carta;
 import dominio.Jugador;
+import dominio.enums.TipoCarta;
 import dto.JugadorDTO;
 import mappers.CartaMapper;
 import mappers.JugadorMapper;
@@ -12,10 +14,11 @@ import java.util.List;
 
 public class ModeloMock implements IModeloControlador, IModeloLectura {
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
+
     private PartidaMock partidaMock;
 
     public ModeloMock() {
-        partidaMock = new PartidaMock();
+        this.partidaMock = new PartidaMock();
     }
 
     @Override
@@ -25,18 +28,11 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     @Override
     public List<CartaDTO> getManoJugador() {
-        return CartaMapper.toDTO(partidaMock.getJugadores().get(0).getMano().getCartas());
+        return null;
     }
 
-    @Override
-    public JugadorDTO getJugadorEnTurno() {
-        return JugadorMapper.toDTO(partidaMock.getJugadores().get(partidaMock.getIndiceJugadorActual()));
-    }
-
-    @Override
-    public List<CartaDTO> getManoJugadorActual() {
-        Jugador jugadorActual = partidaMock.getJugadores().get(partidaMock.getIndiceJugadorActual());
-        return CartaMapper.toDTO(jugadorActual.getMano().getCartas());
+    public List<CartaDTO> getManoJugadorEspecifico(int indiceJugador) {
+        return CartaMapper.toDTO(partidaMock.getJugadores().get(indiceJugador).getMano().getCartas());
     }
 
     @Override
@@ -51,27 +47,62 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     @Override
     public List<JugadorDTO> getJugadoresRivales() {
-        List<JugadorDTO> jugadoresRivales = new ArrayList<>();
+        List<JugadorDTO> todosLosJugadores = new ArrayList<>();
         for (Jugador jugador : partidaMock.getJugadores()) {
-            jugadoresRivales.add(JugadorMapper.toDTO(jugador));
+            todosLosJugadores.add(JugadorMapper.toDTO(jugador));
         }
-        return jugadoresRivales;
-    }
-
-    @Override
-    public boolean isSpinActivo() {
-        return false;
-    }
-
-    @Override
-    public void cartaSeleccionada(CartaDTO cartaDTO) {
-
+        return todosLosJugadores;
     }
 
     @Override
     public boolean jugarCarta(CartaDTO carta) {
-        notifyObservers();
-        return true;
+        Carta c = CartaMapper.toEntity(carta);
+        if (partidaMock.getTablero().getDescarte().validarCartaEntrante(c)){
+            Jugador jugadorActual = partidaMock.getJugadores().get(partidaMock.getIndiceJugadorActual());
+            List<Carta> cartasMano = jugadorActual.getMano().getCartas();
+            for (int i = 0; i < cartasMano.size(); i++) {
+                Carta cartaEnMano = cartasMano.get(i);
+                if (cartaEnMano.getColor().equals(c.getColor()) && cartaEnMano.getValor() == c.getValor()) {
+                    cartasMano.remove(i);
+                    break;
+                }
+            }
+            partidaMock.getTablero().getDescarte().getCartas().add(c);
+            partidaMock.avanzarTurno();
+            notifyObservers();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void pedirCarta() {
+
+    }
+
+    public void pedirCartaMock(int indiceJugador) {
+        Carta carta = partidaMock.getTablero().getMazo().getCartas().getLast();
+        partidaMock.getTablero().getMazo().getCartas().removeLast();
+        partidaMock.getJugadores().get(indiceJugador).getMano().getCartas().add(carta);
+    }
+
+    @Override
+    public void girarRuleta() {
+
+    }
+
+    @Override
+    public boolean isTurnoActivo() {
+        return false;
+    }
+
+    public boolean isTurnoActivoMock(int indiceJugador) {
+        return partidaMock.getIndiceJugadorActual() == indiceJugador;
+    }
+
+    @Override
+    public boolean isSpinActivo() {
+        return partidaMock.getTablero().getDescarte().getUltimaCarta().getTipoCarta().equals(TipoCarta.NUMERO_SPIN);
     }
 
     public void subscribe(ISuscriptor suscriptor) {
@@ -82,10 +113,5 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
         for (ISuscriptor suscriptor : suscriptores) {
             suscriptor.update(this);
         }
-    }
-
-    @Override
-    public PartidaMock getPartidaMock() {
-        return partidaMock;
     }
 }

@@ -1,8 +1,6 @@
 package mvc.interfaces;
 import dto.CartaDTO;
 import dto.JugadorDTO;
-import mvc.mock.PartidaMock;
-
 import java.util.List;
 
 /**
@@ -23,20 +21,6 @@ public interface IModeloLectura {
       * @return the mano jugador
       */
      List<CartaDTO> getManoJugador();
-
-     /**
-      * Gets jugador en turno.
-      *
-      * @return the jugador en turno
-      */
-     JugadorDTO getJugadorEnTurno();
-
-     /**
-      * Gets mano jugador actual.
-      *
-      * @return the mano jugador actual
-      */
-     List<CartaDTO> getManoJugadorActual();
 
      /**
       * Gets carta cima.
@@ -60,11 +44,16 @@ public interface IModeloLectura {
      List<JugadorDTO> getJugadoresRivales();
 
      /**
+      * Is turno activo boolean.
+      *
+      * @return the boolean
+      */
+     boolean isTurnoActivo();
+
+     /**
       * Is spin activo boolean.
       *
       * @return the boolean
       */
      boolean isSpinActivo();
-
-     PartidaMock getPartidaMock();
 }

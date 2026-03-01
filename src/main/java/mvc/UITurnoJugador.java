@@ -144,7 +144,9 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         btnTirarCarta.addActionListener(e -> {
             CartaDTO seleccionada = mano.getCartaSeleccionada();
             if (seleccionada != null) {
-                controlador.onCartaJugada(seleccionada.getValor());
+                if (!controlador.jugarCarta(seleccionada)){
+                    JOptionPane.showMessageDialog(this, "Carta no compatible");
+                }
             }
         });
 
@@ -160,8 +162,21 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     }
 
     private void actualizarVista(IModeloLectura modelo) {
+
+        if (modelo.isTurnoActivo()) {
+            btnTirarCarta.setEnabled(true);
+            btnUno.setEnabled(true);
+            tablero.getMazo().setActive(true);
+            tablero.getRuleta().setActive(true);
+        } else {
+            btnTirarCarta.setEnabled(false);
+            btnUno.setEnabled(false);
+            tablero.getMazo().setActive(false);
+            tablero.getRuleta().setActive(false);
+        }
+
         lblTurno.setText("Turno: " + modelo.getNombreTurnoActual());
-        mano.setCartas(modelo.getManoJugadorActual());
+        mano.setCartas(modelo.getManoJugador());
         if (modelo.getCartaCima() != null) {
             tablero.setCartaCima(modelo.getCartaCima());
         }

@@ -11,15 +11,9 @@ public interface IControlador {
      *
      * @param carta the carta
      */
-    void jugarCarta(CartaDTO carta);
+    boolean jugarCarta(CartaDTO carta);
 
-    /**
-     * Seleccionar.
-     *
-     * @param carta the carta
-     */
-    void seleccionar(CartaDTO carta);
-
+    //-----------------------------------------------------------------------------------------------------------------
     /**
      * On carta jugada.
      *

@@ -1,27 +1,36 @@
 package dto;
 
+import dominio.enums.TipoCarta;
+
 /**
  * The type Carta dto.
  */
 public class CartaDTO {
-    private String valor;
+    private Integer numero;
+    private String tipoCarta;
     private String color;
+    private String valor;
 
     /**
      * Instantiates a new Carta dto.
-     *
-     * @param color the color
-     * @param valor the valor
      */
-    public CartaDTO(String color, String valor) {
-        this.color = color;
-        this.valor = valor;
+    public CartaDTO() {
     }
 
     /**
      * Instantiates a new Carta dto.
+     *
+     * @param color     the color
+     * @param numero    the numero
+     * @param tipoCarta the tipo carta
+     * @param valor     the valor
      */
-    public CartaDTO() {}
+    public CartaDTO(String color, Integer numero, String tipoCarta, String valor) {
+        this.color = color;
+        this.numero = numero;
+        this.tipoCarta = tipoCarta;
+        this.valor = valor;
+    }
 
     /**
      * Gets color.
@@ -39,6 +48,42 @@ public class CartaDTO {
      */
     public void setColor(String color) {
         this.color = color;
+    }
+
+    /**
+     * Gets numero.
+     *
+     * @return the numero
+     */
+    public Integer getNumero() {
+        return numero;
+    }
+
+    /**
+     * Sets numero.
+     *
+     * @param numero the numero
+     */
+    public void setNumero(Integer numero) {
+        this.numero = numero;
+    }
+
+    /**
+     * Gets tipo carta.
+     *
+     * @return the tipo carta
+     */
+    public String getTipoCarta() {
+        return tipoCarta;
+    }
+
+    /**
+     * Sets tipo carta.
+     *
+     * @param tipoCarta the tipo carta
+     */
+    public void setTipoCarta(String tipoCarta) {
+        this.tipoCarta = tipoCarta;
     }
 
     /**

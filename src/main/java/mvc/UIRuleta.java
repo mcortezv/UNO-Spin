@@ -36,7 +36,7 @@ public class UIRuleta extends JPanel implements IComponent {
     private static final Color COLOR_FLECHA = new Color(30, 15, 5);
     private static final Color COLOR_SOMBRA = new Color(0, 0, 0, 80);
     private static final Color COLOR_HOVER = new Color(255, 240, 180, 50);
-
+    private boolean isActive = false;
     private double anguloActual = 0;
     private double velocidad = 0;
     private boolean girando = false;
@@ -61,19 +61,25 @@ public class UIRuleta extends JPanel implements IComponent {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                hover = true;
-                repaint();
+                if (isActive){
+                    hover = true;
+                    repaint();
+                }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                hover = false;
-                repaint();
+                if (isActive){
+                    hover = false;
+                    repaint();
+                }
             }
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                girar();
+                if (isActive){
+                    girar();
+                }
             }
         });
     }
@@ -216,5 +222,9 @@ public class UIRuleta extends JPanel implements IComponent {
 
     @Override
     public void execute() {
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

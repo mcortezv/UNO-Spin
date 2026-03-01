@@ -16,14 +16,14 @@ public class PartidaMock extends Partida {
         super();
         List<Carta> cartasSebastian = new ArrayList<>();
         cartasSebastian.add(new Carta("AZUL", 2, TipoCarta.NUMERICA, 2));
-        cartasSebastian.add(new Carta("AZUL", 1, TipoCarta.NUMERICA, 1));
-        cartasSebastian.add(new Carta("AZUL", 6, TipoCarta.NUMERICA, 6));
+        cartasSebastian.add(new Carta("ROJO", 5, TipoCarta.NUMERICA, 5));
+        cartasSebastian.add(new Carta("AMARILLO", 6, TipoCarta.NUMERICA, 6));
         Mano manoSebastian = new Mano(cartasSebastian);
 
         List<Carta> cartasGuasave = new ArrayList<>();
-        cartasGuasave.add(new Carta("VERDE", 9, TipoCarta.NUMERICA, 9));
+        cartasGuasave.add(new Carta("AMARILLO", 9, TipoCarta.NUMERICA, 9));
         cartasGuasave.add(new Carta("VERDE", 7, TipoCarta.NUMERICA, 7));
-        cartasGuasave.add(new Carta("VERDE", 5, TipoCarta.NUMERICA, 5));
+        cartasGuasave.add(new Carta("AZUL", 5, TipoCarta.NUMERICA, 5));
         Mano manoGuasave = new Mano(cartasGuasave);
 
         Jugador sebastian = new Jugador(1, List.of("ROJO", "AZUL", "VERDE", "AMARILLO"), 1, manoSebastian, "Sebastian", 7);

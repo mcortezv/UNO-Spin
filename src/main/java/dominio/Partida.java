@@ -229,6 +229,8 @@ public class Partida implements IDominio {
      * Avanzar turno.
      */
     public void avanzarTurno(){
-
+        if (!jugadores.isEmpty()) {
+            indiceJugadorActual = (indiceJugadorActual + 1) % jugadores.size();
+        }
     }
 }

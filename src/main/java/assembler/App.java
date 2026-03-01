@@ -19,18 +19,21 @@ public class App {
         //Modelo modelo = new Modelo();
 
         ModeloMock modelo = new ModeloMock();
-        Controlador controlador = new Controlador(modelo);
 
-        UITurnoJugador ventanaSebas = new UITurnoJugador(controlador, modelo, List.of(0, 0));
-        UITurnoJugador ventanaGuasave = new UITurnoJugador(controlador, modelo, List.of(880, 400));
+        ModeloVistaJugador modeloSebas = new ModeloVistaJugador(0, modelo);
+        ModeloVistaJugador modeloGuasave = new ModeloVistaJugador(1, modelo);
 
-        modelo.subscribe(ventanaSebas);
-        modelo.subscribe(ventanaGuasave);
+        Controlador controladorSebas = new Controlador(modeloSebas);
+        Controlador controladorGuasave = new Controlador(modeloGuasave);
 
-        ModeloVistaJugador vistaSebas = new ModeloVistaJugador(0, modelo);
-        ModeloVistaJugador vistaGuasave = new ModeloVistaJugador(1, modelo);
-        ventanaSebas.update(vistaSebas);
-        ventanaGuasave.update(vistaGuasave);
+        UITurnoJugador ventanaSebas = new UITurnoJugador(controladorSebas, modeloSebas, List.of(0, 0));
+        UITurnoJugador ventanaGuasave = new UITurnoJugador(controladorGuasave, modeloGuasave, List.of(880, 400));
+
+        modeloSebas.subscribe(ventanaSebas);
+        modeloGuasave.subscribe(ventanaGuasave);
+
+        ventanaSebas.update(modeloSebas);
+        ventanaGuasave.update(modeloGuasave);
 
         ventanaSebas.setVisible(true);
         ventanaGuasave.setVisible(true);

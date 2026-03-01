@@ -1,7 +1,6 @@
 package mvc;
 import dominio.interfaces.IDominio;
 import dto.JugadorDTO;
-import mappers.JugadorMapper;
 import mvc.interfaces.IModeloControlador;
 import mvc.interfaces.IModeloLectura;
 import mvc.interfaces.ISuscriptor;
@@ -32,15 +31,20 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     }
 
     @Override
-    public void cartaSeleccionada(CartaDTO cartaDTO) {
-
-    }
-
-    @Override
     public boolean jugarCarta(CartaDTO carta) {
         carta.getColor();
         notifyObservers();
         return true;
+    }
+
+    @Override
+    public void pedirCarta() {
+
+    }
+
+    @Override
+    public void girarRuleta() {
+
     }
 
     @Override
@@ -52,16 +56,6 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     @Override
     public List<CartaDTO> getManoJugador() {
         return null;
-    }
-
-    @Override
-    public JugadorDTO getJugadorEnTurno() {
-        return JugadorMapper.toDTO(partida.getJugadores().get(partida.getIndiceJugadorActual()));
-    }
-
-    @Override
-    public List<CartaDTO> getManoJugadorActual() {
-        return List.of();
     }
 
     @Override
@@ -108,8 +102,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         }
     }
 
-    @Override
-    public PartidaMock getPartidaMock() {
-        return null;
+    public boolean isTurnoActivo(){
+        return false;
     }
 }

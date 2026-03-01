@@ -1,18 +1,47 @@
 package mvc.mock;
 import dto.CartaDTO;
 import dto.JugadorDTO;
-import mappers.CartaMapper;
+import mvc.interfaces.IModeloControlador;
 import mvc.interfaces.IModeloLectura;
+import mvc.interfaces.ISuscriptor;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class ModeloVistaJugador implements IModeloLectura {
+public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, ISuscriptor {
+    private final List<ISuscriptor> suscriptores = new ArrayList<>();
     private IModeloLectura modeloLectura;
+    private IModeloControlador modeloControlador;
     private int vistaJugador;
 
-    public ModeloVistaJugador(int vistaJugador, IModeloLectura modeloLectura) {
+    public ModeloVistaJugador(int vistaJugador, ModeloMock modelo) {
         this.vistaJugador = vistaJugador;
-        this.modeloLectura = modeloLectura;
+        this.modeloLectura = modelo;
+        this.modeloControlador = modelo;
+        modelo.subscribe(this);
     }
+
+
+    @Override
+    public boolean jugarCarta(CartaDTO carta) {
+        if (modeloControlador.jugarCarta(carta)){
+            notifyObservers();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void pedirCarta() {
+        ((ModeloMock) modeloControlador).pedirCartaMock(vistaJugador);
+        notifyObservers();
+    }
+
+    @Override
+    public void girarRuleta() {
+        modeloControlador.girarRuleta();
+    }
+
 
     @Override
     public List<CartaDTO> getDescarte() {
@@ -21,18 +50,7 @@ public class ModeloVistaJugador implements IModeloLectura {
 
     @Override
     public List<CartaDTO> getManoJugador() {
-        return modeloLectura.getManoJugador();
-    }
-
-    @Override
-    public JugadorDTO getJugadorEnTurno() {
-        return modeloLectura.getJugadorEnTurno();
-    }
-
-    @Override
-    public List<CartaDTO> getManoJugadorActual() {
-        return CartaMapper.toDTO(modeloLectura.getPartidaMock().getJugadores().get(vistaJugador).getMano().getCartas());
-
+        return ((ModeloMock) modeloLectura).getManoJugadorEspecifico(vistaJugador);
     }
 
     @Override
@@ -48,21 +66,36 @@ public class ModeloVistaJugador implements IModeloLectura {
     @Override
     public List<JugadorDTO> getJugadoresRivales() {
         List<JugadorDTO> listaJugadoresRivales = modeloLectura.getJugadoresRivales();
-        if (vistaJugador == 0){
+        if (vistaJugador == 0) {
             return List.of(listaJugadoresRivales.get(1));
-
         } else {
             return List.of(listaJugadoresRivales.get(0));
         }
     }
 
     @Override
-    public boolean isSpinActivo() {
-        return false;
+    public boolean isTurnoActivo() {
+        return ((ModeloMock) modeloLectura).isTurnoActivoMock(vistaJugador);
     }
 
     @Override
-    public PartidaMock getPartidaMock(){
-        return null;
+    public boolean isSpinActivo() {
+        return modeloLectura.isSpinActivo();
     }
+
+    public void subscribe(ISuscriptor suscriptor) {
+        this.suscriptores.add(suscriptor);
+    }
+
+    private void notifyObservers() {
+        for (ISuscriptor suscriptor : suscriptores) {
+            suscriptor.update(this);
+        }
+    }
+
+    @Override
+    public void update(IModeloLectura modelo) {
+        notifyObservers();
+    }
+
 }

@@ -12,7 +12,7 @@ public class UIMazo extends JPanel implements IComponent {
     private static final int CAPAS = 5;
     private static final int OFFSET = 2;
     private static final int ARCO = 14;
-
+    private boolean isActive = false;
     private static final Color COLOR_CARTA = new Color(22, 22, 22);
     private static final Color COLOR_BORDE = new Color(170, 170, 170);
     private static final Color COLOR_SOMBRA = new Color(0, 0, 0, 70);
@@ -40,19 +40,24 @@ public class UIMazo extends JPanel implements IComponent {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                hover = true;
-                repaint();
+                if (isActive){
+                    hover = true;
+                    repaint();
+                }
             }
-
             @Override
             public void mouseExited(MouseEvent e) {
-                hover = false;
-                repaint();
+                if (isActive){
+                    hover = false;
+                    repaint();
+                }
             }
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (onPedirCarta != null) onPedirCarta.run();
+                if (isActive){
+                    if (onPedirCarta != null) onPedirCarta.run();
+                }
             }
         });
     }
@@ -118,5 +123,9 @@ public class UIMazo extends JPanel implements IComponent {
 
     @Override
     public void execute() {
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

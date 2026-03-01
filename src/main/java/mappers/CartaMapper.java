@@ -1,5 +1,6 @@
 package mappers;
 import dominio.Carta;
+import dominio.enums.TipoCarta;
 import dto.CartaDTO;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,18 @@ public class CartaMapper {
     public static CartaDTO toDTO(Carta c) {
         CartaDTO dto = new CartaDTO();
         dto.setColor(c.getColor());
+        dto.setTipoCarta(c.getTipoCarta().toString());
+        dto.setNumero(c.getNumero());
         dto.setValor(String.valueOf(c.getValor()));
         return dto;
+    }
+
+    public static Carta toEntity(CartaDTO dto) {
+        Carta c = new Carta();
+        c.setColor(dto.getColor());
+        c.setTipoCarta(TipoCarta.valueOf(dto.getTipoCarta()));
+        c.setNumero(dto.getNumero());
+        c.setValor(Integer.parseInt(dto.getValor()));
+        return c;
     }
 }

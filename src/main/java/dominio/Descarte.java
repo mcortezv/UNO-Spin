@@ -2,6 +2,7 @@ package dominio;
 import dto.CartaDTO;
 import mappers.CartaMapper;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The type Descarte.
@@ -58,12 +59,15 @@ public class Descarte {
      */
     public boolean validarCartaEntrante(Carta entrada){
         Carta ultima = getUltimaCarta();
-        if (ultima.getColor() == entrada.getColor() || ultima.getNumero() == entrada.getNumero() ||
-                entrada.getTipoCarta() == ultima.getTipoCarta() || entrada.esComodin()){
+        boolean mismoColor = Objects.equals(ultima.getColor(), entrada.getColor());
+        boolean mismoNumero = ultima.getNumero() != null && entrada.getNumero() != null && Objects.equals(ultima.getNumero(), entrada.getNumero());
+        boolean mismoTipoEspecial = entrada.getTipoCarta() != dominio.enums.TipoCarta.NUMERICA && entrada.getTipoCarta() == ultima.getTipoCarta();
+        if (mismoColor || mismoNumero || mismoTipoEspecial || entrada.esComodin()){
             return true;
         }
         return false;
     }
+
 
     /**
      * Get ultima carta carta.
