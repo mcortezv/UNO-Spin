@@ -1,7 +1,7 @@
 package dominio;
 import dominio.enums.TipoCarta;
 import dto.CartaDTO;
-import mappers.MapperCarta;
+import mappers.CartaMapper;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,14 +43,30 @@ public class Mano {
         this.cartas = cartas;
     }
 
+    /**
+     * Carta dtos list.
+     *
+     * @return the list
+     */
     public List<CartaDTO>cartaDTOS () {
-        return  MapperCarta.toDTO(this.cartas);
+        return  CartaMapper.toDTO(this.cartas);
     }
 
+    /**
+     * Tiene carta boolean.
+     *
+     * @param carta the carta
+     * @return the boolean
+     */
     public boolean tieneCarta(Carta carta){
         return cartas.contains(carta);
     }
 
+    /**
+     * Gets highest.
+     *
+     * @return the highest
+     */
     public Carta getHighest() {
         if (cartas == null || cartas.isEmpty()) {
             return null;
@@ -70,6 +86,12 @@ public class Mano {
         return cartaMasAlta;
     }
 
+    /**
+     * Descartar cartas por numero list.
+     *
+     * @param numeroCartaGanador the numero carta ganador
+     * @return the list
+     */
     public List<Carta> descartarCartasPorNumero(int numeroCartaGanador){
         List<Carta> cartasADescartar = new ArrayList<>();
         for (Carta carta : cartas) {

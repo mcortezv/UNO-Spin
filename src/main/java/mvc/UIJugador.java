@@ -1,12 +1,30 @@
 package mvc;
+import dto.JugadorDTO;
 import mvc.interfaces.IComponent;
-import dto.JugadorRivalDTO;
 import javax.swing.Icon;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The type Ui jugador.
+ */
 public class UIJugador extends JPanel implements IComponent {
-    public enum Posicion { TOP, LEFT, RIGHT }
+    /**
+     * The enum Posicion.
+     */
+    public enum Posicion {
+        /**
+         * Top posicion.
+         */
+        TOP,
+        /**
+         * Left posicion.
+         */
+        LEFT,
+        /**
+         * Right posicion.
+         */
+        RIGHT }
 
     private static final int AVATAR_SIZE = 46;
     private static final Font FUENTE_NOMBRE = new Font("Arial", Font.BOLD, 12);
@@ -16,7 +34,6 @@ public class UIJugador extends JPanel implements IComponent {
     private static final Color COLOR_FONDO_TURN = new Color(255, 200, 0, 50);
     private static final Color COLOR_BORDE_TURN = new Color(255, 200, 0);
     private static final int ARCO_PANEL = 16;
-
     private final JLabel lblNombre;
     private final JLabel lblCartas;
     private final JLabel lblAvatar;
@@ -24,7 +41,13 @@ public class UIJugador extends JPanel implements IComponent {
     private boolean esTurno = false;
 
 
-    public UIJugador(JugadorRivalDTO dto, Posicion posicion) {
+    /**
+     * Instantiates a new Ui jugador.
+     *
+     * @param dto      the dto
+     * @param posicion the posicion
+     */
+    public UIJugador(JugadorDTO dto, Posicion posicion) {
         setOpaque(false);
         setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
@@ -34,7 +57,7 @@ public class UIJugador extends JPanel implements IComponent {
         this.lblCartas = crearLabel("Cartas: " + dto.getCantidadCartas(), FUENTE_CONTEO, COLOR_CONTEO);
         this.lblAvatar = crearAvatar(dto.getNumeroAvatar());
         this.manoRival = new UIManoRival(dto.getCantidadCartas(), ori);
-        this.esTurno   = dto.isEsTurno();
+        this.esTurno   = false;
 
         construirLayout(posicion);
     }
@@ -124,12 +147,22 @@ public class UIJugador extends JPanel implements IComponent {
         return lbl;
     }
 
-    public void actualizar(JugadorRivalDTO dto) {
+    /**
+     * Actualizar.
+     *
+     * @param dto the dto
+     */
+    public void actualizar(JugadorDTO dto) {
         lblCartas.setText("Cartas: " + dto.getCantidadCartas());
         manoRival.setCantidadCartas(dto.getCantidadCartas());
-        setEsTurno(dto.isEsTurno());
+        setEsTurno(false);
     }
 
+    /**
+     * Sets es turno.
+     *
+     * @param turno the turno
+     */
     public void setEsTurno(boolean turno) {
         this.esTurno = turno;
         repaint();
