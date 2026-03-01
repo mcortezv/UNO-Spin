@@ -1,31 +1,66 @@
 package dto;
 
+/**
+ * The type Jugador dto.
+ */
 public class JugadorDTO {
-//    private final String nombre;
-//    private final String avatar;
-//    private final int cantidadCartas;
-//    private final boolean esTurnoActual;
-//
-//    public JugadorDTO(String nombre, String avatar, int cantidadCartas, boolean esTurnoActual) {
-//        this.nombre = nombre;
-//        this.avatar = avatar;
-//        this.cantidadCartas = cantidadCartas;
-//        this.esTurnoActual = esTurnoActual;
-//    }
-//
-//    public String getNombre() {
-//        return nombre;
-//    }
-//
-//    public String getAvatar() {
-//        return avatar;
-//    }
-//
-//    public int getCantidadCartas() {
-//        return cantidadCartas;
-//    }
-//
-//    public boolean isEsTurnoActual() {
-//        return esTurnoActual;
-//    }
+    private String nombre;
+    private int numeroAvatar;
+    private int cantidadCartas;
+    private boolean esTurnoActual;
+
+    /**
+     * Instantiates a new Jugador dto.
+     */
+    public JugadorDTO(){}
+
+    /**
+     * Instantiates a new Jugador dto.
+     *
+     * @param nombre         the nombre
+     * @param numeroAvatar   the numero avatar
+     * @param cantidadCartas the cantidad cartas
+     * @param esTurnoActual  the es turno actual
+     */
+    public JugadorDTO(String nombre, int numeroAvatar, int cantidadCartas, boolean esTurnoActual) {
+       this.nombre = nombre;
+       this.numeroAvatar = numeroAvatar;
+       this.cantidadCartas = cantidadCartas;
+       this.esTurnoActual = esTurnoActual;
+   }
+
+    /**
+     * Gets nombre.
+     *
+     * @return the nombre
+     */
+    public String getNombre() {
+       return nombre;}
+
+    /**
+     * Gets cantidad cartas.
+     *
+     * @return the cantidad cartas
+     */
+    public int getCantidadCartas() {
+       return cantidadCartas;
+   }
+
+    /**
+     * Gets numero avatar.
+     *
+     * @return the numero avatar
+     */
+    public int getNumeroAvatar() {
+        return numeroAvatar;
+   }
+
+    /**
+     * Is es turno actual boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isEsTurnoActual() {
+       return esTurnoActual;
+   }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 public class Jugador {
     private int id;
     private String nombre;
-    private String avatar;
+    private int numeroAvatar;
     private Mano mano;
     private List<String> colorCarta;
     private int puntos;
@@ -20,15 +20,15 @@ public class Jugador {
     /**
      * Instantiates a new Jugador.
      *
-     * @param avatar     the avatar
-     * @param colorCarta the color carta
-     * @param id         the id
-     * @param mano       the mano
-     * @param nombre     the nombre
-     * @param puntos     the puntos
+     * @param numeroAvatar the numero avatar
+     * @param colorCarta   the color carta
+     * @param id           the id
+     * @param mano         the mano
+     * @param nombre       the nombre
+     * @param puntos       the puntos
      */
-    public Jugador(String avatar, List<String> colorCarta, int id, Mano mano, String nombre, int puntos) {
-        this.avatar = avatar;
+    public Jugador(int numeroAvatar, List<String> colorCarta, int id, Mano mano, String nombre, int puntos) {
+        this.numeroAvatar = numeroAvatar;
         this.colorCarta = colorCarta;
         this.id = id;
         this.mano = mano;
@@ -37,21 +37,21 @@ public class Jugador {
     }
 
     /**
-     * Gets avatar.
+     * Gets numero avatar.
      *
-     * @return the avatar
+     * @return the numero avatar
      */
-    public String getAvatar() {
-        return avatar;
+    public int getNumeroAvatar() {
+        return numeroAvatar;
     }
 
     /**
-     * Sets avatar.
+     * Sets numero avatar.
      *
-     * @param avatar the avatar
+     * @param numeroAvatar the numero avatar
      */
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setNumeroAvatar(int numeroAvatar) {
+        this.numeroAvatar = numeroAvatar;
     }
 
     /**

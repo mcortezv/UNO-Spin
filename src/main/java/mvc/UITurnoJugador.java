@@ -1,20 +1,24 @@
 package mvc;
+import dto.JugadorDTO;
 import mvc.interfaces.IComponent;
+import mvc.interfaces.IControlador;
 import mvc.interfaces.IModeloLectura;
 import mvc.interfaces.ISuscriptor;
 import mvc.styles.Button;
 import dto.CartaDTO;
-import dto.JugadorRivalDTO;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * The type Ui turno jugador.
+ */
 public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
 
     private static final int ancho_ventana = 1040;
     private static final int alto_ventana = 680;
 
-    private final Controlador controlador;
+    private final IControlador controlador;
     private final IModeloLectura lectura;
 
     private final UITablero tablero;
@@ -33,10 +37,18 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     private final JPanel slotLeft;
     private final JPanel slotRight;
 
-    public UITurnoJugador(Controlador controlador, IModeloLectura modeloLectura) {
+    /**
+     * Instantiates a new Ui turno jugador.
+     *
+     * @param controlador   the controlador
+     * @param modeloLectura the modelo lectura
+     */
+    public UITurnoJugador(Controlador controlador, IModeloLectura modeloLectura, List<Integer> relative) {
         super("UNO-SPIN");
         this.controlador = controlador;
         this.lectura = modeloLectura;
+
+        setLocation(relative.get(0), relative.get(1));
 
         this.tablero = new UITablero();
         this.mano = new UIMano();
@@ -132,7 +144,9 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         btnTirarCarta.addActionListener(e -> {
             CartaDTO seleccionada = mano.getCartaSeleccionada();
             if (seleccionada != null) {
-                controlador.onCartaJugada(seleccionada.getValor());
+                if (!controlador.jugarCarta(seleccionada)){
+                    JOptionPane.showMessageDialog(this, "Carta no compatible");
+                }
             }
         });
 
@@ -148,8 +162,21 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     }
 
     private void actualizarVista(IModeloLectura modelo) {
+
+        if (modelo.isTurnoActivo()) {
+            btnTirarCarta.setEnabled(true);
+            btnUno.setEnabled(true);
+            tablero.getMazo().setActive(true);
+            tablero.getRuleta().setActive(true);
+        } else {
+            btnTirarCarta.setEnabled(false);
+            btnUno.setEnabled(false);
+            tablero.getMazo().setActive(false);
+            tablero.getRuleta().setActive(false);
+        }
+
         lblTurno.setText("Turno: " + modelo.getNombreTurnoActual());
-        mano.setCartas(modelo.getManoJugadorActual());
+        mano.setCartas(modelo.getManoJugador());
         if (modelo.getCartaCima() != null) {
             tablero.setCartaCima(modelo.getCartaCima());
         }
@@ -157,16 +184,16 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
             tablero.getRuleta().girar();
         }
 
-        List<JugadorRivalDTO> rivales = modelo.getJugadoresRivales();
+        List<JugadorDTO> rivales = modelo.getJugadoresRivales();
         actualizarRival(rivales, 0, slotTop,   UIJugador.Posicion.TOP);
         actualizarRival(rivales, 1, slotLeft,  UIJugador.Posicion.LEFT);
         actualizarRival(rivales, 2, slotRight, UIJugador.Posicion.RIGHT);
     }
 
-    private void actualizarRival(List<JugadorRivalDTO> rivales, int idx, JPanel slot, UIJugador.Posicion posicion) {
+    private void actualizarRival(List<JugadorDTO> rivales, int idx, JPanel slot, UIJugador.Posicion posicion) {
         slot.removeAll();
         if (idx < rivales.size() && rivales.get(idx) != null) {
-            JugadorRivalDTO dto = rivales.get(idx);
+            JugadorDTO dto = rivales.get(idx);
             if (jugadorPorPosicion(posicion) == null) {
                 UIJugador uj = new UIJugador(dto, posicion);
                 setJugadorPorPosicion(posicion, uj);
@@ -219,7 +246,6 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     private void configurarVentana() {
         setSize(ancho_ventana, alto_ventana);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
         setResizable(false);
     }
 

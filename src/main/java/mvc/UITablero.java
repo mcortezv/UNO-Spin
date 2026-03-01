@@ -4,6 +4,9 @@ import dto.CartaDTO;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The type Ui tablero.
+ */
 public class UITablero extends JPanel implements IComponent {
 
     private final UIRuleta   ruleta;
@@ -13,10 +16,13 @@ public class UITablero extends JPanel implements IComponent {
     private final JLabel lblGirar;
     private final JLabel lblPedir;
 
+    /**
+     * Instantiates a new Ui tablero.
+     */
     public UITablero() {
-        this.ruleta   = new UIRuleta();
+        this.ruleta = new UIRuleta();
         this.descarte = new UIDescarte();
-        this.mazo     = new UIMazo();
+        this.mazo = new UIMazo();
         this.lblGirar = crearLabelAccion("GIRAR");
         this.lblPedir = crearLabelAccion("PEDIR");
 
@@ -64,26 +70,56 @@ public class UITablero extends JPanel implements IComponent {
     }
 
 
+    /**
+     * Sets carta cima.
+     *
+     * @param carta the carta
+     */
     public void setCartaCima(CartaDTO carta) {
         descarte.setCartaTope(carta);
     }
 
+    /**
+     * Gets ruleta.
+     *
+     * @return the ruleta
+     */
     public UIRuleta getRuleta() {
         return ruleta;
     }
 
+    /**
+     * Gets descarte.
+     *
+     * @return the descarte
+     */
     public UIDescarte getDescarte() {
         return descarte;
     }
 
+    /**
+     * Gets mazo.
+     *
+     * @return the mazo
+     */
     public UIMazo getMazo() {
         return mazo;
     }
 
+    /**
+     * Sets on pedir carta.
+     *
+     * @param accion the accion
+     */
     public void setOnPedirCarta(Runnable accion) {
         this.mazo.setOnPedirCarta(accion);
     }
 
+    /**
+     * Sets on giro completo.
+     *
+     * @param accion the accion
+     */
     public void setOnGiroCompleto(Runnable accion) {
         this.ruleta.setOnGiroCompleto(accion);
     }
