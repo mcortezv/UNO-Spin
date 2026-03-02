@@ -1,8 +1,8 @@
 package dominio;
+
 import dominio.enums.EstadoPartida;
 import dominio.enums.TipoEventoRuleta;
 import dominio.interfaces.IDominio;
-import java.awt.*;
 import java.util.List;
 
 /**
@@ -30,7 +30,8 @@ public class Partida implements IDominio {
      * @param jugadores           the jugadores
      * @param sentidoHorario      the sentido horario
      */
-    public Partida(EstadoPartida estadoPartida, int indiceJugadorActual, List<Jugador> jugadores, boolean sentidoHorario) {
+    public Partida(EstadoPartida estadoPartida, int indiceJugadorActual, List<Jugador> jugadores,
+            boolean sentidoHorario) {
         this.estadoPartida = estadoPartida;
         this.indiceJugadorActual = indiceJugadorActual;
         this.jugadores = jugadores;
@@ -109,7 +110,6 @@ public class Partida implements IDominio {
         this.sentidoHorario = sentidoHorario;
     }
 
-
     public boolean aplicarJugada(Carta c) {
         if (tablero.getDescarte().validarCartaEntrante(c)) {
             Jugador jugadorActual = jugadores.get(indiceJugadorActual);
@@ -141,7 +141,7 @@ public class Partida implements IDominio {
     }
 
     @Override
-    public void gritarUno(){
+    public void gritarUno() {
         this.unoGritado = true;
     }
 
@@ -169,10 +169,10 @@ public class Partida implements IDominio {
                 aplicarCasiUno(jugador);
                 break;
             case ROBAR_HASTA_AZUL:
-                robarHastaColor(jugador, ColorCarta.AZUL);
+                robarHastaColor(jugador, "AZUL");
                 break;
             case ROBAR_HASTA_ROJO:
-                robarHastaColor(jugador, ColorCarta.ROJO);
+                robarHastaColor(jugador, "ROJO");
                 break;
             case INTERCAMBIO_DE_MANOS:
                 intercambiarManos();
@@ -187,6 +187,10 @@ public class Partida implements IDominio {
                 break;
             case DESCARTAR_POR_COLOR:
                 aplicarDescartarPorColor(jugador);
+                break;
+            case ELEGIR_COLOR:
+            case DESCARTAR_POR_NUMERO:
+            case DESCARTAR_CARTA:
                 break;
         }
         if (evento != TipoEventoRuleta.GUERRA && evento != TipoEventoRuleta.DESCARTAR_POR_COLOR) {
@@ -204,12 +208,12 @@ public class Partida implements IDominio {
         }
     }
 
-    private void robarHastaColor(Jugador jugador, Color colorObjetivo) throws Exception {
+    private void robarHastaColor(Jugador jugador, String colorObjetivo) throws Exception {
         boolean encontroColor = false;
         while (!encontroColor) {
             Carta cartaRobada = tablero.getMazo().robarCarta();
             jugador.getMano().getCartas().add(cartaRobada);
-            if (cartaRobada.getColor() != null && cartaRobada.getColor().equalsIgnoreCase(String.valueOf(colorObjetivo))) {
+            if (cartaRobada.getColor() != null && cartaRobada.getColor().equalsIgnoreCase(colorObjetivo)) {
                 encontroColor = true;
             }
         }
@@ -278,6 +282,8 @@ public class Partida implements IDominio {
 
     private void aplicarDescartarPorColor(Jugador jugador) {
         Carta cartaTope = tablero.getDescarte().getUltimaCarta();
+        if (cartaTope == null)
+            return;
         String colorTope = cartaTope.getColor();
         if (colorTope == null || colorTope.equalsIgnoreCase("NEGRO")) {
             return;
@@ -294,7 +300,8 @@ public class Partida implements IDominio {
     }
 
     private void aplicarPuntuacionMasBaja() {
-        if (jugadores.isEmpty()) return;
+        if (jugadores.isEmpty())
+            return;
         Jugador jugadorMenosCartas = jugadores.get(0);
         for (Jugador j : jugadores) {
             if (j.getMano().getCartas().size() < jugadorMenosCartas.getMano().getCartas().size()) {
