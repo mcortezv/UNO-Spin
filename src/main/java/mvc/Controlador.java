@@ -1,4 +1,5 @@
 package mvc;
+import dominio.enums.TipoEventoRuleta;
 import mvc.interfaces.IControlador;
 import dto.CartaDTO;
 import mvc.interfaces.IModeloControlador;
@@ -56,5 +57,10 @@ public class Controlador implements IControlador {
     public void onSpinCompletado() {
         System.out.println("Spin completado");
         modelo.girarRuleta();
+    }
+
+    public void onResultadoEvento(TipoEventoRuleta evento, Object resultado) {
+        System.out.println("Evento: " + evento + " | Resultado: " + resultado);
+        modelo.limpiarEventoRuleta();
     }
 }

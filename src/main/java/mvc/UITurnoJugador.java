@@ -1,5 +1,8 @@
 package mvc;
+import dominio.enums.TipoEventoRuleta;
 import dto.JugadorDTO;
+import mvc.eventos.DialogoEventoRuleta;
+import mvc.eventos.FabricaDialogosEvento;
 import mvc.interfaces.IComponent;
 import mvc.interfaces.IControlador;
 import mvc.interfaces.IModeloLectura;
@@ -186,6 +189,21 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         actualizarRival(rivales, 0, slotTop,   UIJugador.Posicion.TOP);
         actualizarRival(rivales, 1, slotLeft,  UIJugador.Posicion.LEFT);
         actualizarRival(rivales, 2, slotRight, UIJugador.Posicion.RIGHT);
+
+        TipoEventoRuleta evento = modelo.getEventoRuletaActual();
+        if (evento != null) {
+            mostrarDialogoEvento(evento, modelo);
+        }
+    }
+
+    private void mostrarDialogoEvento(TipoEventoRuleta evento, IModeloLectura modelo) {
+        SwingUtilities.invokeLater(() -> {
+            DialogoEventoRuleta dialogo = FabricaDialogosEvento.crear(evento, this, modelo);
+            dialogo.setVisible(true);
+
+            Object resultado = dialogo.getResultado();
+            controlador.onResultadoEvento(evento, resultado);
+        });
     }
 
     private void actualizarRival(List<JugadorDTO> rivales, int idx, JPanel slot, UIJugador.Posicion posicion) {

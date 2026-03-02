@@ -1,4 +1,5 @@
 package mvc.interfaces;
+import dominio.enums.TipoEventoRuleta;
 import dto.CartaDTO;
 import dto.JugadorDTO;
 import java.util.List;
@@ -7,6 +8,8 @@ import java.util.List;
  * The interface Modelo lectura.
  */
 public interface IModeloLectura {
+
+     TipoEventoRuleta getEventoRuletaActual();
 
      /**
       * Gets descarte.
