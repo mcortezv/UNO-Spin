@@ -1,4 +1,5 @@
 package mvc;
+
 import dominio.enums.EstadoPartida;
 import dominio.interfaces.IDominio;
 import dto.JugadorDTO;
@@ -121,7 +122,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public boolean isTurnoActivo() {
-        return false;
+        return dominio.getEstadoPartida() == EstadoPartida.EN_PROCESO;
     }
 
     @Override
