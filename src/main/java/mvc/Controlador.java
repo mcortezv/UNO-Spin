@@ -2,23 +2,15 @@ package mvc;
 import dominio.enums.TipoEventoRuleta;
 import mvc.interfaces.IControlador;
 import dto.CartaDTO;
-import dto.EventoRuletaDTO;
 import mvc.interfaces.IModeloControlador;
 
 /**
  * The type Controlador.
  */
 public class Controlador implements IControlador {
-    /**
-     * The Modelo.
-     */
+
     IModeloControlador modelo;
 
-    /**
-     * Instantiates a new Controlador.
-     *
-     * @param modelo the modelo
-     */
     public Controlador(IModeloControlador modelo) {
         this.modelo = modelo;
     }
@@ -28,38 +20,30 @@ public class Controlador implements IControlador {
         return modelo.jugarCarta(carta);
     }
 
-    /**
-     * On carta jugada.
-     *
-     * @param valorCarta the valor carta
-     */
+    @Override
     public void onCartaJugada(String valorCarta) {
         System.out.println("Carta jugada: " + valorCarta);
     }
 
-    /**
-     * On pedir carta.
-     */
+    @Override
     public void onPedirCarta() {
         System.out.println("Pedir carta del mazo");
         modelo.pedirCarta();
     }
 
-    /**
-     * On uno gritado.
-     */
+    @Override
     public void onUnoGritado() {
         modelo.gritarUno();
     }
 
-    /**
-     * On spin completado.
-     */
-    public EventoRuletaDTO onSpinCompletado() {
+    @Override
+    public void onSpinCompletado() {
         System.out.println("Spin completado");
-        return modelo.girarRuleta();
+        modelo.girarRuleta();
     }
 
+
+    @Override
     public void onResultadoEvento(TipoEventoRuleta evento, Object resultado) {
         System.out.println("Evento: " + evento + " | Resultado: " + resultado);
         modelo.limpiarEventoRuleta();

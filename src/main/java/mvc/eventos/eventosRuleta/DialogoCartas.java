@@ -1,5 +1,7 @@
 package mvc.eventos.eventosRuleta;
 
+import dto.CartaDTO;
+import mvc.CargadorAssets;
 import mvc.eventos.DialogoEventoRuleta;
 
 import javax.swing.*;
@@ -10,14 +12,15 @@ import java.util.List;
 
 public abstract class DialogoCartas extends DialogoEventoRuleta {
 
-    protected List<ImageIcon> imagenesCartas;
+    protected List<CartaDTO> cartas;
+
     protected int cartaSeleccionadaIdx = -1;
     private final boolean seleccionable;
 
     public DialogoCartas(Frame owner, String titulo,
-                         List<ImageIcon> cartas, boolean seleccionable) {
+                         List<CartaDTO> cartas, boolean seleccionable) {
         super(owner, "");
-        this.imagenesCartas = cartas;
+        this.cartas = cartas;
         this.seleccionable = seleccionable;
     }
 
@@ -26,8 +29,11 @@ public abstract class DialogoCartas extends DialogoEventoRuleta {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
         panel.setOpaque(false);
 
-        for (int i = 0; i < imagenesCartas.size(); i++) {
-            JLabel lblCarta = new JLabel(imagenesCartas.get(i));
+        for (int i = 0; i < cartas.size(); i++) {
+            CartaDTO carta = cartas.get(i);
+            Image img = CargadorAssets.getInstance()
+                    .getCartaEscalada(carta.getValor(), 60, 86);
+            JLabel lblCarta = new JLabel(new ImageIcon(img));
 
             if (seleccionable) {
                 final int idx = i;
@@ -36,12 +42,14 @@ public abstract class DialogoCartas extends DialogoEventoRuleta {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         cartaSeleccionadaIdx = idx;
+                        for (Component c : panel.getComponents()) {
+                            ((JComponent) c).setBorder(null);
+                        }
                         lblCarta.setBorder(
-                                BorderFactory.createLineBorder(Color.YELLOW, 3));
+                                BorderFactory.createLineBorder(new Color(255, 200, 0), 3));
                     }
                 });
             }
-
             panel.add(lblCarta);
         }
         return panel;

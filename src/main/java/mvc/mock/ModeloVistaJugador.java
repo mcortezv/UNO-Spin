@@ -6,10 +6,10 @@ import mvc.Modelo;
 import mvc.interfaces.IModeloControlador;
 import mvc.interfaces.IModeloLectura;
 import mvc.interfaces.ISuscriptor;
+import dominio.enums.TipoEventoRuleta;
 
 import java.util.ArrayList;
 import java.util.List;
-import dominio.enums.TipoEventoRuleta;
 
 public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, ISuscriptor {
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
@@ -24,10 +24,9 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
         modelo.subscribe(this);
     }
 
-
     @Override
     public boolean jugarCarta(CartaDTO carta) {
-        if (modeloControlador.jugarCarta(carta)){
+        if (modeloControlador.jugarCarta(carta)) {
             notifyObservers();
             return true;
         }
@@ -53,7 +52,6 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
     public void gritarUno() {
         modeloControlador.gritarUno();
     }
-
 
     @Override
     public List<CartaDTO> getDescarte() {
@@ -105,6 +103,16 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
         return false;
     }
 
+    @Override
+    public TipoEventoRuleta getEventoRuletaActual() {
+        return modeloLectura.getEventoRuletaActual();
+    }
+
+    @Override
+    public void limpiarEventoRuleta() {
+        modeloControlador.limpiarEventoRuleta();
+    }
+
     public void subscribe(ISuscriptor suscriptor) {
         this.suscriptores.add(suscriptor);
     }
@@ -118,15 +126,5 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
     @Override
     public void update(IModeloLectura modelo) {
         notifyObservers();
-    }
-
-    @Override
-    public TipoEventoRuleta getEventoRuletaActual() {
-        return modeloLectura.getEventoRuletaActual();
-    }
-
-    @Override
-    public void limpiarEventoRuleta() {
-        modeloControlador.limpiarEventoRuleta();
     }
 }
