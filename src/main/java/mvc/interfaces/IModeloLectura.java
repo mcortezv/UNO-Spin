@@ -56,4 +56,7 @@ public interface IModeloLectura {
       * @return the boolean
       */
      boolean isSpinActivo();
+
+     List<CartaDTO> getManoJugadorEspecifico(int indiceJugador);
+     boolean isTurnoActivoEspecifico(int indiceJugador);
 }
