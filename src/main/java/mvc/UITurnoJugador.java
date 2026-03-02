@@ -181,15 +181,13 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     }
 
     private void actualizarVista(IModeloLectura modelo) {
-
+        btnUno.setEnabled(true);
         if (modelo.isTurnoActivo()) {
             btnTirarCarta.setEnabled(true);
-            btnUno.setEnabled(true);
             tablero.getMazo().setActive(true);
             tablero.getRuleta().setActive(tablero.getDescarte().isCartaTopeSpin() || ruletaObligatoria);
         } else {
             btnTirarCarta.setEnabled(false);
-            btnUno.setEnabled(false);
             tablero.getMazo().setActive(false);
             tablero.getRuleta().setActive(false);
         }

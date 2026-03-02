@@ -23,5 +23,6 @@ public interface IModeloControlador {
     /**
      * Girar ruleta.
      */
+    public void gritarUno();
     EventoRuletaDTO girarRuleta();
 }
