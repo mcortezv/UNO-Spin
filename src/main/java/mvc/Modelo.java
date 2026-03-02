@@ -7,11 +7,16 @@ import mvc.interfaces.ISuscriptor;
 import dominio.Carta;
 import dominio.Partida;
 import dominio.Tablero;
+import dominio.enums.TipoEventoRuleta;
 import dto.CartaDTO;
+import dto.EventoRuletaDTO;
 import mvc.mock.PartidaMock;
 import mvc.mock.TableroMock;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import mappers.EventoRuletaMapper;
 
 /**
  * The type Modelo.
@@ -43,7 +48,14 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     }
 
     @Override
-    public void girarRuleta() {
+    public EventoRuletaDTO girarRuleta() {
+        try {
+            TipoEventoRuleta evento= partida.procesarGiroRuleta();
+            notifyObservers();
+            return EventoRuletaMapper.toDTO(evento);
+        } catch (Exception ex) {
+            return null;
+        }
 
     }
 
