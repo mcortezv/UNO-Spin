@@ -8,10 +8,10 @@ import mvc.interfaces.IModeloLectura;
 import mvc.interfaces.ISuscriptor;
 import dominio.Carta;
 import dto.CartaDTO;
+import dominio.enums.TipoEventoRuleta;
 
 import java.util.ArrayList;
 import java.util.List;
-import dominio.enums.TipoEventoRuleta;
 
 /**
  * The type Modelo.
@@ -20,11 +20,8 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     private IDominio dominio;
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
     private boolean botonUnoPresionado = false;
-    private TipoEventoRuleta eventoRuletaActual;
+    private TipoEventoRuleta eventoRuletaActual; // ← AGREGADO
 
-    /**
-     * Instantiates a new Modelo.
-     */
     public Modelo(IDominio dominio) {
         this.dominio = dominio;
     }
@@ -37,7 +34,6 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         if (exito) {
             notifyObservers();
             if (jugadorQueTira.getMano().getCartas().size() == 1) {
-
                 if (botonUnoPresionado) {
                     System.out.println(jugadorQueTira.getNombre() + " gritó UNO antes de tirar");
                     botonUnoPresionado = false;
@@ -90,6 +86,11 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     }
 
     @Override
+    public void limpiarEventoRuleta() {
+        this.eventoRuletaActual = null;
+    }
+
+    @Override
     public List<CartaDTO> getDescarte() {
         return CartaMapper.toDTO(dominio.getTablero().getDescarte().getCartas());
     }
@@ -128,20 +129,10 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         return dominio.getEstadoPartida() == EstadoPartida.GIRO_PENDIENTE;
     }
 
-    /**
-     * Subscribe.
-     *
-     * @param suscriptor the suscriptor
-     */
     public void subscribe(ISuscriptor suscriptor) {
         this.suscriptores.add(suscriptor);
     }
 
-    /**
-     * Unsubscribe.
-     *
-     * @param suscriptor the suscriptor
-     */
     public void unsubscribe(ISuscriptor suscriptor) {
         this.suscriptores.remove(suscriptor);
     }
@@ -166,9 +157,5 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     public void gritarUno() {
         this.botonUnoPresionado = true;
         System.out.println("Botón UNO presionado");
-    }
-
-    public void limpiarEventoRuleta() {
-        this.eventoRuletaActual = null;
     }
 }

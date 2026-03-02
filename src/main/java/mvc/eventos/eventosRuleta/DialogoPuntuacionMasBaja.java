@@ -8,10 +8,9 @@ import java.util.List;
 public class DialogoPuntuacionMasBaja extends DialogoTablaJugadores {
         private List<Integer> puntajes;
 
-        public DialogoPuntuacionMasBaja(Frame owner, List<String> jugadores, List<Integer> pts) {
-            super(owner, "¡PUNTUACION MAS BAJA!", jugadores);
-            this.puntajes = pts;
-        }
+    public DialogoPuntuacionMasBaja(Frame owner, List<String> jugadores) {
+        super(owner, "¡PUNTUACION MAS BAJA!", jugadores);
+    }
 
         @Override
         protected String obtenerDescripcion() {

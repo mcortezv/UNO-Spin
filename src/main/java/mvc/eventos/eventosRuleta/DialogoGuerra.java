@@ -7,10 +7,9 @@ import java.util.List;
 public class DialogoGuerra extends DialogoTablaJugadores {
         private List<ImageIcon> cartasAltas;
 
-        public DialogoGuerra(Frame owner, List<String> jugadores, List<ImageIcon> cartas) {
-            super(owner, "¡GUERRA!", jugadores);
-            this.cartasAltas = cartas;
-        }
+    public DialogoGuerra(Frame owner, List<String> jugadores) {
+        super(owner, "¡GUERRA!", jugadores);
+    }
 
         @Override
         protected String obtenerDescripcion() {
