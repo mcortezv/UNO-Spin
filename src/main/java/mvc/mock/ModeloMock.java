@@ -1,7 +1,9 @@
 package mvc.mock;
 import dominio.Carta;
 import dominio.Jugador;
+import dominio.enums.EstadoPartida;
 import dominio.enums.TipoCarta;
+import dominio.enums.TipoEventoRuleta;
 import dto.JugadorDTO;
 import mappers.CartaMapper;
 import mappers.JugadorMapper;
@@ -9,8 +11,10 @@ import mvc.interfaces.IModeloControlador;
 import mvc.interfaces.IModeloLectura;
 import mvc.interfaces.ISuscriptor;
 import dto.CartaDTO;
+import dto.EventoRuletaDTO;
 import java.util.ArrayList;
 import java.util.List;
+import mappers.EventoRuletaMapper;
 
 public class ModeloMock implements IModeloControlador, IModeloLectura {
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
@@ -68,7 +72,11 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
                 }
             }
             partidaMock.getTablero().getDescarte().getCartas().add(c);
-            partidaMock.avanzarTurno();
+            if(c.getTipoCarta() == TipoCarta.NUMERO_SPIN){
+                partidaMock.setEstadoPartida(EstadoPartida.GIRO_PENDIENTE);
+            } else{
+                partidaMock.avanzarTurno();
+            }
             notifyObservers();
             return true;
         }
@@ -87,8 +95,14 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
     }
 
     @Override
-    public void girarRuleta() {
-
+    public EventoRuletaDTO girarRuleta() {
+        try{
+           TipoEventoRuleta evento= partidaMock.procesarGiroRuleta();
+           return EventoRuletaMapper.toDTO(evento);
+        } catch(Exception e){
+            return null;
+        }
+        
     }
 
     @Override

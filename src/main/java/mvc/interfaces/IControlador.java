@@ -1,5 +1,6 @@
 package mvc.interfaces;
 import dto.CartaDTO;
+import dto.EventoRuletaDTO;
 
 /**
  * The interface Controlador.
@@ -34,5 +35,5 @@ public interface IControlador {
     /**
      * On spin completado.
      */
-    void onSpinCompletado();
+    EventoRuletaDTO onSpinCompletado();
 }

@@ -30,6 +30,8 @@ public class TableroMock extends Tablero {
         mazo.add(new Carta("ROJO", 7, TipoCarta.NUMERICA, 7));
         mazo.add(new Carta("ROJO", 8, TipoCarta.NUMERICA, 8));
         mazo.add(new Carta("ROJO", 9, TipoCarta.NUMERICA, 9));
+        mazo.add(new Carta("AZUL", 1, TipoCarta.NUMERICA, 1));
+        mazo.add(new Carta("AZUL", 2, TipoCarta.NUMERICA, 2));
         setMazo(new Mazo(mazo));
 
         setRuleta(new Ruleta());
