@@ -9,6 +9,7 @@ import mvc.interfaces.ISuscriptor;
 
 import java.util.ArrayList;
 import java.util.List;
+import dominio.enums.TipoEventoRuleta;
 
 public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, ISuscriptor {
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
@@ -119,4 +120,13 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
         notifyObservers();
     }
 
+    @Override
+    public TipoEventoRuleta getEventoRuletaActual() {
+        return modeloLectura.getEventoRuletaActual();
+    }
+
+    @Override
+    public void limpiarEventoRuleta() {
+        modeloControlador.limpiarEventoRuleta();
+    }
 }

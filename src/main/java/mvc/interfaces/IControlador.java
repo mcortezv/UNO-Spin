@@ -1,6 +1,6 @@
 package mvc.interfaces;
+import dominio.enums.TipoEventoRuleta;
 import dto.CartaDTO;
-import dto.EventoRuletaDTO;
 
 /**
  * The interface Controlador.
@@ -35,5 +35,8 @@ public interface IControlador {
     /**
      * On spin completado.
      */
-    EventoRuletaDTO onSpinCompletado();
+    void onSpinCompletado();
+
+    void onResultadoEvento(TipoEventoRuleta evento, Object resultado);
+
 }
