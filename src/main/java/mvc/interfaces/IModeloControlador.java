@@ -25,4 +25,7 @@ public interface IModeloControlador {
     void girarRuleta();
 
     public void gritarUno();
+
+    void limpiarEventoRuleta();
+
 }

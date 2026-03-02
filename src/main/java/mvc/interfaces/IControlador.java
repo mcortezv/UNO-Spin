@@ -1,4 +1,5 @@
 package mvc.interfaces;
+import dominio.enums.TipoEventoRuleta;
 import dto.CartaDTO;
 
 /**
@@ -35,4 +36,7 @@ public interface IControlador {
      * On spin completado.
      */
     void onSpinCompletado();
+
+    void onResultadoEvento(TipoEventoRuleta evento, Object resultado);
+
 }

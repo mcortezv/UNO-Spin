@@ -11,6 +11,7 @@ import dto.CartaDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import dominio.enums.TipoEventoRuleta;
 
 /**
  * The type Modelo.
@@ -19,6 +20,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     private IDominio dominio;
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
     private boolean botonUnoPresionado = false;
+    private TipoEventoRuleta eventoRuletaActual;
 
     /**
      * Instantiates a new Modelo.
@@ -75,11 +77,16 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     @Override
     public void girarRuleta() {
         try {
-            dominio.procesarGiroRuleta();
+            eventoRuletaActual = dominio.procesarGiroRuleta();
             notifyObservers();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    @Override
+    public TipoEventoRuleta getEventoRuletaActual() {
+        return eventoRuletaActual;
     }
 
     @Override
@@ -161,4 +168,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         System.out.println("Botón UNO presionado");
     }
 
+    public void limpiarEventoRuleta() {
+        this.eventoRuletaActual = null;
+    }
 }
