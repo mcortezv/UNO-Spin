@@ -6,6 +6,7 @@ import mvc.interfaces.IModeloLectura;
 import mvc.interfaces.ISuscriptor;
 import mvc.styles.Button;
 import dto.CartaDTO;
+import dto.EventoRuletaDTO;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
@@ -36,6 +37,8 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     private final JPanel slotTop;
     private final JPanel slotLeft;
     private final JPanel slotRight;
+    
+    private boolean ruletaObligatoria= false; 
 
     /**
      * Instantiates a new Ui turno jugador.
@@ -142,6 +145,10 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
 
     private void conectarEventos() {
         btnTirarCarta.addActionListener(e -> {
+            if(ruletaObligatoria){
+                JOptionPane.showMessageDialog(this, "Debes girar la ruleta antes de continuar", "Ruleta Obligatoria", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             CartaDTO seleccionada = mano.getCartaSeleccionada();
             if (seleccionada != null) {
                 if (!controlador.jugarCarta(seleccionada)){
@@ -152,7 +159,19 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
 
         btnUno.addActionListener(e -> controlador.onUnoGritado());
         tablero.setOnPedirCarta(controlador::onPedirCarta);
-        tablero.setOnGiroCompleto(controlador::onSpinCompletado);
+        tablero.setOnGiroCompleto(() -> {
+            ruletaObligatoria= false; 
+            tablero.getRuleta().setActive(false);
+            EventoRuletaDTO resultado= controlador.onSpinCompletado();
+             mostrarResultadoRuleta(resultado);
+        });
+        tablero.getDescarte().setOnCartaSpinJugada(() -> {
+            if(!lectura.isTurnoActivo()) return;
+            ruletaObligatoria= true; 
+            tablero.getRuleta().setActive(true);
+            JOptionPane.showMessageDialog(this, "Es obligatorio girar la ruleta antes de continuar", "Girar Ruleta", JOptionPane.INFORMATION_MESSAGE);
+        });
+        
     }
 
 
@@ -167,7 +186,7 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
             btnTirarCarta.setEnabled(true);
             btnUno.setEnabled(true);
             tablero.getMazo().setActive(true);
-            tablero.getRuleta().setActive(true);
+            tablero.getRuleta().setActive(tablero.getDescarte().isCartaTopeSpin() || ruletaObligatoria);
         } else {
             btnTirarCarta.setEnabled(false);
             btnUno.setEnabled(false);
@@ -180,9 +199,9 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         if (modelo.getCartaCima() != null) {
             tablero.setCartaCima(modelo.getCartaCima());
         }
-        if (modelo.isSpinActivo() && !tablero.getRuleta().isGirando()) {
-            tablero.getRuleta().girar();
-        }
+//        if (modelo.isSpinActivo() && !tablero.getRuleta().isGirando()) {
+//            tablero.getRuleta().girar();
+//        }
 
         List<JugadorDTO> rivales = modelo.getJugadoresRivales();
         actualizarRival(rivales, 0, slotTop,   UIJugador.Posicion.TOP);
@@ -268,5 +287,29 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
             g2.fillRect(0, 0, getWidth(), getHeight());
             g2.dispose();
         }
+    }
+    
+    private void mostrarResultadoRuleta(EventoRuletaDTO evento){
+        if(evento == null){
+            return;
+        }
+        String descripcion= obtenerDescripcionEvento(evento.getNombre());
+        JOptionPane.showMessageDialog(this, "Resultado de la ruleta: \n\n" + descripcion, "Resultado Ruleta", JOptionPane.INFORMATION_MESSAGE);
+        
+    }
+    
+    private String obtenerDescripcionEvento(String nombre){
+        return switch (nombre){
+            case "CASI_UNO" -> "Puedes descartar todas tus cartas excepto dos";
+            case "DESCARTAR_POR_NUMERO" -> "Elige un número de tu mano y descarta todas las cartas que tengan ese mismo número";
+            case "DESCARTAR_POR_COLOR" -> "Elige un color de tu mano y descarta todas las cartas de ese color";
+            case "ROBAR_HASTA_AZUL" -> "Roba cartas del mazo hasta que te salga una color azul";
+            case "ROBAR_HASTA_ROJO" -> "Roba cartas del mazo hasta que te salga una color rojo";
+            case "GUERRA" -> "Cada jugador elige su carta más alta y la muestra. Quien tenga el número más alto puede descartar todas sus cartas de ese número";
+            case "MOSTRAR_LA_MANO" -> "Debes mostrar tus cartas a todos los jugadores durante unos segundos";
+            case "INTERCAMBIO_DE_MANOS" -> "Todos los jugadores pasan sus cartas al jugador de la izquierda";
+            case "PUNTUACION_MAS_BAJA"-> "Todos cuentan sus puntos; quien tenga menos puntos puede descartar una carta de su elección";
+            default -> nombre;
+        };
     }
 }
