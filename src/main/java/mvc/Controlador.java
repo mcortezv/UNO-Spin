@@ -1,6 +1,7 @@
 package mvc;
 import mvc.interfaces.IControlador;
 import dto.CartaDTO;
+import dto.EventoRuletaDTO;
 import mvc.interfaces.IModeloControlador;
 
 /**
@@ -53,8 +54,8 @@ public class Controlador implements IControlador {
     /**
      * On spin completado.
      */
-    public void onSpinCompletado() {
+    public EventoRuletaDTO onSpinCompletado() {
         System.out.println("Spin completado");
-        modelo.girarRuleta();
+        return modelo.girarRuleta();
     }
 }

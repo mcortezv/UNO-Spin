@@ -18,6 +18,7 @@ public class PartidaMock extends Partida {
         cartasSebastian.add(new Carta("AZUL", 2, TipoCarta.NUMERICA, 2));
         cartasSebastian.add(new Carta("ROJO", 5, TipoCarta.NUMERICA, 5));
         cartasSebastian.add(new Carta("AMARILLO", 6, TipoCarta.NUMERICA, 6));
+        cartasSebastian.add(new Carta("ROJO", 5,TipoCarta.NUMERO_SPIN, 5));
         Mano manoSebastian = new Mano(cartasSebastian);
 
         List<Carta> cartasGuasave = new ArrayList<>();
