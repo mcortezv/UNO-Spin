@@ -23,12 +23,12 @@ public class App {
     public static void main(String[] args) {
         IDominio dominio = new Partida();
         List<Carta> manoSebas = new ArrayList<>();
-        manoSebas.add(new Carta("ROJO", 2, TipoCarta.NUMERICA, 2));
+        manoSebas.add(new Carta("ROJO", 2, TipoCarta.NUMERO_SPIN, 2));
         manoSebas.add(new Carta("ROJO", 3, TipoCarta.NUMERO_SPIN, 3));
 
         List<Carta> manoGuasave = new ArrayList<>();
         manoGuasave.add(new Carta("AZUL", 8, TipoCarta.NUMERICA, 8));
-        manoGuasave.add(new Carta("AMARILLO", 1, TipoCarta.NUMERICA, 1));
+        manoGuasave.add(new Carta("AMARILLO", 1, TipoCarta.NUMERO_SPIN, 1));
 
         Jugador j1 = new Jugador(1, new ArrayList<>(), 0, new Mano(manoSebas), "Sebas", 0);
         Jugador j2 = new Jugador(2, new ArrayList<>(), 1, new Mano(manoGuasave), "Miss Guasave", 0);
