@@ -48,7 +48,7 @@ public class Controlador implements IControlador {
      * On uno gritado.
      */
     public void onUnoGritado() {
-        System.out.println("¡UNO!");
+        modelo.gritarUno();
     }
 
     /**
