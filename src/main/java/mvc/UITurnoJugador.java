@@ -1,7 +1,6 @@
 package mvc;
 import dominio.enums.TipoEventoRuleta;
 import dto.JugadorDTO;
-import mvc.eventos.DialogoEventoRuleta;
 import mvc.eventos.FabricaDialogosEvento;
 import mvc.interfaces.IComponent;
 import mvc.interfaces.IControlador;
@@ -40,12 +39,6 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     private final JPanel slotLeft;
     private final JPanel slotRight;
 
-    /**
-     * Instantiates a new Ui turno jugador.
-     *
-     * @param controlador   the controlador
-     * @param modeloLectura the modelo lectura
-     */
     public UITurnoJugador(Controlador controlador, IModeloLectura modeloLectura, List<Integer> relative) {
         super("UNO-SPIN");
         this.controlador = controlador;
@@ -69,53 +62,40 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         configurarVentana();
         construirLayout();
         conectarEventos();
-
     }
-
 
     private void construirLayout() {
         panelFondo.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 3;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.0;
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 3;
+        gbc.weightx = 1.0; gbc.weighty = 0.0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(8, 0, 0, 0);
         panelFondo.add(slotTop, gbc);
 
-        gbc.gridwidth = 1;
-        gbc.gridy = 1;
-        gbc.weighty = 1.0;
+        gbc.gridwidth = 1; gbc.gridy = 1; gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.VERTICAL;
 
-        gbc.gridx = 0;
-        gbc.weightx = 0.0;
+        gbc.gridx = 0; gbc.weightx = 0.0;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0, 8, 0, 0);
         panelFondo.add(slotLeft, gbc);
 
-        gbc.gridx = 1;
-        gbc.weightx = 1.0;
-        gbc.fill  = GridBagConstraints.BOTH;
+        gbc.gridx = 1; gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(0, 0, 0, 0);
         panelFondo.add(tablero, gbc);
 
-        gbc.gridx = 2;
-        gbc.weightx = 0.0;
-        gbc.fill  = GridBagConstraints.VERTICAL;
+        gbc.gridx = 2; gbc.weightx = 0.0;
+        gbc.fill = GridBagConstraints.VERTICAL;
         gbc.insets = new Insets(0, 0, 0, 8);
         panelFondo.add(slotRight, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 3;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.0;
-        gbc.fill   = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 3;
+        gbc.weightx = 1.0; gbc.weighty = 0.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0, 0, 8, 0);
         panelFondo.add(construirZonaJugadorActivo(), gbc);
@@ -147,7 +127,7 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         btnTirarCarta.addActionListener(e -> {
             CartaDTO seleccionada = mano.getCartaSeleccionada();
             if (seleccionada != null) {
-                if (!controlador.jugarCarta(seleccionada)){
+                if (!controlador.jugarCarta(seleccionada)) {
                     JOptionPane.showMessageDialog(this, "Carta no compatible");
                 }
             }
@@ -157,7 +137,6 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         tablero.setOnPedirCarta(controlador::onPedirCarta);
         tablero.setOnGiroCompleto(controlador::onSpinCompletado);
     }
-
 
     @Override
     public void update(IModeloLectura modelo) {
@@ -198,7 +177,7 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
 
     private void mostrarDialogoEvento(TipoEventoRuleta evento, IModeloLectura modelo) {
         SwingUtilities.invokeLater(() -> {
-            DialogoEventoRuleta dialogo = FabricaDialogosEvento.crear(evento, this, modelo);
+            mvc.eventos.DialogoEventoRuleta dialogo = FabricaDialogosEvento.crear(evento, this, modelo);
             dialogo.setVisible(true);
 
             Object resultado = dialogo.getResultado();
@@ -233,8 +212,8 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
 
     private void setJugadorPorPosicion(UIJugador.Posicion p, UIJugador uj) {
         switch (p) {
-            case TOP   -> uiJugadorArriba   = uj;
-            case LEFT  -> uiJugadorIzq  = uj;
+            case TOP   -> uiJugadorArriba = uj;
+            case LEFT  -> uiJugadorIzq = uj;
             case RIGHT -> uiJugadorDer = uj;
         }
     }
@@ -257,7 +236,6 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         ));
         return lbl;
     }
-
 
     private void configurarVentana() {
         setSize(ancho_ventana, alto_ventana);

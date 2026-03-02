@@ -1,5 +1,7 @@
 package mvc.eventos.eventosRuleta;
 
+import dto.CartaDTO;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
@@ -7,7 +9,7 @@ import java.util.List;
 public class DialogoMostrarMano extends DialogoCartas {
     private String nombreJugador;
 
-    public DialogoMostrarMano(Frame owner, String jugador, List<ImageIcon> cartas) {
+    public DialogoMostrarMano(Frame owner, String jugador, List<CartaDTO> cartas) {
         super(owner, "¡MOSTRAR MANO!", cartas, false);
         this.nombreJugador = jugador;
     }

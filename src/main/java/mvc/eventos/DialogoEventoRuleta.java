@@ -10,20 +10,22 @@ public abstract class DialogoEventoRuleta extends JDialog {
     public DialogoEventoRuleta(Frame owner, String titulo) {
         super(owner, true);
         setUndecorated(true);
-        setSize(420,280);
-        setLocationRelativeTo(null);
-
+        setSize(420, 280);
+        setLocationRelativeTo(owner);
+        construirDialogo(titulo);
     }
-    private void construirDialogo(String titulo){
+
+    private void construirDialogo(String titulo) {
         JPanel panelPrincipal = new JPanel();
-        panelPrincipal.setBackground(new Color(255, 255, 255,240));
-        panelPrincipal.setLayout(new BorderLayout(10,10));
-        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20,30,20,30));
+        panelPrincipal.setBackground(new Color(255, 255, 255, 240));
+        panelPrincipal.setLayout(new BorderLayout(10, 10));
+        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
         panelPrincipal.add(crearEncabezado(), BorderLayout.NORTH);
 
         JLabel lblTitulo = new JLabel(titulo, SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
+        lblTitulo.setAlignmentX(CENTER_ALIGNMENT);
 
         panelContenido = crearContenidoCentral();
 
@@ -31,13 +33,21 @@ public abstract class DialogoEventoRuleta extends JDialog {
         centro.setOpaque(false);
         centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
         centro.add(lblTitulo);
+
         if (obtenerDescripcion() != null) {
-            JLabel desc = new JLabel(obtenerDescripcion(), SwingConstants.CENTER);
+            JLabel desc = new JLabel(
+                    "<html><center>" + obtenerDescripcion() + "</center></html>",
+                    SwingConstants.CENTER
+            );
             desc.setFont(new Font("Arial", Font.PLAIN, 11));
+            desc.setForeground(new Color(100, 100, 100));
             desc.setAlignmentX(CENTER_ALIGNMENT);
+            centro.add(Box.createVerticalStrut(4));
             centro.add(desc);
         }
+
         centro.add(Box.createVerticalStrut(10));
+        panelContenido.setAlignmentX(CENTER_ALIGNMENT);
         centro.add(panelContenido);
 
         panelPrincipal.add(centro, BorderLayout.CENTER);
@@ -57,6 +67,7 @@ public abstract class DialogoEventoRuleta extends JDialog {
 
     protected abstract JPanel crearContenidoCentral();
     protected abstract void alAceptar();
+
     protected String obtenerDescripcion() { return null; }
     protected String obtenerTextoBoton() { return "ACEPTAR"; }
 
@@ -78,13 +89,14 @@ public abstract class DialogoEventoRuleta extends JDialog {
     }
 
     private JButton crearBotonAceptar() {
-        JButton btn = new JButton("ACEPTAR");
+        JButton btn = new JButton(obtenerTextoBoton());
         btn.setBackground(new Color(255, 215, 0));
         btn.setFont(new Font("Arial", Font.BOLD, 14));
         btn.setFocusPainted(false);
+        btn.setOpaque(true);
         btn.setBorder(BorderFactory.createEmptyBorder(8, 30, 8, 30));
         return btn;
     }
-    public Object getResultado() { return resultado; }
 
+    public Object getResultado() { return resultado; }
 }
