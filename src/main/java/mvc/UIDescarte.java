@@ -1,4 +1,5 @@
 package mvc;
+
 import mvc.interfaces.IComponent;
 import dto.CartaDTO;
 import javax.swing.*;
@@ -7,18 +8,21 @@ import java.awt.*;
 /**
  * The type Ui descarte.
  */
-public class UIDescarte extends JPanel implements IComponent{
-    private static final int ANCHO  = UICarta.ANCHO + 16;
-    private static final int ALTO   = UICarta.ALTO  + 16;
-    private static final int ARCO   = 16;
+public class UIDescarte extends JPanel implements IComponent {
+
+    private static final int ANCHO = UICarta.ANCHO + 16;
+    private static final int ALTO = UICarta.ALTO + 16;
+    private static final int ARCO = 16;
     private static final int MARGEN = 9;
 
-    private static final Color COLOR_SOMBRA   = new Color(0, 0, 0, 90);
-    private static final Color COLOR_VACIO    = new Color(50, 50, 50, 120);
-    private static final Color COLOR_BORDE    = Color.WHITE;
+    private static final Color COLOR_SOMBRA = new Color(0, 0, 0, 90);
+    private static final Color COLOR_VACIO = new Color(50, 50, 50, 120);
+    private static final Color COLOR_BORDE = Color.WHITE;
 
     private CartaDTO cartaTope;
     private Image imagenTope;
+    private Runnable onCartaSpinJugada;
+    private boolean spinNotificado;
 
     /**
      * Instantiates a new Ui descarte.
@@ -34,22 +38,29 @@ public class UIDescarte extends JPanel implements IComponent{
      * @param carta the carta
      */
     public void setCartaTope(CartaDTO carta) {
-        this.cartaTope  = carta;
+        this.cartaTope = carta;
         this.imagenTope = CargadorAssets.getInstance()
                 .getCartaEscalada(carta.getValor(), ANCHO - MARGEN * 2, ALTO - MARGEN * 2);
         repaint();
+        if (carta.getTipoCarta() != null && carta.getTipoCarta().equalsIgnoreCase("NUMERO_SPIN")) {
+            if (onCartaSpinJugada != null && !spinNotificado) {
+                spinNotificado = true;
+                onCartaSpinJugada.run();
+            }
+        } else{
+            spinNotificado= false;
+        }
     }
-
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g.create();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
-        int cx = (getWidth()  - ANCHO) / 2;
-        int cy = (getHeight() - ALTO)  / 2;
+        int cx = (getWidth() - ANCHO) / 2;
+        int cy = (getHeight() - ALTO) / 2;
 
         g2.setColor(COLOR_SOMBRA);
         g2.fillRoundRect(cx + 5, cy + 5, ANCHO, ALTO, ARCO, ARCO);
@@ -74,15 +85,34 @@ public class UIDescarte extends JPanel implements IComponent{
     }
 
     private Color obtenerColorAwt(String colorCarta) {
-        if (colorCarta == null) return Color.WHITE;
+        if (colorCarta == null) {
+            return Color.WHITE;
+        }
         return switch (colorCarta.toUpperCase()) {
-            case "ROJO" -> new Color(255, 85, 85);
-            case "AZUL" -> new Color(85, 85, 255);
-            case "VERDE" -> new Color(85, 255, 85);
-            case "AMARILLO" -> new Color(255, 215, 0);
-            default -> Color.DARK_GRAY;
+            case "ROJO" ->
+                new Color(255, 85, 85);
+            case "AZUL" ->
+                new Color(85, 85, 255);
+            case "VERDE" ->
+                new Color(85, 255, 85);
+            case "AMARILLO" ->
+                new Color(255, 215, 0);
+            default ->
+                Color.DARK_GRAY;
         };
     }
 
-    @Override public void execute() {}
+    public void setOnCartaSpinJugada(Runnable callback) {
+        this.onCartaSpinJugada = callback;
+
+    }
+
+    public boolean isCartaTopeSpin() {
+        return cartaTope != null && cartaTope.getTipoCarta() != null && cartaTope.getTipoCarta().equalsIgnoreCase("NUMERO_SPIN");
+
+    }
+
+    @Override
+    public void execute() {
+    }
 }
