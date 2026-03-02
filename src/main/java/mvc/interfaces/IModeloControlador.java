@@ -23,4 +23,6 @@ public interface IModeloControlador {
      * Girar ruleta.
      */
     void girarRuleta();
+
+    public void gritarUno();
 }

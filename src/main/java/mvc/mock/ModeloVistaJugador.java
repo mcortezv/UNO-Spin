@@ -1,6 +1,7 @@
 package mvc.mock;
 import dto.CartaDTO;
 import dto.JugadorDTO;
+import mvc.Modelo;
 import mvc.interfaces.IModeloControlador;
 import mvc.interfaces.IModeloLectura;
 import mvc.interfaces.ISuscriptor;
@@ -14,7 +15,7 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
     private IModeloControlador modeloControlador;
     private int vistaJugador;
 
-    public ModeloVistaJugador(int vistaJugador, ModeloMock modelo) {
+    public ModeloVistaJugador(int vistaJugador, Modelo modelo) {
         this.vistaJugador = vistaJugador;
         this.modeloLectura = modelo;
         this.modeloControlador = modelo;
@@ -33,13 +34,20 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
 
     @Override
     public void pedirCarta() {
-        ((ModeloMock) modeloControlador).pedirCartaMock(vistaJugador);
+        if (isTurnoActivo()) {
+            modeloControlador.pedirCarta();
+        }
         notifyObservers();
     }
 
     @Override
     public void girarRuleta() {
         modeloControlador.girarRuleta();
+    }
+
+    @Override
+    public void gritarUno() {
+        modeloControlador.gritarUno();
     }
 
 
@@ -50,7 +58,7 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
 
     @Override
     public List<CartaDTO> getManoJugador() {
-        return ((ModeloMock) modeloLectura).getManoJugadorEspecifico(vistaJugador);
+        return modeloLectura.getManoJugadorEspecifico(vistaJugador);
     }
 
     @Override
@@ -75,12 +83,22 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
 
     @Override
     public boolean isTurnoActivo() {
-        return ((ModeloMock) modeloLectura).isTurnoActivoMock(vistaJugador);
+        return ((Modelo) modeloLectura).isTurnoActivoEspecifico(vistaJugador);
     }
 
     @Override
     public boolean isSpinActivo() {
         return modeloLectura.isSpinActivo();
+    }
+
+    @Override
+    public List<CartaDTO> getManoJugadorEspecifico(int indiceJugador) {
+        return List.of();
+    }
+
+    @Override
+    public boolean isTurnoActivoEspecifico(int indiceJugador) {
+        return false;
     }
 
     public void subscribe(ISuscriptor suscriptor) {
