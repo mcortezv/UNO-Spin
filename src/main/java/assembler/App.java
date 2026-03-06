@@ -23,7 +23,7 @@ public class App {
     public static void main(String[] args) {
         IDominio dominio = new Partida();
         List<Carta> manoSebas = new ArrayList<>();
-        manoSebas.add(new Carta("ROJO", 2, TipoCarta.NUMERO_SPIN, 2));
+        manoSebas.add(new Carta("ROJO", 2, TipoCarta.NUMERICA, 2));
         manoSebas.add(new Carta("ROJO", 3, TipoCarta.NUMERO_SPIN, 3));
 
         List<Carta> manoGuasave = new ArrayList<>();
