@@ -15,4 +15,8 @@ public interface IModeloControlador {
     void gritarUno();
 
     void limpiarEventoRuleta();
+
+    void reconocerEvento(int indiceJugador);
+
+    void avanzarPasoEvento();
 }
