@@ -16,6 +16,9 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
     private IModeloLectura modeloLectura;
     private IModeloControlador modeloControlador;
     private int vistaJugador;
+    private boolean eventoYaMostrado = false;
+    private TipoEventoRuleta ultimoEventoVisto = null;
+    private int ultimoPasoVisto = 0;
 
     public ModeloVistaJugador(int vistaJugador, Modelo modelo) {
         this.vistaJugador = vistaJugador;
@@ -105,12 +108,35 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
 
     @Override
     public TipoEventoRuleta getEventoRuletaActual() {
+        if (eventoYaMostrado) {
+            return null;
+        }
         return modeloLectura.getEventoRuletaActual();
     }
 
     @Override
+    public int getPasoEventoActual() {
+        return modeloLectura.getPasoEventoActual();
+    }
+
+    @Override
     public void limpiarEventoRuleta() {
-        modeloControlador.limpiarEventoRuleta();
+        eventoYaMostrado = true;
+        modeloControlador.reconocerEvento(vistaJugador);
+    }
+
+    @Override
+    public void reconocerEvento(int indiceJugador) {
+        modeloControlador.reconocerEvento(indiceJugador);
+    }
+
+    @Override
+    public void avanzarPasoEvento() {
+        modeloControlador.avanzarPasoEvento();
+    }
+
+    public void marcarEventoMostrado() {
+        eventoYaMostrado = true;
     }
 
     public void subscribe(ISuscriptor suscriptor) {
@@ -125,6 +151,15 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
 
     @Override
     public void update(IModeloLectura modelo) {
+        TipoEventoRuleta eventoActual = modeloLectura.getEventoRuletaActual();
+        int pasoActual = modeloLectura.getPasoEventoActual();
+
+        if (eventoActual != ultimoEventoVisto || pasoActual != ultimoPasoVisto) {
+            eventoYaMostrado = false;
+            ultimoEventoVisto = eventoActual;
+            ultimoPasoVisto = pasoActual;
+        }
+
         notifyObservers();
     }
 }

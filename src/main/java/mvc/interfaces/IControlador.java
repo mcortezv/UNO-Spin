@@ -18,4 +18,6 @@ public interface IControlador {
     void onSpinCompletado();
 
     void onResultadoEvento(TipoEventoRuleta evento, Object resultado);
+
+    void onReconocerEvento();
 }

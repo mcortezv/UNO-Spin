@@ -48,4 +48,9 @@ public class Controlador implements IControlador {
         System.out.println("Evento: " + evento + " | Resultado: " + resultado);
         modelo.limpiarEventoRuleta();
     }
+
+    @Override
+    public void onReconocerEvento() {
+        modelo.limpiarEventoRuleta();
+    }
 }

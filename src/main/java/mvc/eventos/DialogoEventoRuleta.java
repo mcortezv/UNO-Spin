@@ -6,6 +6,7 @@ import java.awt.*;
 public abstract class DialogoEventoRuleta extends JDialog {
     protected JPanel panelContenido;
     protected Object resultado;
+    protected boolean soloLectura = false;
 
     public DialogoEventoRuleta(Frame owner, String titulo) {
         super(owner, true);
@@ -54,7 +55,9 @@ public abstract class DialogoEventoRuleta extends JDialog {
 
         JButton btnAceptar = crearBotonAceptar();
         btnAceptar.addActionListener(e -> {
-            alAceptar();
+            if (!soloLectura) {
+                alAceptar();
+            }
             dispose();
         });
         JPanel panelBoton = new JPanel();
@@ -99,4 +102,8 @@ public abstract class DialogoEventoRuleta extends JDialog {
     }
 
     public Object getResultado() { return resultado; }
+
+    public void setSoloLectura(boolean soloLectura) {
+        this.soloLectura = soloLectura;
+    }
 }
