@@ -12,7 +12,9 @@ import dto.CartaDTO;
 import dominio.enums.TipoEventoRuleta;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The type Modelo.
@@ -21,10 +23,14 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     private IDominio dominio;
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
     private boolean botonUnoPresionado = false;
-    private TipoEventoRuleta eventoRuletaActual; // ← AGREGADO
+    private TipoEventoRuleta eventoRuletaActual;
+    int pasoEventoActual = 0;
+    Set<Integer> jugadoresQueReconocieron = new HashSet<>();
+    int totalJugadores;
 
     public Modelo(IDominio dominio) {
         this.dominio = dominio;
+        this.totalJugadores = dominio.getJugadores().size();
     }
 
     @Override
@@ -75,6 +81,8 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     public void girarRuleta() {
         try {
             eventoRuletaActual = dominio.procesarGiroRuleta();
+            pasoEventoActual = 1;
+            jugadoresQueReconocieron.clear();
             notifyObservers();
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -87,8 +95,31 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     }
 
     @Override
+    public int getPasoEventoActual() {
+        return pasoEventoActual;
+    }
+
+    @Override
     public void limpiarEventoRuleta() {
         this.eventoRuletaActual = null;
+        pasoEventoActual = 0;
+        jugadoresQueReconocieron.clear();
+    }
+
+    @Override
+    public void reconocerEvento(int indiceJugador) {
+        jugadoresQueReconocieron.add(indiceJugador);
+        if(jugadoresQueReconocieron.size() == this.totalJugadores) {
+            limpiarEventoRuleta();
+            notifyObservers();
+        }
+    }
+
+    @Override
+    public void avanzarPasoEvento() {
+        pasoEventoActual++;
+        jugadoresQueReconocieron.clear();
+        notifyObservers();
     }
 
     @Override

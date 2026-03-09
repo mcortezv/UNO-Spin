@@ -28,4 +28,6 @@ public interface IModeloLectura {
      boolean isTurnoActivoEspecifico(int indiceJugador);
 
      TipoEventoRuleta getEventoRuletaActual();
+
+     int getPasoEventoActual();
 }
