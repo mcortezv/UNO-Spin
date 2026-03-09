@@ -177,11 +177,21 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
 
     private void mostrarDialogoEvento(TipoEventoRuleta evento, IModeloLectura modelo) {
         SwingUtilities.invokeLater(() -> {
+            boolean esTurnoPropio = modelo.isTurnoActivo();
             mvc.eventos.DialogoEventoRuleta dialogo = FabricaDialogosEvento.crear(evento, this, modelo);
+
+            if (!esTurnoPropio) {
+                dialogo.setSoloLectura(true);
+            }
+
             dialogo.setVisible(true);
 
-            Object resultado = dialogo.getResultado();
-            controlador.onResultadoEvento(evento, resultado);
+            if (esTurnoPropio) {
+                Object resultado = dialogo.getResultado();
+                controlador.onResultadoEvento(evento, resultado);
+            } else {
+                controlador.onReconocerEvento();
+            }
         });
     }
 
