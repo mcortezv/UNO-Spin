@@ -1,7 +1,7 @@
 package mvc.mock;
+
 import dominio.Carta;
 import dominio.Jugador;
-import dominio.enums.EstadoPartida;
 import dominio.enums.TipoCarta;
 import dominio.enums.TipoEventoRuleta;
 import dto.JugadorDTO;
@@ -12,9 +12,9 @@ import mvc.interfaces.IModeloLectura;
 import mvc.interfaces.ISuscriptor;
 import dto.CartaDTO;
 import dto.EventoRuletaDTO;
+
 import java.util.ArrayList;
 import java.util.List;
-import mappers.EventoRuletaMapper;
 
 public class ModeloMock implements IModeloControlador, IModeloLectura {
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
@@ -37,6 +37,21 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     public List<CartaDTO> getManoJugadorEspecifico(int indiceJugador) {
         return CartaMapper.toDTO(partidaMock.getJugadores().get(indiceJugador).getMano().getCartas());
+    }
+
+    @Override
+    public boolean isTurnoActivoEspecifico(int indiceJugador) {
+        return false;
+    }
+
+    @Override
+    public TipoEventoRuleta getEventoRuletaActual() {
+        return null;
+    }
+
+    @Override
+    public int getPasoEventoActual() {
+        return 0;
     }
 
     @Override
@@ -72,11 +87,7 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
                 }
             }
             partidaMock.getTablero().getDescarte().getCartas().add(c);
-            if(c.getTipoCarta() == TipoCarta.NUMERO_SPIN){
-                partidaMock.setEstadoPartida(EstadoPartida.GIRO_PENDIENTE);
-            } else{
-                partidaMock.avanzarTurno();
-            }
+            partidaMock.avanzarTurno();
             notifyObservers();
             return true;
         }
@@ -85,7 +96,6 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     @Override
     public void pedirCarta() {
-
     }
 
     public void pedirCartaMock(int indiceJugador) {
@@ -96,14 +106,25 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     @Override
     public EventoRuletaDTO girarRuleta() {
-        try{
-           TipoEventoRuleta evento= partidaMock.procesarGiroRuleta();
-           return EventoRuletaMapper.toDTO(evento);
-        } catch(Exception e){
-            return null;
-        }
-        
+        return null;
     }
+
+    @Override
+    public void gritarUno() {
+    }
+
+    @Override
+    public void limpiarEventoRuleta() {
+    }
+
+    @Override
+    public void reconocerEvento(int indiceJugador) {
+    }
+
+    @Override
+    public void avanzarPasoEvento() {
+    }
+
 
     @Override
     public boolean isTurnoActivo() {

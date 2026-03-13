@@ -1,4 +1,5 @@
 package mvc.mock;
+
 import dto.CartaDTO;
 import dto.EventoRuletaDTO;
 import dto.JugadorDTO;
@@ -46,7 +47,7 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
 
     @Override
     public EventoRuletaDTO girarRuleta() {
-        EventoRuletaDTO eventoDTO= modeloControlador.girarRuleta();
+        EventoRuletaDTO eventoDTO = modeloControlador.girarRuleta();
         notifyObservers();
         return eventoDTO;
     }
