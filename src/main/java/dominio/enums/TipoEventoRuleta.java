@@ -4,6 +4,11 @@ package dominio.enums;
  * The enum Tipo evento ruleta.
  */
 public enum TipoEventoRuleta {
+
+    ELEGIR_COLOR,
+    DESCARTAR_POR_NUMERO,
+    DESCARTAR_CARTA,
+
     /**
      * Casi uno tipo evento ruleta.
      */
