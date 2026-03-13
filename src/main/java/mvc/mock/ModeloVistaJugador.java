@@ -136,6 +136,11 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
         modeloControlador.avanzarPasoEvento();
     }
 
+    @Override
+    public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {
+
+    }
+
     public void marcarEventoMostrado() {
         eventoYaMostrado = true;
     }

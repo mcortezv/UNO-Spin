@@ -13,13 +13,12 @@ import java.util.List;
 public abstract class DialogoCartas extends DialogoEventoRuleta {
 
     protected List<CartaDTO> cartas;
-
     protected int cartaSeleccionadaIdx = -1;
     private final boolean seleccionable;
 
     public DialogoCartas(Frame owner, String titulo,
                          List<CartaDTO> cartas, boolean seleccionable) {
-        super(owner, "");
+        super(owner, titulo);
         this.cartas = cartas;
         this.seleccionable = seleccionable;
     }
@@ -55,4 +54,3 @@ public abstract class DialogoCartas extends DialogoEventoRuleta {
         return panel;
     }
 }
-

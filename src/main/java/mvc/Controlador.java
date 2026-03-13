@@ -45,12 +45,22 @@ public class Controlador implements IControlador {
 
     @Override
     public void onResultadoEvento(TipoEventoRuleta evento, Object resultado) {
-        System.out.println("Evento: " + evento + " | Resultado: " + resultado);
-        modelo.limpiarEventoRuleta();
+        System.out.println("Enviando evento al modelo: " + evento + " | Resultado: " + resultado);
+        modelo.aplicarEventoRuleta(evento, resultado);
     }
 
     @Override
     public void onReconocerEvento() {
         modelo.limpiarEventoRuleta();
+    }
+
+    @Override
+    public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {
+
+    }
+
+    @Override
+    public void avanzarTurno() {
+
     }
 }

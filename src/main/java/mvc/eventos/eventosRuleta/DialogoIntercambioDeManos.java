@@ -1,7 +1,6 @@
 package mvc.eventos.eventosRuleta;
 
 import mvc.eventos.DialogoEventoRuleta;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -9,12 +8,11 @@ public class DialogoIntercambioDeManos extends DialogoEventoRuleta {
 
     public DialogoIntercambioDeManos(Frame owner) {
         super(owner, "¡INTERCAMBIO DE MANOS!");
+        construirDialogo("¡INTERCAMBIO DE MANOS!");
     }
 
     @Override
-    protected String obtenerDescripcion() {
-        return "TODOS LOS JUGADORES PASAN SUS<br>CARTAS AL JUGADOR DE SU IZQUIERDA";
-    }
+    protected String obtenerDescripcion() { return "TODOS LOS JUGADORES PASAN SUS<br>CARTAS AL JUGADOR DE SU IZQUIERDA"; }
 
     @Override
     protected JPanel crearContenidoCentral() {

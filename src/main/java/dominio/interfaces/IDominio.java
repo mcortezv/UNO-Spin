@@ -28,4 +28,6 @@ public interface IDominio {
     int getIndiceJugadorActual();
     EstadoPartida getEstadoPartida();
     void gritarUno();
+    void aplicarEfectoRuleta(TipoEventoRuleta evento, Object resultado);
+    void avanzarTurno();
 }

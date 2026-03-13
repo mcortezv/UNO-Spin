@@ -13,10 +13,9 @@ public abstract class DialogoEventoRuleta extends JDialog {
         setUndecorated(true);
         setSize(420, 280);
         setLocationRelativeTo(owner);
-        construirDialogo(titulo);
     }
 
-    private void construirDialogo(String titulo) {
+    protected void construirDialogo(String titulo) {
         JPanel panelPrincipal = new JPanel();
         panelPrincipal.setBackground(new Color(255, 255, 255, 240));
         panelPrincipal.setLayout(new BorderLayout(10, 10));
@@ -38,28 +37,28 @@ public abstract class DialogoEventoRuleta extends JDialog {
         if (obtenerDescripcion() != null) {
             JLabel desc = new JLabel(
                     "<html><center>" + obtenerDescripcion() + "</center></html>",
-                    SwingConstants.CENTER
-            );
-            desc.setFont(new Font("Arial", Font.PLAIN, 11));
-            desc.setForeground(new Color(100, 100, 100));
+                    SwingConstants.CENTER);
+            desc.setFont(new Font("Arial", Font.PLAIN, 14));
             desc.setAlignmentX(CENTER_ALIGNMENT);
-            centro.add(Box.createVerticalStrut(4));
+            centro.add(Box.createVerticalStrut(10));
             centro.add(desc);
         }
 
-        centro.add(Box.createVerticalStrut(10));
-        panelContenido.setAlignmentX(CENTER_ALIGNMENT);
+        centro.add(Box.createVerticalStrut(15));
         centro.add(panelContenido);
 
         panelPrincipal.add(centro, BorderLayout.CENTER);
 
         JButton btnAceptar = crearBotonAceptar();
         btnAceptar.addActionListener(e -> {
-            if (!soloLectura) {
-                alAceptar();
+            alAceptar();
+            if (soloLectura || resultado != null) {
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Por favor selecciona una opción antes de aceptar.");
             }
-            dispose();
         });
+
         JPanel panelBoton = new JPanel();
         panelBoton.setOpaque(false);
         panelBoton.add(btnAceptar);
@@ -101,7 +100,9 @@ public abstract class DialogoEventoRuleta extends JDialog {
         return btn;
     }
 
-    public Object getResultado() { return resultado; }
+    public Object getResultado() {
+        return resultado;
+    }
 
     public void setSoloLectura(boolean soloLectura) {
         this.soloLectura = soloLectura;
