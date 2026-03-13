@@ -11,7 +11,7 @@ public abstract class DialogoTablaJugadores extends DialogoEventoRuleta {
     protected List<String> nombresJugadores;
 
     public DialogoTablaJugadores(Frame owner, String titulo, List<String> jugadores) {
-        super(owner, "");
+        super(owner, titulo);
         this.nombresJugadores = jugadores;
     }
 
@@ -35,4 +35,3 @@ public abstract class DialogoTablaJugadores extends DialogoEventoRuleta {
 
     protected abstract JComponent crearContenidoJugador(int indice);
 }
-

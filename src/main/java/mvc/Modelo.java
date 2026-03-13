@@ -9,7 +9,7 @@ import mvc.interfaces.IModeloLectura;
 import mvc.interfaces.ISuscriptor;
 import dominio.Carta;
 import dto.CartaDTO;
-import dto.EventoRuletaDTO; // <-- Faltaba importar esto
+import dto.EventoRuletaDTO;
 import dominio.enums.TipoEventoRuleta;
 
 import java.util.ArrayList;
@@ -127,6 +127,16 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     }
 
     @Override
+    public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {
+        this.eventoRuletaActual = null;
+        if (resultado != null || evento == TipoEventoRuleta.INTERCAMBIO_DE_MANOS || evento == TipoEventoRuleta.GUERRA || evento == TipoEventoRuleta.CASI_UNO) {
+            dominio.aplicarEfectoRuleta(evento, resultado);
+            dominio.avanzarTurno();
+        }
+        notifyObservers();
+    }
+
+    @Override
     public List<CartaDTO> getDescarte() {
         return CartaMapper.toDTO(dominio.getTablero().getDescarte().getCartas());
     }
@@ -162,7 +172,8 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public boolean isSpinActivo() {
-        return dominio.getEstadoPartida() == EstadoPartida.GIRO_PENDIENTE;
+        return dominio.getEstadoPartida() == EstadoPartida.GIRO_PENDIENTE
+                && this.eventoRuletaActual == null;
     }
 
     public void subscribe(ISuscriptor suscriptor) {

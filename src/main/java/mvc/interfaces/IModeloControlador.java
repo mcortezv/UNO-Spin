@@ -1,5 +1,6 @@
 package mvc.interfaces;
 
+import dominio.enums.TipoEventoRuleta;
 import dto.CartaDTO;
 import dto.EventoRuletaDTO;
 
@@ -21,4 +22,6 @@ public interface IModeloControlador {
     void reconocerEvento(int indiceJugador);
 
     void avanzarPasoEvento();
+
+    void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado);
 }

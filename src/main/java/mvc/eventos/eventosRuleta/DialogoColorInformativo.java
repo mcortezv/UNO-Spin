@@ -10,7 +10,7 @@ public abstract class DialogoColorInformativo extends DialogoEventoRuleta {
     private final Color colorMostrar;
 
     public DialogoColorInformativo(Frame owner, String titulo, Color color) {
-        super(owner, "");
+        super(owner, titulo);
         this.colorMostrar = color;
     }
 
@@ -36,4 +36,3 @@ public abstract class DialogoColorInformativo extends DialogoEventoRuleta {
         return panel;
     }
 }
-
