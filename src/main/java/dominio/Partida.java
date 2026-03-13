@@ -1,8 +1,8 @@
 package dominio;
+
 import dominio.enums.EstadoPartida;
 import dominio.enums.TipoEventoRuleta;
 import dominio.interfaces.IDominio;
-import java.awt.*;
 import java.util.List;
 
 /**
@@ -14,11 +14,13 @@ public class Partida implements IDominio {
     private int indiceJugadorActual;
     private boolean sentidoHorario;
     private Tablero tablero;
+    private boolean unoGritado = false;
 
     /**
      * Instantiates a new Partida.
      */
-    public Partida() {}
+    public Partida() {
+    }
 
     /**
      * Instantiates a new Partida.
@@ -28,7 +30,8 @@ public class Partida implements IDominio {
      * @param jugadores           the jugadores
      * @param sentidoHorario      the sentido horario
      */
-    public Partida(EstadoPartida estadoPartida, int indiceJugadorActual, List<Jugador> jugadores, boolean sentidoHorario) {
+    public Partida(EstadoPartida estadoPartida, int indiceJugadorActual, List<Jugador> jugadores,
+            boolean sentidoHorario) {
         this.estadoPartida = estadoPartida;
         this.indiceJugadorActual = indiceJugadorActual;
         this.jugadores = jugadores;
@@ -107,12 +110,44 @@ public class Partida implements IDominio {
         this.sentidoHorario = sentidoHorario;
     }
 
+    public boolean aplicarJugada(Carta c) {
+        if (tablero.getDescarte().validarCartaEntrante(c)) {
+            Jugador jugadorActual = jugadores.get(indiceJugadorActual);
+            List<Carta> cartasMano = jugadorActual.getMano().getCartas();
 
+            for (int i = 0; i < cartasMano.size(); i++) {
+                Carta cartaEnMano = cartasMano.get(i);
+                if (cartaEnMano.getColor().equals(c.getColor()) && cartaEnMano.getValor() == c.getValor()) {
+                    cartasMano.remove(i);
+                    break;
+                }
+            }
+            tablero.getDescarte().getCartas().add(c);
 
+            if (c.getTipoCarta() == dominio.enums.TipoCarta.NUMERO_SPIN) {
+                this.estadoPartida = EstadoPartida.GIRO_PENDIENTE;
+            } else if (c.getTipoCarta() == dominio.enums.TipoCarta.REVERSA) {
+                this.sentidoHorario = !this.sentidoHorario;
+                avanzarTurno();
+            } else if (c.getTipoCarta() == dominio.enums.TipoCarta.BLOQUEO) {
+                avanzarTurno();
+                avanzarTurno();
+            } else {
+                avanzarTurno();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void gritarUno() {
+        this.unoGritado = true;
+    }
 
     @Override
     public boolean validarJugada(Carta carta) {
-        return false;
+        return tablero.getDescarte().validarCartaEntrante(carta);
     }
 
     /**
@@ -134,10 +169,10 @@ public class Partida implements IDominio {
                 aplicarCasiUno(jugador);
                 break;
             case ROBAR_HASTA_AZUL:
-                robarHastaColor(jugador, ColorCarta.AZUL);
+                robarHastaColor(jugador, "AZUL");
                 break;
             case ROBAR_HASTA_ROJO:
-                robarHastaColor(jugador, ColorCarta.ROJO);
+                robarHastaColor(jugador, "ROJO");
                 break;
             case INTERCAMBIO_DE_MANOS:
                 intercambiarManos();
@@ -146,10 +181,16 @@ public class Partida implements IDominio {
                 aplicarGuerra();
                 break;
             case MOSTRAR_LA_MANO:
-
-
+                break;
             case PUNTUACION_MAS_BAJA:
+                aplicarPuntuacionMasBaja();
+                break;
             case DESCARTAR_POR_COLOR:
+                aplicarDescartarPorColor(jugador);
+                break;
+            case ELEGIR_COLOR:
+            case DESCARTAR_POR_NUMERO:
+            case DESCARTAR_CARTA:
                 break;
         }
         if (evento != TipoEventoRuleta.GUERRA && evento != TipoEventoRuleta.DESCARTAR_POR_COLOR) {
@@ -167,12 +208,12 @@ public class Partida implements IDominio {
         }
     }
 
-    private void robarHastaColor(Jugador jugador, Color colorObjetivo) throws Exception {
+    private void robarHastaColor(Jugador jugador, String colorObjetivo) throws Exception {
         boolean encontroColor = false;
         while (!encontroColor) {
             Carta cartaRobada = tablero.getMazo().robarCarta();
             jugador.getMano().getCartas().add(cartaRobada);
-            if (cartaRobada.getColor() != null && cartaRobada.getColor().equalsIgnoreCase(String.valueOf(colorObjetivo))) {
+            if (cartaRobada.getColor() != null && cartaRobada.getColor().equalsIgnoreCase(colorObjetivo)) {
                 encontroColor = true;
             }
         }
@@ -196,20 +237,20 @@ public class Partida implements IDominio {
         }
     }
 
-    private void aplicarGuerra(){
+    private void aplicarGuerra() {
         int numeroGanador = -1;
 
-        for(Jugador jugador : jugadores){
+        for (Jugador jugador : jugadores) {
             Carta cartaMasAlta = jugador.getMano().getHighest();
-            if(cartaMasAlta != null && cartaMasAlta.getNumero() > numeroGanador){
+            if (cartaMasAlta != null && cartaMasAlta.getNumero() > numeroGanador) {
                 numeroGanador = cartaMasAlta.getNumero();
             }
         }
 
-        if(numeroGanador != -1){
-            for(Jugador jugador : jugadores){
+        if (numeroGanador != -1) {
+            for (Jugador jugador : jugadores) {
                 Carta carta = jugador.getMano().getHighest();
-                if(carta != null && carta.getNumero() == numeroGanador){
+                if (carta != null && carta.getNumero() == numeroGanador) {
                     List<Carta> cartasDescartadas = jugador.getMano().descartarCartasPorNumero(numeroGanador);
                     tablero.getDescarte().getCartas().addAll(cartasDescartadas);
                 }
@@ -228,9 +269,69 @@ public class Partida implements IDominio {
     /**
      * Avanzar turno.
      */
-    public void avanzarTurno(){
+    public void avanzarTurno() {
         if (!jugadores.isEmpty()) {
-            indiceJugadorActual = (indiceJugadorActual + 1) % jugadores.size();
+            int n = jugadores.size();
+            if (sentidoHorario) {
+                indiceJugadorActual = (indiceJugadorActual + 1) % n;
+            } else {
+                indiceJugadorActual = (indiceJugadorActual - 1 + n) % n;
+            }
         }
+    }
+
+    private void aplicarDescartarPorColor(Jugador jugador) {
+        Carta cartaTope = tablero.getDescarte().getUltimaCarta();
+        if (cartaTope == null)
+            return;
+        String colorTope = cartaTope.getColor();
+        if (colorTope == null || colorTope.equalsIgnoreCase("NEGRO")) {
+            return;
+        }
+        List<Carta> mano = jugador.getMano().getCartas();
+        List<Carta> cartasADescartar = new java.util.ArrayList<>();
+        for (Carta c : mano) {
+            if (c.getColor() != null && c.getColor().equalsIgnoreCase(colorTope)) {
+                cartasADescartar.add(c);
+            }
+        }
+        mano.removeAll(cartasADescartar);
+        tablero.getDescarte().getCartas().addAll(cartasADescartar);
+    }
+
+    private void aplicarPuntuacionMasBaja() {
+        if (jugadores.isEmpty())
+            return;
+        Jugador jugadorMenosCartas = jugadores.get(0);
+        for (Jugador j : jugadores) {
+            if (j.getMano().getCartas().size() < jugadorMenosCartas.getMano().getCartas().size()) {
+                jugadorMenosCartas = j;
+            }
+        }
+        try {
+            Carta cartaCastigo = tablero.getMazo().robarCarta();
+            jugadorMenosCartas.getMano().getCartas().add(cartaCastigo);
+        } catch (Exception e) {
+            System.out.println("El mazo se quedó sin cartas durante el evento Puntuación Más Baja.");
+        }
+    }
+
+    public void robarCartaJugadorActual() {
+        try {
+            Carta cartaRobada = tablero.getMazo().robarCarta();
+            Jugador jugadorActual = jugadores.get(indiceJugadorActual);
+            jugadorActual.getMano().getCartas().add(cartaRobada);
+            avanzarTurno();
+        } catch (Exception e) {
+            System.out.println("No hay más cartas en el mazo: " + e.getMessage());
+        }
+    }
+
+    public void iniciarPartida(List<Jugador> jugadoresIniciales, Tablero tableroInicial) {
+        this.jugadores = jugadoresIniciales;
+        this.tablero = tableroInicial;
+        this.estadoPartida = EstadoPartida.EN_PROCESO;
+        this.indiceJugadorActual = 0;
+        this.sentidoHorario = true;
     }
 }
