@@ -32,7 +32,7 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     @Override
     public List<CartaDTO> getManoJugador() {
-        return null;
+        return new  ArrayList<>();
     }
 
     public List<CartaDTO> getManoJugadorEspecifico(int indiceJugador) {
@@ -123,6 +123,11 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     @Override
     public void avanzarPasoEvento() {
+    }
+
+    @Override
+    public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {
+
     }
 
 
