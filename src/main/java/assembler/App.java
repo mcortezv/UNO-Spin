@@ -41,6 +41,12 @@ public class App {
 
         List<Carta> cartasMazo = new ArrayList<>();
         cartasMazo.add(new Carta("AZUL", 9, TipoCarta.NUMERICA, 9));
+        cartasMazo.add(new Carta("VERDE", 4, TipoCarta.NUMERICA, 4));
+        cartasMazo.add(new Carta("AMARILLO", 2, TipoCarta.NUMERICA, 2));
+        cartasMazo.add(new Carta("ROJO", 7, TipoCarta.NUMERICA, 7));
+        cartasMazo.add(new Carta("AZUL", 1, TipoCarta.NUMERICA, 1));
+        cartasMazo.add(new Carta("ROJO", 5, TipoCarta.NUMERICA, 5));
+        cartasMazo.add(new Carta("VERDE", 8, TipoCarta.NUMERICA, 8));
 
         Tablero tableroFalso = new Tablero(new Descarte(cartasDescarte), new Mazo(cartasMazo), new Ruleta());
 
