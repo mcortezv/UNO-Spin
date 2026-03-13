@@ -36,6 +36,14 @@ public class Jugador {
         this.puntos = puntos;
     }
 
+    public Jugador(String nombre, Mano mano, List<String> colorCarta, int puntos, int numeroAvatar) {
+        this.nombre = nombre;
+        this.mano = mano;
+        this.colorCarta = colorCarta;
+        this.puntos = puntos;
+        this.numeroAvatar = numeroAvatar;
+    }
+
     /**
      * Gets numero avatar.
      *

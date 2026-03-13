@@ -1,8 +1,13 @@
 package assembler;
+import dominio.*;
+import dominio.enums.TipoCarta;
+import dominio.interfaces.IDominio;
 import mvc.Controlador;
-import mvc.mock.ModeloMock;
+import mvc.Modelo;
 import mvc.UITurnoJugador;
 import mvc.mock.ModeloVistaJugador;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,9 +21,32 @@ public class App {
      * @param args the input arguments
      */
     public static void main(String[] args) {
-        //Modelo modelo = new Modelo();
+        IDominio dominio = new Partida();
+        List<Carta> manoSebas = new ArrayList<>();
+        manoSebas.add(new Carta("ROJO", 2, TipoCarta.NUMERICA, 2));
+        manoSebas.add(new Carta("ROJO", 3, TipoCarta.NUMERO_SPIN, 3));
 
-        ModeloMock modelo = new ModeloMock();
+        List<Carta> manoGuasave = new ArrayList<>();
+        manoGuasave.add(new Carta("AZUL", 8, TipoCarta.NUMERICA, 8));
+        manoGuasave.add(new Carta("AMARILLO", 1, TipoCarta.NUMERO_SPIN, 1));
+
+        Jugador j1 = new Jugador(1, new ArrayList<>(), 0, new Mano(manoSebas), "Sebas", 0);
+        Jugador j2 = new Jugador(2, new ArrayList<>(), 1, new Mano(manoGuasave), "Miss Guasave", 0);
+
+        List<Jugador> listaJugadores = new ArrayList<>();
+        listaJugadores.add(j1);
+        listaJugadores.add(j2);
+        List<Carta> cartasDescarte = new ArrayList<>();
+        cartasDescarte.add(new Carta("ROJO", 5, TipoCarta.NUMERICA, 5));
+
+        List<Carta> cartasMazo = new ArrayList<>();
+        cartasMazo.add(new Carta("AZUL", 9, TipoCarta.NUMERICA, 9));
+
+        Tablero tableroFalso = new Tablero(new Descarte(cartasDescarte), new Mazo(cartasMazo), new Ruleta());
+
+        dominio.iniciarPartida(listaJugadores, tableroFalso);
+
+        Modelo modelo = new Modelo(dominio);
 
         ModeloVistaJugador modeloSebas = new ModeloVistaJugador(0, modelo);
         ModeloVistaJugador modeloGuasave = new ModeloVistaJugador(1, modelo);
