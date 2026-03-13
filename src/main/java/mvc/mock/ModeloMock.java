@@ -19,7 +19,7 @@ import java.util.List;
 public class ModeloMock implements IModeloControlador, IModeloLectura {
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
 
-    private PartidaMock partidaMock;
+    private final PartidaMock partidaMock;
 
     public ModeloMock() {
         this.partidaMock = new PartidaMock();
