@@ -9,6 +9,7 @@ import mvc.interfaces.IModeloLectura;
 import mvc.interfaces.ISuscriptor;
 import dominio.Carta;
 import dto.CartaDTO;
+import dto.EventoRuletaDTO; // <-- Faltaba importar esto
 import dominio.enums.TipoEventoRuleta;
 
 import java.util.ArrayList;
@@ -78,14 +79,17 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     }
 
     @Override
-    public void girarRuleta() {
+    public EventoRuletaDTO girarRuleta() {
         try {
             eventoRuletaActual = dominio.procesarGiroRuleta();
             pasoEventoActual = 1;
             jugadoresQueReconocieron.clear();
             notifyObservers();
+            return null;
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            return null;
         }
     }
 
