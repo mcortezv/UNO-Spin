@@ -1,5 +1,7 @@
 package mvc.interfaces;
+
 import dto.CartaDTO;
+import dto.EventoRuletaDTO;
 
 /**
  * The interface Modelo controlador.
@@ -10,7 +12,7 @@ public interface IModeloControlador {
 
     void pedirCarta();
 
-    void girarRuleta();
+    EventoRuletaDTO girarRuleta();
 
     void gritarUno();
 
