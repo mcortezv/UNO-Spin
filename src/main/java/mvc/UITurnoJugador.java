@@ -13,9 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-/**
- * The type Ui turno jugador.
- */
 public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
 
     private static final int ancho_ventana = 1040;
@@ -40,7 +37,8 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     private final JPanel slotLeft;
     private final JPanel slotRight;
 
-    public UITurnoJugador(Controlador controlador, IModeloLectura modeloLectura, List<Integer> relative) {
+
+    public UITurnoJugador(IControlador controlador, IModeloLectura modeloLectura, List<Integer> relative) {
         super("UNO-SPIN");
         this.controlador = controlador;
         this.lectura = modeloLectura;
@@ -50,8 +48,8 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         this.tablero = new UITablero();
         this.mano = new UIMano();
         this.lblTurno = crearLabelTurno();
-        this.btnTirarCarta = new Button("Tirar Carta", new Color(45,45,45));
-        this.btnUno = new Button("UNO", new Color(185, 25,25));
+        this.btnTirarCarta = new Button("Tirar Carta", new Color(45, 45, 45));
+        this.btnUno = new Button("UNO", new Color(185, 25, 25));
         this.btnUno.setFont(new Font("Arial", Font.BOLD, 16));
 
         this.slotTop = crearSlot();
@@ -129,8 +127,10 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
             CartaDTO seleccionada = mano.getCartaSeleccionada();
             if (seleccionada != null) {
                 if (!controlador.jugarCarta(seleccionada)) {
-                    JOptionPane.showMessageDialog(this, "Carta no compatible");
+                    JOptionPane.showMessageDialog(this, "Carta no compatible con la cima del descarte.");
                 }
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecciona una carta primero.");
             }
         });
 
@@ -145,22 +145,23 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     }
 
     private void actualizarVista(IModeloLectura modelo) {
+        boolean miTurno    = modelo.isTurnoActivo();
+        boolean spinActivo = modelo.isSpinActivo();
+        boolean hayEvento  = modelo.getEventoRuletaActual() != null;
+        boolean puedeJugar = miTurno && !spinActivo && !hayEvento;
+
+        btnTirarCarta.setEnabled(puedeJugar);
         btnUno.setEnabled(true);
-        if (modelo.isTurnoActivo()) {
-            btnTirarCarta.setEnabled(true);
-            tablero.getMazo().setActive(true);
-            tablero.getRuleta().setActive(true);
-        } else {
-            btnTirarCarta.setEnabled(false);
-            tablero.getMazo().setActive(false);
-            tablero.getRuleta().setActive(false);
-        }
+        tablero.getMazo().setActive(puedeJugar);
+        tablero.getRuleta().setActive(false);
 
         lblTurno.setText("Turno: " + modelo.getNombreTurnoActual());
         mano.setCartas(modelo.getManoJugador());
+
         if (modelo.getCartaCima() != null) {
             tablero.setCartaCima(modelo.getCartaCima());
         }
+
         if (modelo.isSpinActivo() && !tablero.getRuleta().isGirando()) {
             tablero.getRuleta().girar();
         }
@@ -176,24 +177,23 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         }
     }
 
+
     private void mostrarDialogoEvento(TipoEventoRuleta evento, IModeloLectura modelo) {
-        SwingUtilities.invokeLater(() -> {
-            boolean esTurnoPropio = modelo.isTurnoActivo();
-            mvc.eventos.DialogoEventoRuleta dialogo = FabricaDialogosEvento.crear(evento, this, modelo);
+        boolean esTurnoPropio = modelo.isTurnoActivo();
+        mvc.eventos.DialogoEventoRuleta dialogo = FabricaDialogosEvento.crear(evento, this, modelo);
 
-            if (!esTurnoPropio) {
-                dialogo.setSoloLectura(true);
-            }
+        if (!esTurnoPropio) {
+            dialogo.setSoloLectura(true);
+        }
 
-            dialogo.setVisible(true);
+        dialogo.setVisible(true);
 
-            if (esTurnoPropio) {
-                Object resultado = dialogo.getResultado();
-                controlador.onResultadoEvento(evento, resultado);
-            } else {
-                controlador.onReconocerEvento();
-            }
-        });
+        if (esTurnoPropio) {
+            Object resultado = dialogo.getResultado();
+            controlador.onResultadoEvento(evento, resultado);
+        } else {
+            controlador.onReconocerEvento();
+        }
     }
 
     private void actualizarRival(List<JugadorDTO> rivales, int idx, JPanel slot, UIJugador.Posicion posicion) {
@@ -254,7 +254,8 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         setResizable(false);
     }
 
-    @Override public void execute() {}
+    @Override
+    public void execute() {}
 
     private static class PanelFondo extends JPanel {
         @Override

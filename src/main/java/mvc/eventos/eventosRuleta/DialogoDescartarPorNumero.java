@@ -13,22 +13,33 @@ public class DialogoDescartarPorNumero extends DialogoEventoRuleta {
     }
 
     @Override
-    protected String obtenerDescripcion() { return "TU MANO DESCARTARA TODAS LAS CARTAS DE ESE NUMERO"; }
+    protected String obtenerDescripcion() {
+        return "TU MANO DESCARTARA TODAS LAS CARTAS DE ESE NUMERO";
+    }
 
     @Override
     protected JPanel crearContenidoCentral() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 5));
         panel.setOpaque(false);
+
+        ButtonGroup grupo = new ButtonGroup();
         for (int i = 0; i <= 9; i++) {
             final int num = i;
-            JButton btn = new JButton(String.valueOf(i));
-            btn.setPreferredSize(new Dimension(35, 35));
-            btn.addActionListener(e -> numeroElegido = num);
+            JToggleButton btn = new JToggleButton(String.valueOf(i));
+            btn.setPreferredSize(new Dimension(38, 38));
+            btn.setFont(new Font("Arial", Font.BOLD, 14));
+            btn.addActionListener(e -> {
+                numeroElegido = num;
+                btn.setBackground(new Color(255, 200, 0));
+            });
+            grupo.add(btn);
             panel.add(btn);
         }
         return panel;
     }
 
     @Override
-    protected void alAceptar() { System.out.println("Descartando cartas con número: " + numeroElegido); }
+    protected void alAceptar() {
+        resultado = numeroElegido;
+    }
 }
