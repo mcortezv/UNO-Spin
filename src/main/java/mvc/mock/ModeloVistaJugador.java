@@ -14,9 +14,9 @@ import java.util.List;
 
 public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, ISuscriptor {
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
-    private IModeloLectura modeloLectura;
-    private IModeloControlador modeloControlador;
-    private int vistaJugador;
+    private final IModeloLectura modeloLectura;
+    private final IModeloControlador modeloControlador;
+    private final int vistaJugador;
     private boolean eventoYaMostrado = false;
     private TipoEventoRuleta ultimoEventoVisto = null;
     private int ultimoPasoVisto = 0;
@@ -30,11 +30,7 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
 
     @Override
     public boolean jugarCarta(CartaDTO carta) {
-        if (modeloControlador.jugarCarta(carta)) {
-            notifyObservers();
-            return true;
-        }
-        return false;
+        return modeloControlador.jugarCarta(carta);
     }
 
     @Override
@@ -42,20 +38,41 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
         if (isTurnoActivo()) {
             modeloControlador.pedirCarta();
         }
-        notifyObservers();
     }
 
     @Override
     public EventoRuletaDTO girarRuleta() {
-        EventoRuletaDTO eventoDTO = modeloControlador.girarRuleta();
-        notifyObservers();
-        return eventoDTO;
+        return modeloControlador.girarRuleta();
     }
 
     @Override
     public void gritarUno() {
         modeloControlador.gritarUno();
     }
+
+
+    @Override
+    public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {
+        eventoYaMostrado = true;
+        modeloControlador.aplicarEventoRuleta(evento, resultado);
+    }
+
+    @Override
+    public void limpiarEventoRuleta() {
+        eventoYaMostrado = true;
+        modeloControlador.reconocerEvento(vistaJugador);
+    }
+
+    @Override
+    public void reconocerEvento(int indiceJugador) {
+        modeloControlador.reconocerEvento(indiceJugador);
+    }
+
+    @Override
+    public void avanzarPasoEvento() {
+        modeloControlador.avanzarPasoEvento();
+    }
+
 
     @Override
     public List<CartaDTO> getDescarte() {
@@ -77,34 +94,46 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
         return modeloLectura.getNombreTurnoActual();
     }
 
+
     @Override
     public List<JugadorDTO> getJugadoresRivales() {
-        List<JugadorDTO> listaJugadoresRivales = modeloLectura.getJugadoresRivales();
-        if (vistaJugador == 0) {
-            return List.of(listaJugadoresRivales.get(1));
-        } else {
-            return List.of(listaJugadoresRivales.get(0));
+        List<JugadorDTO> todos = modeloLectura.getTodosLosJugadores();
+        List<JugadorDTO> rivales = new ArrayList<>();
+        for (int i = 0; i < todos.size(); i++) {
+            if (i != vistaJugador) {
+                rivales.add(todos.get(i));
+            }
         }
+        return rivales;
     }
+
+
+    @Override
+    public List<JugadorDTO> getTodosLosJugadores() {
+        return modeloLectura.getTodosLosJugadores();
+    }
+
 
     @Override
     public boolean isTurnoActivo() {
-        return ((Modelo) modeloLectura).isTurnoActivoEspecifico(vistaJugador);
+        return modeloLectura.isTurnoActivoEspecifico(vistaJugador);
     }
+
 
     @Override
     public boolean isSpinActivo() {
-        return modeloLectura.isSpinActivo();
+        return modeloLectura.isSpinActivo()
+                && modeloLectura.isTurnoActivoEspecifico(vistaJugador);
     }
 
     @Override
     public List<CartaDTO> getManoJugadorEspecifico(int indiceJugador) {
-        return List.of();
+        return modeloLectura.getManoJugadorEspecifico(indiceJugador);
     }
 
     @Override
     public boolean isTurnoActivoEspecifico(int indiceJugador) {
-        return false;
+        return modeloLectura.isTurnoActivoEspecifico(indiceJugador);
     }
 
     @Override
@@ -120,30 +149,6 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
         return modeloLectura.getPasoEventoActual();
     }
 
-    @Override
-    public void limpiarEventoRuleta() {
-        eventoYaMostrado = true;
-        modeloControlador.reconocerEvento(vistaJugador);
-    }
-
-    @Override
-    public void reconocerEvento(int indiceJugador) {
-        modeloControlador.reconocerEvento(indiceJugador);
-    }
-
-    @Override
-    public void avanzarPasoEvento() {
-        modeloControlador.avanzarPasoEvento();
-    }
-
-    @Override
-    public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {
-
-    }
-
-    public void marcarEventoMostrado() {
-        eventoYaMostrado = true;
-    }
 
     public void subscribe(ISuscriptor suscriptor) {
         this.suscriptores.add(suscriptor);

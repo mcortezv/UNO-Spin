@@ -18,7 +18,6 @@ import java.util.List;
 
 public class ModeloMock implements IModeloControlador, IModeloLectura {
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
-
     private final PartidaMock partidaMock;
 
     public ModeloMock() {
@@ -32,16 +31,17 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     @Override
     public List<CartaDTO> getManoJugador() {
-        return new  ArrayList<>();
+        return new ArrayList<>();
     }
 
+    @Override
     public List<CartaDTO> getManoJugadorEspecifico(int indiceJugador) {
         return CartaMapper.toDTO(partidaMock.getJugadores().get(indiceJugador).getMano().getCartas());
     }
 
     @Override
     public boolean isTurnoActivoEspecifico(int indiceJugador) {
-        return false;
+        return partidaMock.getIndiceJugadorActual() == indiceJugador;
     }
 
     @Override
@@ -66,17 +66,22 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     @Override
     public List<JugadorDTO> getJugadoresRivales() {
-        List<JugadorDTO> todosLosJugadores = new ArrayList<>();
+        return getTodosLosJugadores();
+    }
+
+    @Override
+    public List<JugadorDTO> getTodosLosJugadores() {
+        List<JugadorDTO> todos = new ArrayList<>();
         for (Jugador jugador : partidaMock.getJugadores()) {
-            todosLosJugadores.add(JugadorMapper.toDTO(jugador));
+            todos.add(JugadorMapper.toDTO(jugador));
         }
-        return todosLosJugadores;
+        return todos;
     }
 
     @Override
     public boolean jugarCarta(CartaDTO carta) {
         Carta c = CartaMapper.toEntity(carta);
-        if (partidaMock.getTablero().getDescarte().validarCartaEntrante(c)){
+        if (partidaMock.getTablero().getDescarte().validarCartaEntrante(c)) {
             Jugador jugadorActual = partidaMock.getJugadores().get(partidaMock.getIndiceJugadorActual());
             List<Carta> cartasMano = jugadorActual.getMano().getCartas();
             for (int i = 0; i < cartasMano.size(); i++) {
@@ -96,12 +101,6 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     @Override
     public void pedirCarta() {
-    }
-
-    public void pedirCartaMock(int indiceJugador) {
-        Carta carta = partidaMock.getTablero().getMazo().getCartas().getLast();
-        partidaMock.getTablero().getMazo().getCartas().removeLast();
-        partidaMock.getJugadores().get(indiceJugador).getMano().getCartas().add(carta);
     }
 
     @Override
@@ -127,17 +126,11 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     @Override
     public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {
-
     }
-
 
     @Override
     public boolean isTurnoActivo() {
         return false;
-    }
-
-    public boolean isTurnoActivoMock(int indiceJugador) {
-        return partidaMock.getIndiceJugadorActual() == indiceJugador;
     }
 
     @Override

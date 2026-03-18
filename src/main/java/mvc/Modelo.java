@@ -17,9 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * The type Modelo.
- */
 public class Modelo implements IModeloControlador, IModeloLectura {
     private IDominio dominio;
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
@@ -86,7 +83,6 @@ public class Modelo implements IModeloControlador, IModeloLectura {
             jugadoresQueReconocieron.clear();
             notifyObservers();
             return null;
-
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
@@ -113,7 +109,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     @Override
     public void reconocerEvento(int indiceJugador) {
         jugadoresQueReconocieron.add(indiceJugador);
-        if(jugadoresQueReconocieron.size() == this.totalJugadores) {
+        if (jugadoresQueReconocieron.size() == this.totalJugadores) {
             limpiarEventoRuleta();
             notifyObservers();
         }
@@ -126,13 +122,12 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         notifyObservers();
     }
 
+
     @Override
     public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {
         this.eventoRuletaActual = null;
-        if (resultado != null || evento == TipoEventoRuleta.INTERCAMBIO_DE_MANOS || evento == TipoEventoRuleta.GUERRA || evento == TipoEventoRuleta.CASI_UNO) {
-            dominio.aplicarEfectoRuleta(evento, resultado);
-            dominio.avanzarTurno();
-        }
+        dominio.aplicarEfectoRuleta(evento, resultado);
+        dominio.avanzarTurno();
         notifyObservers();
     }
 
@@ -163,6 +158,12 @@ public class Modelo implements IModeloControlador, IModeloLectura {
             todosLosJugadores.add(mappers.JugadorMapper.toDTO(jugador));
         }
         return todosLosJugadores;
+    }
+
+
+    @Override
+    public List<JugadorDTO> getTodosLosJugadores() {
+        return getJugadoresRivales();
     }
 
     @Override

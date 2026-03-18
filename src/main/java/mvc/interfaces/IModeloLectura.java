@@ -1,12 +1,9 @@
 package mvc.interfaces;
 import dto.CartaDTO;
 import dto.JugadorDTO;
-import dominio.enums.TipoEventoRuleta; // ← AGREGADO
+import dominio.enums.TipoEventoRuleta;
 import java.util.List;
 
-/**
- * The interface Modelo lectura.
- */
 public interface IModeloLectura {
 
      List<CartaDTO> getDescarte();
@@ -18,6 +15,8 @@ public interface IModeloLectura {
      String getNombreTurnoActual();
 
      List<JugadorDTO> getJugadoresRivales();
+
+     List<JugadorDTO> getTodosLosJugadores();
 
      boolean isTurnoActivo();
 
