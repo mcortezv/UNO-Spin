@@ -1,4 +1,5 @@
 package dominio.entidades;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class Mazo {
     /**
      * Instantiates a new Mazo.
      */
-    public Mazo() {}
+    public Mazo() {cartas= new ArrayList<>();}
 
     /**
      * Instantiates a new Mazo.

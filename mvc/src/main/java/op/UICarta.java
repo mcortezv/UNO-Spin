@@ -1,6 +1,5 @@
 package op;
 
-import dominio.entidades.ColorCarta;
 import dto.CartaDTO;
 import interfaces.IComponent;
 
@@ -104,7 +103,7 @@ public class UICarta extends JPanel implements IComponent {
     }
 
     private void pintarFondoColor(Graphics2D g2, int y) {
-        g2.setColor(ColorCarta.toAWT(carta.getColor()));
+        g2.setColor(op.ColorCarta.toAWT(carta.getColor()));
         g2.fillRoundRect(1, y + 1, ANCHO - 2, ALTO - 2, ARCO, ARCO);
     }
 
