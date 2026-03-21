@@ -1,4 +1,4 @@
-package dominio.enums;
+package dominio.entidades.enums;
 
 /**
  * The enum Tipo carta.

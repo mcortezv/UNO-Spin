@@ -1,7 +1,10 @@
 package mock;
-import dominio.*;
-import dominio.enums.EstadoPartida;
-import dominio.enums.TipoCarta;
+import dominio.entidades.Carta;
+import dominio.entidades.Jugador;
+import dominio.entidades.Mano;
+import dominio.entidades.Partida;
+import dominio.entidades.enums.EstadoPartida;
+import dominio.entidades.enums.TipoCarta;
 import java.util.ArrayList;
 import java.util.List;
 

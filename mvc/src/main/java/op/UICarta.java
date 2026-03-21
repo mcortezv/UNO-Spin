@@ -1,6 +1,6 @@
 package op;
 
-import dominio.ColorCarta;
+import dominio.entidades.ColorCarta;
 import dto.CartaDTO;
 import interfaces.IComponent;
 

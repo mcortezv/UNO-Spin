@@ -1,6 +1,6 @@
 package op;
 
-import dominio.enums.TipoEventoRuleta;
+import dominio.entidades.enums.TipoEventoRuleta;
 import dto.CartaDTO;
 import dto.JugadorDTO;
 import eventos.DialogoElegirColor;
