@@ -7,7 +7,7 @@ import dominio.enums.TipoEventoRuleta;
  */
 public interface IControlador {
 
-    boolean jugarCarta(CartaDTO carta);
+    void jugarCarta(CartaDTO carta);
 
     void onCartaJugada(String valorCarta);
 
