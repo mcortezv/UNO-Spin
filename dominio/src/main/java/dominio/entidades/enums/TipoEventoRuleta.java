@@ -3,7 +3,6 @@ package dominio.entidades.enums;
 public enum TipoEventoRuleta {
     CASI_UNO,
     DESCARTAR_POR_NUMERO,
-    DESCARTAR_CARTA,
     DESCARTAR_POR_COLOR,
     ROBAR_HASTA_AZUL,
     ROBAR_HASTA_ROJO,
