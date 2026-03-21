@@ -4,7 +4,7 @@
  */
 package dominio.mappers;
 
-import dominio.enums.TipoEventoRuleta;
+import dominio.entidades.enums.TipoEventoRuleta;
 import dto.EventoRuletaDTO;
 
 /**
@@ -17,8 +17,7 @@ public class EventoRuletaMapper {
         if(evento == null){
             return null;
         }
-        EventoRuletaDTO eventoDTO= new EventoRuletaDTO(evento.name());
-        return eventoDTO;   
+        return new EventoRuletaDTO(evento.name());
     }
-    
+
 }

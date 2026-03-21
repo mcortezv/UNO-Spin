@@ -1,5 +1,5 @@
-package dominio;
-import dominio.enums.TipoEventoRuleta;
+package dominio.entidades;
+import dominio.entidades.enums.TipoEventoRuleta;
 import java.util.Random;
 
 /**

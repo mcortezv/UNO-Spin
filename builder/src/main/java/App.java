@@ -1,5 +1,5 @@
-import dominio.*;
-import dominio.enums.TipoCarta;
+import dominio.entidades.*;
+import dominio.entidades.enums.TipoCarta;
 import dominio.interfaces.IDominio;
 import mock.ModeloVistaJugador;
 import mvc.Controlador;

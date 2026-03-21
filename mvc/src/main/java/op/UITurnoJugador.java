@@ -1,6 +1,6 @@
 package op;
 
-import dominio.enums.TipoEventoRuleta;
+import dominio.entidades.enums.TipoEventoRuleta;
 import dto.CartaDTO;
 import dto.JugadorDTO;
 import eventos.DialogoElegirColor;
@@ -68,33 +68,44 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         panelFondo.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 3;
-        gbc.weightx = 1.0; gbc.weighty = 0.0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(8, 0, 0, 0);
         panelFondo.add(slotTop, gbc);
 
-        gbc.gridwidth = 1; gbc.gridy = 1; gbc.weighty = 1.0;
+        gbc.gridwidth = 1;
+        gbc.gridy = 1;
+        gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.VERTICAL;
 
-        gbc.gridx = 0; gbc.weightx = 0.0;
+        gbc.gridx = 0;
+        gbc.weightx = 0.0;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0, 8, 0, 0);
         panelFondo.add(slotLeft, gbc);
 
-        gbc.gridx = 1; gbc.weightx = 1.0;
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(0, 0, 0, 0);
         panelFondo.add(tablero, gbc);
 
-        gbc.gridx = 2; gbc.weightx = 0.0;
+        gbc.gridx = 2;
+        gbc.weightx = 0.0;
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.insets = new Insets(0, 0, 0, 8);
         panelFondo.add(slotRight, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 3;
-        gbc.weightx = 1.0; gbc.weighty = 0.0;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 3;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0, 0, 8, 0);
@@ -144,9 +155,9 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     }
 
     private void actualizarVista(IModeloLectura modelo) {
-        boolean miTurno    = modelo.isTurnoActivo();
+        boolean miTurno = modelo.isTurnoActivo();
         boolean spinActivo = modelo.isSpinActivo();
-        boolean hayEvento  = modelo.getEventoRuletaActual() != null;
+        boolean hayEvento = modelo.getEventoRuletaActual() != null;
         boolean puedeJugar = miTurno && !spinActivo && !hayEvento;
 
         btnTirarCarta.setEnabled(puedeJugar);
@@ -172,8 +183,8 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         }
 
         List<JugadorDTO> rivales = modelo.getJugadoresRivales();
-        actualizarRival(rivales, 0, slotTop,   UIJugador.Posicion.TOP);
-        actualizarRival(rivales, 1, slotLeft,  UIJugador.Posicion.LEFT);
+        actualizarRival(rivales, 0, slotTop, UIJugador.Posicion.TOP);
+        actualizarRival(rivales, 1, slotLeft, UIJugador.Posicion.LEFT);
         actualizarRival(rivales, 2, slotRight, UIJugador.Posicion.RIGHT);
 
         TipoEventoRuleta evento = modelo.getEventoRuletaActual();
@@ -181,9 +192,6 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
             mostrarDialogoEvento(evento, modelo);
         }
 
-        if (modelo.isSeleccionColorPendiente()) {
-            mostrarDialogoSeleccionColor();
-        }
     }
 
     private void mostrarDialogoEvento(TipoEventoRuleta evento, IModeloLectura modelo) {
@@ -222,17 +230,23 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
 
     private UIJugador jugadorPorPosicion(UIJugador.Posicion p) {
         return switch (p) {
-            case TOP   -> uiJugadorArriba;
-            case LEFT  -> uiJugadorIzq;
-            case RIGHT -> uiJugadorDer;
+            case TOP ->
+                uiJugadorArriba;
+            case LEFT ->
+                uiJugadorIzq;
+            case RIGHT ->
+                uiJugadorDer;
         };
     }
 
     private void setJugadorPorPosicion(UIJugador.Posicion p, UIJugador uj) {
         switch (p) {
-            case TOP   -> uiJugadorArriba = uj;
-            case LEFT  -> uiJugadorIzq    = uj;
-            case RIGHT -> uiJugadorDer    = uj;
+            case TOP ->
+                uiJugadorArriba = uj;
+            case LEFT ->
+                uiJugadorIzq    = uj;
+            case RIGHT ->
+                uiJugadorDer    = uj;
         }
     }
 
@@ -271,9 +285,11 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     }
 
     @Override
-    public void execute() {}
+    public void execute() {
+    }
 
     private static class PanelFondo extends JPanel {
+
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);

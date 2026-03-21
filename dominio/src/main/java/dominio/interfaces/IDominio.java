@@ -1,9 +1,10 @@
 package dominio.interfaces;
 
-import dominio.Carta;
-import dominio.Jugador;
-import dominio.enums.EstadoPartida;
-import dominio.enums.TipoEventoRuleta;
+import dominio.entidades.Carta;
+import dominio.entidades.Jugador;
+import dominio.entidades.Tablero;
+import dominio.entidades.enums.EstadoPartida;
+import dominio.entidades.enums.TipoEventoRuleta;
 
 import java.util.List;
 
@@ -25,5 +26,5 @@ public interface IDominio {
     Carta getCartaCima();
     List<Carta> getCartasDescarte();
     void aplicarCastigoUno(int indiceJugador);
-    void iniciarPartida(List<Jugador> jugadoresIniciales, dominio.Tablero tableroInicial);
+    void iniciarPartida(List<Jugador> jugadoresIniciales, Tablero tableroInicial);
 }

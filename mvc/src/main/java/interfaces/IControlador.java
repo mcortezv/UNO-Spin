@@ -1,8 +1,7 @@
 package interfaces;
 
-import dominio.enums.TipoEventoRuleta;
+import dominio.entidades.enums.TipoEventoRuleta;
 import dto.CartaDTO;
-
 public interface IControlador {
     void jugarCarta(CartaDTO carta);
     void onCartaJugada(String valorCarta);

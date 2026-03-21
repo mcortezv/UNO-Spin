@@ -2,7 +2,7 @@ package interfaces;
 
 import dto.CartaDTO;
 import dto.JugadorDTO;
-import dominio.enums.TipoEventoRuleta;
+import dominio.entidades.enums.TipoEventoRuleta;
 import java.util.List;
 
 public interface IModeloLectura {

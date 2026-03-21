@@ -1,8 +1,9 @@
 package mvc;
 
-import dominio.Carta;
-import dominio.enums.EstadoPartida;
-import dominio.enums.TipoEventoRuleta;
+import dominio.entidades.Carta;
+import dominio.entidades.Jugador;
+import dominio.entidades.enums.EstadoPartida;
+import dominio.entidades.enums.TipoEventoRuleta;
 import dominio.interfaces.IDominio;
 import dominio.mappers.CartaMapper;
 import dominio.mappers.JugadorMapper;
@@ -166,7 +167,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     @Override
     public List<JugadorDTO> getTodosLosJugadores() {
         List<JugadorDTO> lista = new ArrayList<>();
-        for (dominio.Jugador jugador : dominio.getJugadores()) {
+        for (Jugador jugador : dominio.getJugadores()) {
             lista.add(JugadorMapper.toDTO(jugador));
         }
         return lista;

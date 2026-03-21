@@ -1,6 +1,6 @@
 package eventos;
 
-import dominio.enums.TipoEventoRuleta;
+import dominio.entidades.enums.TipoEventoRuleta;
 import eventos.eventosRuleta.*;
 import interfaces.IModeloLectura;
 import dto.CartaDTO;
