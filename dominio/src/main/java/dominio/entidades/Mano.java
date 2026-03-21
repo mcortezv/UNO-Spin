@@ -1,5 +1,5 @@
-package dominio;
-import dominio.enums.TipoCarta;
+package dominio.entidades;
+import dominio.entidades.enums.TipoCarta;
 import dto.CartaDTO;
 import dominio.mappers.CartaMapper;
 import java.util.ArrayList;

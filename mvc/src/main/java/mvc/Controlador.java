@@ -1,6 +1,6 @@
 package mvc;
 
-import dominio.enums.TipoEventoRuleta;
+import dominio.entidades.enums.TipoEventoRuleta;
 import dto.CartaDTO;
 import interfaces.IControlador;
 import interfaces.IModeloControlador;

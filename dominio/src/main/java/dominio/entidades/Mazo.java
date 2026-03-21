@@ -1,4 +1,4 @@
-package dominio;
+package dominio.entidades;
 import java.util.Collections;
 import java.util.List;
 

@@ -1,9 +1,9 @@
 package mock;
 
-import dominio.Carta;
-import dominio.Jugador;
-import dominio.enums.TipoCarta;
-import dominio.enums.TipoEventoRuleta;
+import dominio.entidades.Carta;
+import dominio.entidades.Jugador;
+import dominio.entidades.enums.TipoCarta;
+import dominio.entidades.enums.TipoEventoRuleta;
 import dominio.mappers.CartaMapper;
 import dominio.mappers.JugadorMapper;
 import dto.JugadorDTO;

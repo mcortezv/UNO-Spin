@@ -1,6 +1,6 @@
 package mock;
 
-import dominio.enums.TipoEventoRuleta;
+import dominio.entidades.enums.TipoEventoRuleta;
 import dto.CartaDTO;
 import dto.JugadorDTO;
 import interfaces.IModeloControlador;

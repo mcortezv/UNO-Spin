@@ -1,4 +1,4 @@
-package dominio.enums;
+package dominio.entidades.enums;
 
 public enum TipoEventoRuleta {
     CASI_UNO,

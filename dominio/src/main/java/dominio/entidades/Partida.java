@@ -1,7 +1,7 @@
-package dominio;
+package dominio.entidades;
 
-import dominio.enums.EstadoPartida;
-import dominio.enums.TipoEventoRuleta;
+import dominio.entidades.enums.EstadoPartida;
+import dominio.entidades.enums.TipoEventoRuleta;
 import dominio.interfaces.IDominio;
 import java.util.List;
 

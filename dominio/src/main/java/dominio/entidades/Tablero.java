@@ -1,4 +1,4 @@
-package dominio;
+package dominio.entidades;
 
 /**
  * The type Tablero.
