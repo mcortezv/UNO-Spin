@@ -2,6 +2,7 @@ package dominio.entidades;
 import dominio.entidades.enums.TipoCarta;
 import dominio.mappers.CartaMapper;
 import dto.CartaDTO;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,7 +15,7 @@ public class Descarte {
     /**
      * Instantiates a new Descarte.
      */
-    public Descarte() {}
+    public Descarte() { cartas= new ArrayList<>();}
 
     /**
      * Instantiates a new Descarte.
