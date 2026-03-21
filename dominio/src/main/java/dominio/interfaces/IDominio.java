@@ -1,30 +1,31 @@
 package dominio.interfaces;
 
-import dominio.entidades.Carta;
 import dominio.entidades.Jugador;
 import dominio.entidades.Tablero;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoEventoRuleta;
+import dto.CartaDTO;
+import dto.JugadorDTO;
 
 import java.util.List;
 
 public interface IDominio {
 
-    boolean validarJugada(Carta carta);
-    boolean aplicarJugada(Carta c);
+    void iniciarPartida(List<Jugador> jugadoresIniciales, Tablero tableroInicial);
+    boolean validarJugada(CartaDTO carta);
+    boolean aplicarJugada(CartaDTO carta);
     void robarCartaJugadorActual();
     void aplicarSeleccionColor(String color);
+    void gritarUno();
+    void aplicarCastigoUno(int indiceJugador);
     TipoEventoRuleta procesarGiroRuleta() throws Exception;
     void aplicarEfectoRuleta(TipoEventoRuleta evento, Object resultado);
     void avanzarTurno();
-    void gritarUno();
     EstadoPartida getEstadoPartida();
     int getIndiceJugadorActual();
-    List<Jugador> getJugadores();
+    List<JugadorDTO> getJugadores();
     int getCantidadCartasJugador(int indiceJugador);
-    List<Carta> getManoJugador(int indiceJugador);
-    Carta getCartaCima();
-    List<Carta> getCartasDescarte();
-    void aplicarCastigoUno(int indiceJugador);
-    void iniciarPartida(List<Jugador> jugadoresIniciales, Tablero tableroInicial);
+    List<CartaDTO> getManoJugador(int indiceJugador);
+    CartaDTO getCartaCima();
+    List<CartaDTO> getCartasDescarte();
 }

@@ -15,6 +15,7 @@
         <module>builder</module>
         <module>DTOs</module>
         <module>conexion</module>
+        <module>conexionInterfaces</module>
     </modules>
 
     <properties>
