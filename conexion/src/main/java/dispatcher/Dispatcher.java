@@ -1,0 +1,16 @@
+package dispatcher;
+
+import interfaces.IDispatcher;
+
+public class Dispatcher implements IDispatcher {
+    private final ColaDispatcher cola;
+
+    public Dispatcher(ColaDispatcher cola) {
+        this.cola = cola;
+    }
+
+    @Override
+    public void enviar(String json, int port, String ip) {
+        cola.encolar(json, port, ip);
+    }
+}
