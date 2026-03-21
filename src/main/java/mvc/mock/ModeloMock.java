@@ -11,17 +11,24 @@ import mvc.interfaces.IModeloControlador;
 import mvc.interfaces.IModeloLectura;
 import mvc.interfaces.ISuscriptor;
 import dto.CartaDTO;
-import dto.EventoRuletaDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ModeloMock implements IModeloControlador, IModeloLectura {
+
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
     private final PartidaMock partidaMock;
+    private boolean ultimaJugadaValida = true;
 
     public ModeloMock() {
         this.partidaMock = new PartidaMock();
+    }
+
+
+    @Override
+    public boolean isUltimaJugadaValida() {
+        return ultimaJugadaValida;
     }
 
     @Override
@@ -79,24 +86,39 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
     }
 
     @Override
-    public boolean jugarCarta(CartaDTO carta) {
+    public boolean isTurnoActivo() {
+        return false;
+    }
+
+    @Override
+    public boolean isSpinActivo() {
+        return partidaMock.getTablero().getDescarte().getUltimaCarta()
+                .getTipoCarta().equals(TipoCarta.NUMERO_SPIN);
+    }
+
+
+    @Override
+    public void jugarCarta(CartaDTO carta) {
         Carta c = CartaMapper.toEntity(carta);
         if (partidaMock.getTablero().getDescarte().validarCartaEntrante(c)) {
             Jugador jugadorActual = partidaMock.getJugadores().get(partidaMock.getIndiceJugadorActual());
             List<Carta> cartasMano = jugadorActual.getMano().getCartas();
             for (int i = 0; i < cartasMano.size(); i++) {
                 Carta cartaEnMano = cartasMano.get(i);
-                if (cartaEnMano.getColor().equals(c.getColor()) && cartaEnMano.getValor() == c.getValor()) {
+                if (cartaEnMano.getColor().equals(c.getColor())
+                        && cartaEnMano.getValor() == c.getValor()) {
                     cartasMano.remove(i);
                     break;
                 }
             }
             partidaMock.getTablero().getDescarte().getCartas().add(c);
             partidaMock.avanzarTurno();
+            ultimaJugadaValida = true;
             notifyObservers();
-            return true;
+        } else {
+            ultimaJugadaValida = false;
+            notifyObservers();
         }
-        return false;
     }
 
     @Override
@@ -104,8 +126,7 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
     }
 
     @Override
-    public EventoRuletaDTO girarRuleta() {
-        return null;
+    public void girarRuleta() {
     }
 
     @Override
@@ -129,13 +150,12 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
     }
 
     @Override
-    public boolean isTurnoActivo() {
+    public boolean isSeleccionColorPendiente() {
         return false;
     }
 
     @Override
-    public boolean isSpinActivo() {
-        return partidaMock.getTablero().getDescarte().getUltimaCarta().getTipoCarta().equals(TipoCarta.NUMERO_SPIN);
+    public void aplicarSeleccionColor(String color) {
     }
 
     public void subscribe(ISuscriptor suscriptor) {

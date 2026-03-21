@@ -1,7 +1,6 @@
 package mvc.mock;
 
 import dto.CartaDTO;
-import dto.EventoRuletaDTO;
 import dto.JugadorDTO;
 import mvc.Modelo;
 import mvc.interfaces.IModeloControlador;
@@ -13,10 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, ISuscriptor {
+
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
     private final IModeloLectura modeloLectura;
     private final IModeloControlador modeloControlador;
     private final int vistaJugador;
+
     private boolean eventoYaMostrado = false;
     private TipoEventoRuleta ultimoEventoVisto = null;
     private int ultimoPasoVisto = 0;
@@ -29,8 +30,8 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
     }
 
     @Override
-    public boolean jugarCarta(CartaDTO carta) {
-        return modeloControlador.jugarCarta(carta);
+    public void jugarCarta(CartaDTO carta) {
+        modeloControlador.jugarCarta(carta);
     }
 
     @Override
@@ -41,8 +42,8 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
     }
 
     @Override
-    public EventoRuletaDTO girarRuleta() {
-        return modeloControlador.girarRuleta();
+    public void girarRuleta() {
+        modeloControlador.girarRuleta();
     }
 
     @Override
@@ -50,6 +51,10 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
         modeloControlador.gritarUno();
     }
 
+    @Override
+    public void aplicarSeleccionColor(String color) {
+        modeloControlador.aplicarSeleccionColor(color);
+    }
 
     @Override
     public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {
@@ -75,6 +80,11 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
 
 
     @Override
+    public boolean isUltimaJugadaValida() {
+        return modeloLectura.isUltimaJugadaValida();
+    }
+
+    @Override
     public List<CartaDTO> getDescarte() {
         return modeloLectura.getDescarte();
     }
@@ -94,35 +104,35 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
         return modeloLectura.getNombreTurnoActual();
     }
 
-
     @Override
     public List<JugadorDTO> getJugadoresRivales() {
         List<JugadorDTO> todos = modeloLectura.getTodosLosJugadores();
         List<JugadorDTO> rivales = new ArrayList<>();
         for (int i = 0; i < todos.size(); i++) {
-            if (i != vistaJugador) {
-                rivales.add(todos.get(i));
-            }
+            if (i != vistaJugador) rivales.add(todos.get(i));
         }
         return rivales;
     }
-
 
     @Override
     public List<JugadorDTO> getTodosLosJugadores() {
         return modeloLectura.getTodosLosJugadores();
     }
 
-
     @Override
     public boolean isTurnoActivo() {
         return modeloLectura.isTurnoActivoEspecifico(vistaJugador);
     }
 
-
     @Override
     public boolean isSpinActivo() {
         return modeloLectura.isSpinActivo()
+                && modeloLectura.isTurnoActivoEspecifico(vistaJugador);
+    }
+
+    @Override
+    public boolean isSeleccionColorPendiente() {
+        return modeloLectura.isSeleccionColorPendiente()
                 && modeloLectura.isTurnoActivoEspecifico(vistaJugador);
     }
 
@@ -138,9 +148,7 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
 
     @Override
     public TipoEventoRuleta getEventoRuletaActual() {
-        if (eventoYaMostrado) {
-            return null;
-        }
+        if (eventoYaMostrado) return null;
         return modeloLectura.getEventoRuletaActual();
     }
 
@@ -151,13 +159,11 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
 
 
     public void subscribe(ISuscriptor suscriptor) {
-        this.suscriptores.add(suscriptor);
+        suscriptores.add(suscriptor);
     }
 
     private void notifyObservers() {
-        for (ISuscriptor suscriptor : suscriptores) {
-            suscriptor.update(this);
-        }
+        for (ISuscriptor s : suscriptores) s.update(this);
     }
 
     @Override

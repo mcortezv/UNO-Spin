@@ -3,6 +3,7 @@ package mvc;
 import dominio.enums.TipoEventoRuleta;
 import dto.JugadorDTO;
 import mvc.eventos.FabricaDialogosEvento;
+import mvc.eventos.DialogoElegirColor;
 import mvc.interfaces.IComponent;
 import mvc.interfaces.IControlador;
 import mvc.interfaces.IModeloLectura;
@@ -15,11 +16,10 @@ import java.util.List;
 
 public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
 
-    private static final int ancho_ventana = 1040;
-    private static final int alto_ventana = 680;
+    private static final int ANCHO_VENTANA = 1040;
+    private static final int ALTO_VENTANA  = 680;
 
     private final IControlador controlador;
-    private final IModeloLectura lectura;
 
     private final UITablero tablero;
     private final UIMano mano;
@@ -37,23 +37,23 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     private final JPanel slotLeft;
     private final JPanel slotRight;
 
+    private boolean ultimaJugadaValidaAnterior = true;
 
     public UITurnoJugador(IControlador controlador, IModeloLectura modeloLectura, List<Integer> relative) {
         super("UNO-SPIN");
         this.controlador = controlador;
-        this.lectura = modeloLectura;
 
         setLocation(relative.get(0), relative.get(1));
 
-        this.tablero = new UITablero();
-        this.mano = new UIMano();
-        this.lblTurno = crearLabelTurno();
+        this.tablero     = new UITablero();
+        this.mano        = new UIMano();
+        this.lblTurno    = crearLabelTurno();
         this.btnTirarCarta = new Button("Tirar Carta", new Color(45, 45, 45));
-        this.btnUno = new Button("UNO", new Color(185, 25, 25));
+        this.btnUno      = new Button("UNO", new Color(185, 25, 25));
         this.btnUno.setFont(new Font("Arial", Font.BOLD, 16));
 
-        this.slotTop = crearSlot();
-        this.slotLeft = crearSlot();
+        this.slotTop   = crearSlot();
+        this.slotLeft  = crearSlot();
         this.slotRight = crearSlot();
 
         this.panelFondo = new PanelFondo();
@@ -126,9 +126,7 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         btnTirarCarta.addActionListener(e -> {
             CartaDTO seleccionada = mano.getCartaSeleccionada();
             if (seleccionada != null) {
-                if (!controlador.jugarCarta(seleccionada)) {
-                    JOptionPane.showMessageDialog(this, "Carta no compatible con la cima del descarte.");
-                }
+                controlador.jugarCarta(seleccionada);
             } else {
                 JOptionPane.showMessageDialog(this, "Selecciona una carta primero.");
             }
@@ -155,6 +153,12 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         tablero.getMazo().setActive(puedeJugar);
         tablero.getRuleta().setActive(false);
 
+        boolean jugadaValidaAhora = modelo.isUltimaJugadaValida();
+        if (!jugadaValidaAhora && ultimaJugadaValidaAnterior) {
+            JOptionPane.showMessageDialog(this, "Carta no compatible con la cima del descarte.");
+        }
+        ultimaJugadaValidaAnterior = jugadaValidaAhora;
+
         lblTurno.setText("Turno: " + modelo.getNombreTurnoActual());
         mano.setCartas(modelo.getManoJugador());
 
@@ -175,8 +179,11 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         if (evento != null) {
             mostrarDialogoEvento(evento, modelo);
         }
-    }
 
+        if (modelo.isSeleccionColorPendiente()) {
+            mostrarDialogoSeleccionColor();
+        }
+    }
 
     private void mostrarDialogoEvento(TipoEventoRuleta evento, IModeloLectura modelo) {
         boolean esTurnoPropio = modelo.isTurnoActivo();
@@ -189,8 +196,7 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         dialogo.setVisible(true);
 
         if (esTurnoPropio) {
-            Object resultado = dialogo.getResultado();
-            controlador.onResultadoEvento(evento, resultado);
+            controlador.onResultadoEvento(evento, dialogo.getResultado());
         } else {
             controlador.onReconocerEvento();
         }
@@ -224,8 +230,8 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     private void setJugadorPorPosicion(UIJugador.Posicion p, UIJugador uj) {
         switch (p) {
             case TOP   -> uiJugadorArriba = uj;
-            case LEFT  -> uiJugadorIzq = uj;
-            case RIGHT -> uiJugadorDer = uj;
+            case LEFT  -> uiJugadorIzq    = uj;
+            case RIGHT -> uiJugadorDer    = uj;
         }
     }
 
@@ -249,9 +255,18 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     }
 
     private void configurarVentana() {
-        setSize(ancho_ventana, alto_ventana);
+        setSize(ANCHO_VENTANA, ALTO_VENTANA);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
+    }
+
+    private void mostrarDialogoSeleccionColor() {
+        DialogoElegirColor dialogo = new DialogoElegirColor(this);
+        dialogo.setVisible(true); // modal
+        String colorElegido = (String) dialogo.getResultado();
+        if (colorElegido != null) {
+            controlador.onSeleccionColor(colorElegido);
+        }
     }
 
     @Override
