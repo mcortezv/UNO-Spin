@@ -16,8 +16,8 @@ public class Controlador implements IControlador {
     }
 
     @Override
-    public boolean jugarCarta(CartaDTO carta) {
-        return modelo.jugarCarta(carta);
+    public void jugarCarta(CartaDTO carta) {
+        modelo.jugarCarta(carta);
     }
 
     @Override
@@ -63,4 +63,6 @@ public class Controlador implements IControlador {
     public void avanzarTurno() {
 
     }
+
+    
 }
