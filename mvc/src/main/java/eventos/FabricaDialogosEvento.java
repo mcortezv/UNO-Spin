@@ -46,7 +46,6 @@ public class FabricaDialogosEvento {
 
             case DESCARTAR_POR_NUMERO -> new DialogoDescartarPorNumero(owner);
 
-            case DESCARTAR_CARTA -> new DialogoDescartarCarta(owner, modelo.getManoJugador());
         };
     }
 

@@ -1,12 +1,8 @@
 package mvc;
 
-import dominio.entidades.Carta;
-import dominio.entidades.Jugador;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoEventoRuleta;
 import dominio.interfaces.IDominio;
-import dominio.mappers.CartaMapper;
-import dominio.mappers.JugadorMapper;
 import dto.CartaDTO;
 import dto.JugadorDTO;
 import interfaces.IModeloControlador;
@@ -39,8 +35,8 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     @Override
     public void jugarCarta(CartaDTO cartaDTO) {
         int indiceActual = dominio.getIndiceJugadorActual();
-        Carta carta = CartaMapper.toEntity(cartaDTO);
-        boolean exito = dominio.aplicarJugada(carta);
+
+        boolean exito = dominio.aplicarJugada(cartaDTO);
         ultimaJugadaValida = exito;
 
         if (exito) {
@@ -93,6 +89,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     @Override
     public void gritarUno() {
         this.botonUnoPresionado = true;
+        dominio.gritarUno();
         System.out.println("Botón UNO presionado");
     }
 
@@ -133,7 +130,6 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         notifyObservers();
     }
 
-
     @Override
     public boolean isUltimaJugadaValida() {
         return ultimaJugadaValida;
@@ -141,17 +137,17 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public List<CartaDTO> getDescarte() {
-        return CartaMapper.toDTO(dominio.getCartasDescarte());
+        return dominio.getCartasDescarte();
     }
 
     @Override
     public List<CartaDTO> getManoJugador() {
-        return CartaMapper.toDTO(dominio.getManoJugador(dominio.getIndiceJugadorActual()));
+        return dominio.getManoJugador(dominio.getIndiceJugadorActual());
     }
 
     @Override
     public CartaDTO getCartaCima() {
-        return CartaMapper.toDTO(dominio.getCartaCima());
+        return dominio.getCartaCima();
     }
 
     @Override
@@ -166,11 +162,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public List<JugadorDTO> getTodosLosJugadores() {
-        List<JugadorDTO> lista = new ArrayList<>();
-        for (Jugador jugador : dominio.getJugadores()) {
-            lista.add(JugadorMapper.toDTO(jugador));
-        }
-        return lista;
+        return dominio.getJugadores();
     }
 
     @Override
@@ -201,14 +193,13 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public List<CartaDTO> getManoJugadorEspecifico(int indiceJugador) {
-        return CartaMapper.toDTO(dominio.getManoJugador(indiceJugador));
+        return dominio.getManoJugador(indiceJugador);
     }
 
     @Override
     public boolean isTurnoActivoEspecifico(int indiceJugador) {
         return dominio.getIndiceJugadorActual() == indiceJugador;
     }
-
 
     public void subscribe(ISuscriptor suscriptor) {
         suscriptores.add(suscriptor);
