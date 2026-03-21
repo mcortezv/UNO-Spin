@@ -5,12 +5,11 @@ import dominio.entidades.Jugador;
 import dominio.entidades.enums.TipoCarta;
 import dominio.entidades.enums.TipoEventoRuleta;
 import dominio.mappers.CartaMapper;
-import dominio.mappers.JugadorMapper;
-import dto.JugadorDTO;
 import interfaces.IModeloControlador;
 import interfaces.IModeloLectura;
 import interfaces.ISuscriptor;
 import dto.CartaDTO;
+import dto.JugadorDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,6 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
     public ModeloMock() {
         this.partidaMock = new PartidaMock();
     }
-
 
     @Override
     public boolean isUltimaJugadaValida() {
@@ -43,7 +41,9 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     @Override
     public List<CartaDTO> getManoJugadorEspecifico(int indiceJugador) {
-        return CartaMapper.toDTO(partidaMock.getJugadores().get(indiceJugador).getMano().getCartas());
+        return CartaMapper.toDTO(
+                partidaMock.getJugadoresEntidades().get(indiceJugador).getMano().getCartas()
+        );
     }
 
     @Override
@@ -68,7 +68,9 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     @Override
     public String getNombreTurnoActual() {
-        return partidaMock.getJugadores().get(partidaMock.getIndiceJugadorActual()).getNombre();
+        return partidaMock.getJugadoresEntidades()
+                .get(partidaMock.getIndiceJugadorActual())
+                .getNombre();
     }
 
     @Override
@@ -78,11 +80,8 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     @Override
     public List<JugadorDTO> getTodosLosJugadores() {
-        List<JugadorDTO> todos = new ArrayList<>();
-        for (Jugador jugador : partidaMock.getJugadores()) {
-            todos.add(JugadorMapper.toDTO(jugador));
-        }
-        return todos;
+        // getJugadores() ya devuelve List<JugadorDTO>, no necesita mapeo
+        return partidaMock.getJugadores();
     }
 
     @Override
@@ -96,12 +95,12 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
                 .getTipoCarta().equals(TipoCarta.NUMERO_SPIN);
     }
 
-
     @Override
     public void jugarCarta(CartaDTO carta) {
         Carta c = CartaMapper.toEntity(carta);
         if (partidaMock.getTablero().getDescarte().validarCartaEntrante(c)) {
-            Jugador jugadorActual = partidaMock.getJugadores().get(partidaMock.getIndiceJugadorActual());
+            Jugador jugadorActual = partidaMock.getJugadoresEntidades()
+                    .get(partidaMock.getIndiceJugadorActual());
             List<Carta> cartasMano = jugadorActual.getMano().getCartas();
             for (int i = 0; i < cartasMano.size(); i++) {
                 Carta cartaEnMano = cartasMano.get(i);
@@ -122,32 +121,25 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
     }
 
     @Override
-    public void pedirCarta() {
-    }
+    public void pedirCarta() {}
 
     @Override
-    public void girarRuleta() {
-    }
+    public void girarRuleta() {}
 
     @Override
-    public void gritarUno() {
-    }
+    public void gritarUno() {}
 
     @Override
-    public void limpiarEventoRuleta() {
-    }
+    public void limpiarEventoRuleta() {}
 
     @Override
-    public void reconocerEvento(int indiceJugador) {
-    }
+    public void reconocerEvento(int indiceJugador) {}
 
     @Override
-    public void avanzarPasoEvento() {
-    }
+    public void avanzarPasoEvento() {}
 
     @Override
-    public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {
-    }
+    public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {}
 
     @Override
     public boolean isSeleccionColorPendiente() {
@@ -155,8 +147,7 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
     }
 
     @Override
-    public void aplicarSeleccionColor(String color) {
-    }
+    public void aplicarSeleccionColor(String color) {}
 
     public void subscribe(ISuscriptor suscriptor) {
         this.suscriptores.add(suscriptor);
