@@ -1,23 +1,21 @@
 package mvc;
+
 import dominio.enums.TipoEventoRuleta;
 import mvc.interfaces.IControlador;
 import dto.CartaDTO;
 import mvc.interfaces.IModeloControlador;
 
-/**
- * The type Controlador.
- */
 public class Controlador implements IControlador {
 
-    IModeloControlador modelo;
+    private final IModeloControlador modelo;
 
     public Controlador(IModeloControlador modelo) {
         this.modelo = modelo;
     }
 
     @Override
-    public boolean jugarCarta(CartaDTO carta) {
-        return modelo.jugarCarta(carta);
+    public void jugarCarta(CartaDTO carta) {
+        modelo.jugarCarta(carta);
     }
 
     @Override
@@ -42,7 +40,6 @@ public class Controlador implements IControlador {
         modelo.girarRuleta();
     }
 
-
     @Override
     public void onResultadoEvento(TipoEventoRuleta evento, Object resultado) {
         System.out.println("Enviando evento al modelo: " + evento + " | Resultado: " + resultado);
@@ -56,11 +53,14 @@ public class Controlador implements IControlador {
 
     @Override
     public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {
-
+        modelo.aplicarEventoRuleta(evento, resultado);
     }
 
     @Override
-    public void avanzarTurno() {
+    public void avanzarTurno() { }
 
+    @Override
+    public void onSeleccionColor(String color) {
+        modelo.aplicarSeleccionColor(color);
     }
 }

@@ -4,12 +4,12 @@ import dominio.enums.EstadoPartida;
 import dominio.interfaces.IDominio;
 import dto.JugadorDTO;
 import mappers.CartaMapper;
+import mappers.JugadorMapper;
 import mvc.interfaces.IModeloControlador;
 import mvc.interfaces.IModeloLectura;
 import mvc.interfaces.ISuscriptor;
 import dominio.Carta;
 import dto.CartaDTO;
-import dto.EventoRuletaDTO;
 import dominio.enums.TipoEventoRuleta;
 
 import java.util.ArrayList;
@@ -18,13 +18,17 @@ import java.util.List;
 import java.util.Set;
 
 public class Modelo implements IModeloControlador, IModeloLectura {
-    private IDominio dominio;
+
+    private final IDominio dominio;
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
+
     private boolean botonUnoPresionado = false;
     private TipoEventoRuleta eventoRuletaActual;
-    int pasoEventoActual = 0;
-    Set<Integer> jugadoresQueReconocieron = new HashSet<>();
-    int totalJugadores;
+    private int pasoEventoActual = 0;
+    private final Set<Integer> jugadoresQueReconocieron = new HashSet<>();
+    private final int totalJugadores;
+
+    private boolean ultimaJugadaValida = true;
 
     public Modelo(IDominio dominio) {
         this.dominio = dominio;
@@ -32,30 +36,27 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     }
 
     @Override
-    public boolean jugarCarta(CartaDTO cartaDTO) {
-        dominio.Jugador jugadorQueTira = dominio.getJugadores().get(dominio.getIndiceJugadorActual());
+    public void jugarCarta(CartaDTO cartaDTO) {
+        int indiceActual = dominio.getIndiceJugadorActual();
         Carta carta = CartaMapper.toEntity(cartaDTO);
         boolean exito = dominio.aplicarJugada(carta);
+        ultimaJugadaValida = exito;
+
         if (exito) {
             notifyObservers();
-            if (jugadorQueTira.getMano().getCartas().size() == 1) {
+            if (dominio.getCantidadCartasJugador(indiceActual) == 1) {
                 if (botonUnoPresionado) {
-                    System.out.println(jugadorQueTira.getNombre() + " gritó UNO antes de tirar");
+                    System.out.println("UNO gritado correctamente antes de tirar.");
                     botonUnoPresionado = false;
                 } else {
-                    System.out.println(jugadorQueTira.getNombre() + " tiene 3 segundos para gritar UNO");
+                    System.out.println("3 segundos para gritar UNO...");
                     javax.swing.Timer timer = new javax.swing.Timer(3000, e -> {
                         if (!botonUnoPresionado) {
-                            System.out.println("Castigo para " + jugadorQueTira.getNombre());
-                            try {
-                                Carta castigo = dominio.getTablero().getMazo().robarCarta();
-                                jugadorQueTira.getMano().getCartas().add(castigo);
-                                notifyObservers();
-                            } catch (Exception ex) {
-                                System.out.println("Mazo vacío");
-                            }
+                            System.out.println("Castigo UNO aplicado.");
+                            dominio.aplicarCastigoUno(indiceActual);
+                            notifyObservers();
                         } else {
-                            System.out.println(jugadorQueTira.getNombre() + " gritó UNO en el último segundo");
+                            System.out.println("UNO gritado en el último momento.");
                         }
                         botonUnoPresionado = false;
                     });
@@ -65,8 +66,9 @@ public class Modelo implements IModeloControlador, IModeloLectura {
             } else {
                 botonUnoPresionado = false;
             }
+        } else {
+            notifyObservers();
         }
-        return exito;
     }
 
     @Override
@@ -76,17 +78,114 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     }
 
     @Override
-    public EventoRuletaDTO girarRuleta() {
+    public void girarRuleta() {
         try {
             eventoRuletaActual = dominio.procesarGiroRuleta();
             pasoEventoActual = 1;
             jugadoresQueReconocieron.clear();
             notifyObservers();
-            return null;
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return null;
         }
+    }
+
+    @Override
+    public void gritarUno() {
+        this.botonUnoPresionado = true;
+        System.out.println("Botón UNO presionado");
+    }
+
+    @Override
+    public void limpiarEventoRuleta() {
+        eventoRuletaActual = null;
+        pasoEventoActual = 0;
+        jugadoresQueReconocieron.clear();
+    }
+
+    @Override
+    public void reconocerEvento(int indiceJugador) {
+        jugadoresQueReconocieron.add(indiceJugador);
+        if (jugadoresQueReconocieron.size() == totalJugadores) {
+            limpiarEventoRuleta();
+            notifyObservers();
+        }
+    }
+
+    @Override
+    public void avanzarPasoEvento() {
+        pasoEventoActual++;
+        jugadoresQueReconocieron.clear();
+        notifyObservers();
+    }
+
+    @Override
+    public void aplicarSeleccionColor(String color) {
+        dominio.aplicarSeleccionColor(color);
+        notifyObservers();
+    }
+
+    @Override
+    public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {
+        eventoRuletaActual = null;
+        dominio.aplicarEfectoRuleta(evento, resultado);
+        dominio.avanzarTurno();
+        notifyObservers();
+    }
+
+
+    @Override
+    public boolean isUltimaJugadaValida() {
+        return ultimaJugadaValida;
+    }
+
+    @Override
+    public List<CartaDTO> getDescarte() {
+        return CartaMapper.toDTO(dominio.getCartasDescarte());
+    }
+
+    @Override
+    public List<CartaDTO> getManoJugador() {
+        return CartaMapper.toDTO(dominio.getManoJugador(dominio.getIndiceJugadorActual()));
+    }
+
+    @Override
+    public CartaDTO getCartaCima() {
+        return CartaMapper.toDTO(dominio.getCartaCima());
+    }
+
+    @Override
+    public String getNombreTurnoActual() {
+        return dominio.getJugadores().get(dominio.getIndiceJugadorActual()).getNombre();
+    }
+
+    @Override
+    public List<JugadorDTO> getJugadoresRivales() {
+        return getTodosLosJugadores();
+    }
+
+    @Override
+    public List<JugadorDTO> getTodosLosJugadores() {
+        List<JugadorDTO> lista = new ArrayList<>();
+        for (dominio.Jugador jugador : dominio.getJugadores()) {
+            lista.add(JugadorMapper.toDTO(jugador));
+        }
+        return lista;
+    }
+
+    @Override
+    public boolean isTurnoActivo() {
+        return dominio.getEstadoPartida() == EstadoPartida.EN_PROCESO;
+    }
+
+    @Override
+    public boolean isSpinActivo() {
+        return dominio.getEstadoPartida() == EstadoPartida.GIRO_PENDIENTE
+                && eventoRuletaActual == null;
+    }
+
+    @Override
+    public boolean isSeleccionColorPendiente() {
+        return dominio.getEstadoPartida() == EstadoPartida.SELECCION_COLOR_PENDIENTE;
     }
 
     @Override
@@ -100,100 +199,8 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     }
 
     @Override
-    public void limpiarEventoRuleta() {
-        this.eventoRuletaActual = null;
-        pasoEventoActual = 0;
-        jugadoresQueReconocieron.clear();
-    }
-
-    @Override
-    public void reconocerEvento(int indiceJugador) {
-        jugadoresQueReconocieron.add(indiceJugador);
-        if (jugadoresQueReconocieron.size() == this.totalJugadores) {
-            limpiarEventoRuleta();
-            notifyObservers();
-        }
-    }
-
-    @Override
-    public void avanzarPasoEvento() {
-        pasoEventoActual++;
-        jugadoresQueReconocieron.clear();
-        notifyObservers();
-    }
-
-
-    @Override
-    public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {
-        this.eventoRuletaActual = null;
-        dominio.aplicarEfectoRuleta(evento, resultado);
-        dominio.avanzarTurno();
-        notifyObservers();
-    }
-
-    @Override
-    public List<CartaDTO> getDescarte() {
-        return CartaMapper.toDTO(dominio.getTablero().getDescarte().getCartas());
-    }
-
-    @Override
-    public List<CartaDTO> getManoJugador() {
-        return CartaMapper.toDTO(dominio.getJugadores().get(dominio.getIndiceJugadorActual()).getMano().getCartas());
-    }
-
-    @Override
-    public CartaDTO getCartaCima() {
-        return CartaMapper.toDTO(dominio.getTablero().getDescarte().getUltimaCarta());
-    }
-
-    @Override
-    public String getNombreTurnoActual() {
-        return dominio.getJugadores().get(dominio.getIndiceJugadorActual()).getNombre();
-    }
-
-    @Override
-    public List<JugadorDTO> getJugadoresRivales() {
-        List<JugadorDTO> todosLosJugadores = new ArrayList<>();
-        for (dominio.Jugador jugador : dominio.getJugadores()) {
-            todosLosJugadores.add(mappers.JugadorMapper.toDTO(jugador));
-        }
-        return todosLosJugadores;
-    }
-
-
-    @Override
-    public List<JugadorDTO> getTodosLosJugadores() {
-        return getJugadoresRivales();
-    }
-
-    @Override
-    public boolean isTurnoActivo() {
-        return dominio.getEstadoPartida() == EstadoPartida.EN_PROCESO;
-    }
-
-    @Override
-    public boolean isSpinActivo() {
-        return dominio.getEstadoPartida() == EstadoPartida.GIRO_PENDIENTE
-                && this.eventoRuletaActual == null;
-    }
-
-    public void subscribe(ISuscriptor suscriptor) {
-        this.suscriptores.add(suscriptor);
-    }
-
-    public void unsubscribe(ISuscriptor suscriptor) {
-        this.suscriptores.remove(suscriptor);
-    }
-
-    private void notifyObservers() {
-        for (ISuscriptor suscriptor : suscriptores) {
-            suscriptor.update(this);
-        }
-    }
-
-    @Override
     public List<CartaDTO> getManoJugadorEspecifico(int indiceJugador) {
-        return CartaMapper.toDTO(dominio.getJugadores().get(indiceJugador).getMano().getCartas());
+        return CartaMapper.toDTO(dominio.getManoJugador(indiceJugador));
     }
 
     @Override
@@ -201,9 +208,18 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         return dominio.getIndiceJugadorActual() == indiceJugador;
     }
 
-    @Override
-    public void gritarUno() {
-        this.botonUnoPresionado = true;
-        System.out.println("Botón UNO presionado");
+
+    public void subscribe(ISuscriptor suscriptor) {
+        suscriptores.add(suscriptor);
+    }
+
+    public void unsubscribe(ISuscriptor suscriptor) {
+        suscriptores.remove(suscriptor);
+    }
+
+    private void notifyObservers() {
+        for (ISuscriptor s : suscriptores) {
+            s.update(this);
+        }
     }
 }
