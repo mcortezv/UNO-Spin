@@ -1,5 +1,5 @@
 package dominio.mappers;
-import dominio.Jugador;
+import dominio.entidades.Jugador;
 import dto.JugadorDTO;
 
 public class JugadorMapper {

@@ -1,9 +1,8 @@
 package mock;
-import dominio.*;
-import dominio.enums.TipoCarta;
+import dominio.entidades.*;
+import dominio.entidades.enums.TipoCarta;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The type Tablero mock.

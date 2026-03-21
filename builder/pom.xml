@@ -16,23 +16,22 @@
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
         <dependency>
-            <groupId>com.itson</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>dominio</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.itson</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>mvc</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.itson</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>DTOs</artifactId>
-            <version>1.0</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
