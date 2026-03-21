@@ -1,7 +1,7 @@
 package mvc.mock;
+
 import dominio.Carta;
 import dominio.Jugador;
-import dominio.enums.EstadoPartida;
 import dominio.enums.TipoCarta;
 import dominio.enums.TipoEventoRuleta;
 import dto.JugadorDTO;
@@ -12,14 +12,13 @@ import mvc.interfaces.IModeloLectura;
 import mvc.interfaces.ISuscriptor;
 import dto.CartaDTO;
 import dto.EventoRuletaDTO;
+
 import java.util.ArrayList;
 import java.util.List;
-import mappers.EventoRuletaMapper;
 
 public class ModeloMock implements IModeloControlador, IModeloLectura {
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
-
-    private PartidaMock partidaMock;
+    private final PartidaMock partidaMock;
 
     public ModeloMock() {
         this.partidaMock = new PartidaMock();
@@ -32,11 +31,27 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     @Override
     public List<CartaDTO> getManoJugador() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<CartaDTO> getManoJugadorEspecifico(int indiceJugador) {
+        return CartaMapper.toDTO(partidaMock.getJugadores().get(indiceJugador).getMano().getCartas());
+    }
+
+    @Override
+    public boolean isTurnoActivoEspecifico(int indiceJugador) {
+        return partidaMock.getIndiceJugadorActual() == indiceJugador;
+    }
+
+    @Override
+    public TipoEventoRuleta getEventoRuletaActual() {
         return null;
     }
 
-    public List<CartaDTO> getManoJugadorEspecifico(int indiceJugador) {
-        return CartaMapper.toDTO(partidaMock.getJugadores().get(indiceJugador).getMano().getCartas());
+    @Override
+    public int getPasoEventoActual() {
+        return 0;
     }
 
     @Override
@@ -51,17 +66,22 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     @Override
     public List<JugadorDTO> getJugadoresRivales() {
-        List<JugadorDTO> todosLosJugadores = new ArrayList<>();
+        return getTodosLosJugadores();
+    }
+
+    @Override
+    public List<JugadorDTO> getTodosLosJugadores() {
+        List<JugadorDTO> todos = new ArrayList<>();
         for (Jugador jugador : partidaMock.getJugadores()) {
-            todosLosJugadores.add(JugadorMapper.toDTO(jugador));
+            todos.add(JugadorMapper.toDTO(jugador));
         }
-        return todosLosJugadores;
+        return todos;
     }
 
     @Override
     public boolean jugarCarta(CartaDTO carta) {
         Carta c = CartaMapper.toEntity(carta);
-        if (partidaMock.getTablero().getDescarte().validarCartaEntrante(c)){
+        if (partidaMock.getTablero().getDescarte().validarCartaEntrante(c)) {
             Jugador jugadorActual = partidaMock.getJugadores().get(partidaMock.getIndiceJugadorActual());
             List<Carta> cartasMano = jugadorActual.getMano().getCartas();
             for (int i = 0; i < cartasMano.size(); i++) {
@@ -72,11 +92,7 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
                 }
             }
             partidaMock.getTablero().getDescarte().getCartas().add(c);
-            if(c.getTipoCarta() == TipoCarta.NUMERO_SPIN){
-                partidaMock.setEstadoPartida(EstadoPartida.GIRO_PENDIENTE);
-            } else{
-                partidaMock.avanzarTurno();
-            }
+            partidaMock.avanzarTurno();
             notifyObservers();
             return true;
         }
@@ -85,33 +101,36 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     @Override
     public void pedirCarta() {
-
-    }
-
-    public void pedirCartaMock(int indiceJugador) {
-        Carta carta = partidaMock.getTablero().getMazo().getCartas().getLast();
-        partidaMock.getTablero().getMazo().getCartas().removeLast();
-        partidaMock.getJugadores().get(indiceJugador).getMano().getCartas().add(carta);
     }
 
     @Override
     public EventoRuletaDTO girarRuleta() {
-        try{
-           TipoEventoRuleta evento= partidaMock.procesarGiroRuleta();
-           return EventoRuletaMapper.toDTO(evento);
-        } catch(Exception e){
-            return null;
-        }
-        
+        return null;
+    }
+
+    @Override
+    public void gritarUno() {
+    }
+
+    @Override
+    public void limpiarEventoRuleta() {
+    }
+
+    @Override
+    public void reconocerEvento(int indiceJugador) {
+    }
+
+    @Override
+    public void avanzarPasoEvento() {
+    }
+
+    @Override
+    public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {
     }
 
     @Override
     public boolean isTurnoActivo() {
         return false;
-    }
-
-    public boolean isTurnoActivoMock(int indiceJugador) {
-        return partidaMock.getIndiceJugadorActual() == indiceJugador;
     }
 
     @Override

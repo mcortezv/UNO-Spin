@@ -1,19 +1,18 @@
 package mvc;
+
+import dominio.enums.TipoEventoRuleta;
 import dto.JugadorDTO;
+import mvc.eventos.FabricaDialogosEvento;
 import mvc.interfaces.IComponent;
 import mvc.interfaces.IControlador;
 import mvc.interfaces.IModeloLectura;
 import mvc.interfaces.ISuscriptor;
 import mvc.styles.Button;
 import dto.CartaDTO;
-import dto.EventoRuletaDTO;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-/**
- * The type Ui turno jugador.
- */
 public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
 
     private static final int ancho_ventana = 1040;
@@ -37,16 +36,9 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     private final JPanel slotTop;
     private final JPanel slotLeft;
     private final JPanel slotRight;
-    
-    private boolean ruletaObligatoria= false; 
 
-    /**
-     * Instantiates a new Ui turno jugador.
-     *
-     * @param controlador   the controlador
-     * @param modeloLectura the modelo lectura
-     */
-    public UITurnoJugador(Controlador controlador, IModeloLectura modeloLectura, List<Integer> relative) {
+
+    public UITurnoJugador(IControlador controlador, IModeloLectura modeloLectura, List<Integer> relative) {
         super("UNO-SPIN");
         this.controlador = controlador;
         this.lectura = modeloLectura;
@@ -56,8 +48,8 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         this.tablero = new UITablero();
         this.mano = new UIMano();
         this.lblTurno = crearLabelTurno();
-        this.btnTirarCarta = new Button("Tirar Carta", new Color(45,45,45));
-        this.btnUno = new Button("UNO", new Color(185, 25,25));
+        this.btnTirarCarta = new Button("Tirar Carta", new Color(45, 45, 45));
+        this.btnUno = new Button("UNO", new Color(185, 25, 25));
         this.btnUno.setFont(new Font("Arial", Font.BOLD, 16));
 
         this.slotTop = crearSlot();
@@ -69,53 +61,40 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         configurarVentana();
         construirLayout();
         conectarEventos();
-
     }
-
 
     private void construirLayout() {
         panelFondo.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 3;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.0;
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 3;
+        gbc.weightx = 1.0; gbc.weighty = 0.0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(8, 0, 0, 0);
         panelFondo.add(slotTop, gbc);
 
-        gbc.gridwidth = 1;
-        gbc.gridy = 1;
-        gbc.weighty = 1.0;
+        gbc.gridwidth = 1; gbc.gridy = 1; gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.VERTICAL;
 
-        gbc.gridx = 0;
-        gbc.weightx = 0.0;
+        gbc.gridx = 0; gbc.weightx = 0.0;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0, 8, 0, 0);
         panelFondo.add(slotLeft, gbc);
 
-        gbc.gridx = 1;
-        gbc.weightx = 1.0;
-        gbc.fill  = GridBagConstraints.BOTH;
+        gbc.gridx = 1; gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(0, 0, 0, 0);
         panelFondo.add(tablero, gbc);
 
-        gbc.gridx = 2;
-        gbc.weightx = 0.0;
-        gbc.fill  = GridBagConstraints.VERTICAL;
+        gbc.gridx = 2; gbc.weightx = 0.0;
+        gbc.fill = GridBagConstraints.VERTICAL;
         gbc.insets = new Insets(0, 0, 0, 8);
         panelFondo.add(slotRight, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 3;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.0;
-        gbc.fill   = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 3;
+        gbc.weightx = 1.0; gbc.weighty = 0.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0, 0, 8, 0);
         panelFondo.add(construirZonaJugadorActivo(), gbc);
@@ -145,35 +124,20 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
 
     private void conectarEventos() {
         btnTirarCarta.addActionListener(e -> {
-            if(ruletaObligatoria){
-                JOptionPane.showMessageDialog(this, "Debes girar la ruleta antes de continuar", "Ruleta Obligatoria", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
             CartaDTO seleccionada = mano.getCartaSeleccionada();
             if (seleccionada != null) {
-                if (!controlador.jugarCarta(seleccionada)){
-                    JOptionPane.showMessageDialog(this, "Carta no compatible");
+                if (!controlador.jugarCarta(seleccionada)) {
+                    JOptionPane.showMessageDialog(this, "Carta no compatible con la cima del descarte.");
                 }
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecciona una carta primero.");
             }
         });
 
         btnUno.addActionListener(e -> controlador.onUnoGritado());
         tablero.setOnPedirCarta(controlador::onPedirCarta);
-        tablero.setOnGiroCompleto(() -> {
-            ruletaObligatoria= false; 
-            tablero.getRuleta().setActive(false);
-            EventoRuletaDTO resultado= controlador.onSpinCompletado();
-             mostrarResultadoRuleta(resultado);
-        });
-        tablero.getDescarte().setOnCartaSpinJugada(() -> {
-            if(!lectura.isTurnoActivo()) return;
-            ruletaObligatoria= true; 
-            tablero.getRuleta().setActive(true);
-            JOptionPane.showMessageDialog(this, "Es obligatorio girar la ruleta antes de continuar", "Girar Ruleta", JOptionPane.INFORMATION_MESSAGE);
-        });
-        
+        tablero.setOnGiroCompleto(controlador::onSpinCompletado);
     }
-
 
     @Override
     public void update(IModeloLectura modelo) {
@@ -181,32 +145,55 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     }
 
     private void actualizarVista(IModeloLectura modelo) {
+        boolean miTurno    = modelo.isTurnoActivo();
+        boolean spinActivo = modelo.isSpinActivo();
+        boolean hayEvento  = modelo.getEventoRuletaActual() != null;
+        boolean puedeJugar = miTurno && !spinActivo && !hayEvento;
 
-        if (modelo.isTurnoActivo()) {
-            btnTirarCarta.setEnabled(true);
-            btnUno.setEnabled(true);
-            tablero.getMazo().setActive(true);
-            tablero.getRuleta().setActive(tablero.getDescarte().isCartaTopeSpin() || ruletaObligatoria);
-        } else {
-            btnTirarCarta.setEnabled(false);
-            btnUno.setEnabled(false);
-            tablero.getMazo().setActive(false);
-            tablero.getRuleta().setActive(false);
-        }
+        btnTirarCarta.setEnabled(puedeJugar);
+        btnUno.setEnabled(true);
+        tablero.getMazo().setActive(puedeJugar);
+        tablero.getRuleta().setActive(false);
 
         lblTurno.setText("Turno: " + modelo.getNombreTurnoActual());
         mano.setCartas(modelo.getManoJugador());
+
         if (modelo.getCartaCima() != null) {
             tablero.setCartaCima(modelo.getCartaCima());
         }
-//        if (modelo.isSpinActivo() && !tablero.getRuleta().isGirando()) {
-//            tablero.getRuleta().girar();
-//        }
+
+        if (modelo.isSpinActivo() && !tablero.getRuleta().isGirando()) {
+            tablero.getRuleta().girar();
+        }
 
         List<JugadorDTO> rivales = modelo.getJugadoresRivales();
         actualizarRival(rivales, 0, slotTop,   UIJugador.Posicion.TOP);
         actualizarRival(rivales, 1, slotLeft,  UIJugador.Posicion.LEFT);
         actualizarRival(rivales, 2, slotRight, UIJugador.Posicion.RIGHT);
+
+        TipoEventoRuleta evento = modelo.getEventoRuletaActual();
+        if (evento != null) {
+            mostrarDialogoEvento(evento, modelo);
+        }
+    }
+
+
+    private void mostrarDialogoEvento(TipoEventoRuleta evento, IModeloLectura modelo) {
+        boolean esTurnoPropio = modelo.isTurnoActivo();
+        mvc.eventos.DialogoEventoRuleta dialogo = FabricaDialogosEvento.crear(evento, this, modelo);
+
+        if (!esTurnoPropio) {
+            dialogo.setSoloLectura(true);
+        }
+
+        dialogo.setVisible(true);
+
+        if (esTurnoPropio) {
+            Object resultado = dialogo.getResultado();
+            controlador.onResultadoEvento(evento, resultado);
+        } else {
+            controlador.onReconocerEvento();
+        }
     }
 
     private void actualizarRival(List<JugadorDTO> rivales, int idx, JPanel slot, UIJugador.Posicion posicion) {
@@ -236,8 +223,8 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
 
     private void setJugadorPorPosicion(UIJugador.Posicion p, UIJugador uj) {
         switch (p) {
-            case TOP   -> uiJugadorArriba   = uj;
-            case LEFT  -> uiJugadorIzq  = uj;
+            case TOP   -> uiJugadorArriba = uj;
+            case LEFT  -> uiJugadorIzq = uj;
             case RIGHT -> uiJugadorDer = uj;
         }
     }
@@ -261,14 +248,14 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         return lbl;
     }
 
-
     private void configurarVentana() {
         setSize(ancho_ventana, alto_ventana);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
     }
 
-    @Override public void execute() {}
+    @Override
+    public void execute() {}
 
     private static class PanelFondo extends JPanel {
         @Override
@@ -287,29 +274,5 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
             g2.fillRect(0, 0, getWidth(), getHeight());
             g2.dispose();
         }
-    }
-    
-    private void mostrarResultadoRuleta(EventoRuletaDTO evento){
-        if(evento == null){
-            return;
-        }
-        String descripcion= obtenerDescripcionEvento(evento.getNombre());
-        JOptionPane.showMessageDialog(this, "Resultado de la ruleta: \n\n" + descripcion, "Resultado Ruleta", JOptionPane.INFORMATION_MESSAGE);
-        
-    }
-    
-    private String obtenerDescripcionEvento(String nombre){
-        return switch (nombre){
-            case "CASI_UNO" -> "Puedes descartar todas tus cartas excepto dos";
-            case "DESCARTAR_POR_NUMERO" -> "Elige un número de tu mano y descarta todas las cartas que tengan ese mismo número";
-            case "DESCARTAR_POR_COLOR" -> "Elige un color de tu mano y descarta todas las cartas de ese color";
-            case "ROBAR_HASTA_AZUL" -> "Roba cartas del mazo hasta que te salga una color azul";
-            case "ROBAR_HASTA_ROJO" -> "Roba cartas del mazo hasta que te salga una color rojo";
-            case "GUERRA" -> "Cada jugador elige su carta más alta y la muestra. Quien tenga el número más alto puede descartar todas sus cartas de ese número";
-            case "MOSTRAR_LA_MANO" -> "Debes mostrar tus cartas a todos los jugadores durante unos segundos";
-            case "INTERCAMBIO_DE_MANOS" -> "Todos los jugadores pasan sus cartas al jugador de la izquierda";
-            case "PUNTUACION_MAS_BAJA"-> "Todos cuentan sus puntos; quien tenga menos puntos puede descartar una carta de su elección";
-            default -> nombre;
-        };
     }
 }
