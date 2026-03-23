@@ -13,7 +13,7 @@ import java.util.List;
  * The type Control servidor.
  */
 public class ControlServidor implements IObservadorDominio {
-    private final IDominio dominio;
+    private IDominio dominio;
     private final IDispatcher dispatcher;
     private final ISerializer serializer;
     private final List<SocketCliente> clientes;
@@ -54,7 +54,8 @@ public class ControlServidor implements IObservadorDominio {
     }
 
     @Override
-    public void onEstadoCambiado() {
+    public void onEstadoCambiado(IDominio dominio) {
+        this.dominio = dominio;
         int indiceActual = dominio.getIndiceJugadorActual();
         String estado = dominio.getEstadoPartida().name();
         CartaDTO cartaCima = dominio.getCartaCima();
