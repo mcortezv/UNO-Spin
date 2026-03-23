@@ -8,5 +8,5 @@ public interface IObservadorDominio {
     /**
      * On estado cambiado.
      */
-    void onEstadoCambiado();
+    void onEstadoCambiado(IDominio dominio);
 }
