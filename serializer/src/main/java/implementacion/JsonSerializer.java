@@ -1,16 +1,20 @@
 package implementacion;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import interfaces.ISerializer;
-
 import java.io.IOException;
 
+/**
+ * The type Json serializer.
+ */
 public class JsonSerializer implements ISerializer {
 
     private final ObjectMapper objectMapper;
 
+    /**
+     * Instantiates a new Json serializer.
+     */
     public JsonSerializer() {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

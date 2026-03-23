@@ -1,22 +1,36 @@
 package eventos.eventosRuleta;
-
 import dto.CartaDTO;
 import eventos.DialogoEventoRuleta;
 import op.UICarta;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Dialogo cartas.
+ */
 public abstract class DialogoCartas extends DialogoEventoRuleta {
-
+    /**
+     * The Cartas.
+     */
     protected List<CartaDTO> cartas;
+    /**
+     * The Carta seleccionada idx.
+     */
     protected int cartaSeleccionadaIdx = -1;
     private final boolean seleccionable;
 
     private final List<UICarta> cartasUI = new ArrayList<>();
 
+    /**
+     * Instantiates a new Dialogo cartas.
+     *
+     * @param owner         the owner
+     * @param titulo        the titulo
+     * @param cartas        the cartas
+     * @param seleccionable the seleccionable
+     */
     public DialogoCartas(Frame owner, String titulo,
                          List<CartaDTO> cartas, boolean seleccionable) {
         super(owner, titulo);

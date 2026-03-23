@@ -1,10 +1,8 @@
 package op;
-
 import dto.CartaDTO;
 import interfaces.IModeloLectura;
 import interfaces.ISuscriptor;
 import mvc.Controlador;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;

@@ -1,11 +1,18 @@
 package receptor;
-
 import interfaces.IReceptorComponente;
 import interfaces.IReceptorObserver;
 
+/**
+ * The type Receptor.
+ */
 public class Receptor implements IReceptorObserver {
     private final IReceptorComponente componente;
 
+    /**
+     * Instantiates a new Receptor.
+     *
+     * @param componente the componente
+     */
     public Receptor(IReceptorComponente componente) {
         this.componente = componente;
     }

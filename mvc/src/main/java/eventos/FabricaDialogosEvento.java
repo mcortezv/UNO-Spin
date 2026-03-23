@@ -1,22 +1,28 @@
 package eventos;
-
 import dominio.entidades.enums.TipoEventoRuleta;
 import eventos.eventosRuleta.*;
 import interfaces.IModeloLectura;
 import dto.CartaDTO;
 import dto.JugadorDTO;
-
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The type Fabrica dialogos evento.
+ */
 public class FabricaDialogosEvento {
 
-    public static DialogoEventoRuleta crear(TipoEventoRuleta evento,
-                                            JFrame owner,
-                                            IModeloLectura modelo) {
-
+    /**
+     * Crear dialogo evento ruleta.
+     *
+     * @param evento the evento
+     * @param owner  the owner
+     * @param modelo the modelo
+     * @return the dialogo evento ruleta
+     */
+    public static DialogoEventoRuleta crear(TipoEventoRuleta evento, JFrame owner, IModeloLectura modelo) {
         List<JugadorDTO> todosLosJugadores = modelo.getTodosLosJugadores();
         List<String> todosLosNombres = todosLosJugadores.stream()
                 .map(JugadorDTO::getNombre)
@@ -24,28 +30,14 @@ public class FabricaDialogosEvento {
 
         return switch (evento) {
             case CASI_UNO -> new DialogoCasiUno(owner, modelo.getManoJugador());
-
             case DESCARTAR_POR_COLOR -> new DialogoDescartarPorColor(owner);
-
             case ROBAR_HASTA_ROJO -> new DialogoRobarHastaRojo(owner);
-
             case ROBAR_HASTA_AZUL -> new DialogoRobarHastaAzul(owner);
-
             case GUERRA -> new DialogoGuerra(owner, todosLosNombres);
-
-            case MOSTRAR_LA_MANO -> new DialogoMostrarMano(owner,
-                    modelo.getNombreTurnoActual(),
-                    modelo.getManoJugador());
-
+            case MOSTRAR_LA_MANO -> new DialogoMostrarMano(owner, modelo.getNombreTurnoActual(), modelo.getManoJugador());
             case INTERCAMBIO_DE_MANOS -> new DialogoIntercambioDeManos(owner);
-
-            case PUNTUACION_MAS_BAJA -> new DialogoPuntuacionMasBaja(
-                    owner,
-                    todosLosNombres,
-                    calcularPuntajes(todosLosJugadores, modelo));
-
+            case PUNTUACION_MAS_BAJA -> new DialogoPuntuacionMasBaja(owner, todosLosNombres, calcularPuntajes(todosLosJugadores, modelo));
             case DESCARTAR_POR_NUMERO -> new DialogoDescartarPorNumero(owner);
-
         };
     }
 

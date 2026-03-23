@@ -1,11 +1,13 @@
 package op;
-
 import javax.swing.ImageIcon;
 import java.awt.Image;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The type Cargador assets.
+ */
 public final class CargadorAssets {
 
     private static CargadorAssets instancia;
@@ -13,6 +15,11 @@ public final class CargadorAssets {
 
     private CargadorAssets() {}
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static CargadorAssets getInstance() {
         if (instancia == null) {
             instancia = new CargadorAssets();
@@ -20,22 +27,54 @@ public final class CargadorAssets {
         return instancia;
     }
 
+    /**
+     * Gets carta.
+     *
+     * @param valor the valor
+     * @return the carta
+     */
     public ImageIcon getCarta(String valor) {
         return cargar("carta_" + valor.toLowerCase() + ".png");
     }
 
+    /**
+     * Gets reverso.
+     *
+     * @return the reverso
+     */
     public ImageIcon getReverso() {
         return cargar("carta_reves.png");
     }
 
+    /**
+     * Gets avatar.
+     *
+     * @param numero the numero
+     * @return the avatar
+     */
     public ImageIcon getAvatar(int numero) {
         return cargar("avatares/avatar_" + numero + ".png");
     }
 
+    /**
+     * Gets carta escalada.
+     *
+     * @param valor the valor
+     * @param ancho the ancho
+     * @param alto  the alto
+     * @return the carta escalada
+     */
     public Image getCartaEscalada(String valor, int ancho, int alto) {
         return getCarta(valor).getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
     }
 
+    /**
+     * Gets avatar escalado.
+     *
+     * @param numero the numero
+     * @param tam    the tam
+     * @return the avatar escalado
+     */
     public Image getAvatarEscalado(int numero, int tam) {
         return getAvatar(numero).getImage().getScaledInstance(tam, tam, Image.SCALE_SMOOTH);
     }

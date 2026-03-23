@@ -1,13 +1,30 @@
 package eventos;
-
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The type Dialogo evento ruleta.
+ */
 public abstract class DialogoEventoRuleta extends JDialog {
+    /**
+     * The Panel contenido.
+     */
     protected JPanel panelContenido;
+    /**
+     * The Resultado.
+     */
     protected Object resultado;
+    /**
+     * The Solo lectura.
+     */
     protected boolean soloLectura = false;
 
+    /**
+     * Instantiates a new Dialogo evento ruleta.
+     *
+     * @param owner  the owner
+     * @param titulo the titulo
+     */
     public DialogoEventoRuleta(Frame owner, String titulo) {
         super(owner, true);
         setUndecorated(true);
@@ -15,6 +32,11 @@ public abstract class DialogoEventoRuleta extends JDialog {
         setLocationRelativeTo(owner);
     }
 
+    /**
+     * Construir dialogo.
+     *
+     * @param titulo the titulo
+     */
     protected void construirDialogo(String titulo) {
         JPanel panelPrincipal = new JPanel();
         panelPrincipal.setBackground(new Color(255, 255, 255, 240));
@@ -67,26 +89,43 @@ public abstract class DialogoEventoRuleta extends JDialog {
         setContentPane(panelPrincipal);
     }
 
+    /**
+     * Crear contenido central j panel.
+     *
+     * @return the j panel
+     */
     protected abstract JPanel crearContenidoCentral();
+
+    /**
+     * Al aceptar.
+     */
     protected abstract void alAceptar();
 
+    /**
+     * Obtener descripcion string.
+     *
+     * @return the string
+     */
     protected String obtenerDescripcion() { return null; }
+
+    /**
+     * Obtener texto boton string.
+     *
+     * @return the string
+     */
     protected String obtenerTextoBoton() { return "ACEPTAR"; }
 
     private JPanel crearEncabezado() {
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
-
         JSeparator sep = new JSeparator();
         header.add(sep, BorderLayout.CENTER);
-
         JButton btnCerrar = new JButton("✕");
         btnCerrar.setBorderPainted(false);
         btnCerrar.setContentAreaFilled(false);
         btnCerrar.setFont(new Font("Arial", Font.BOLD, 18));
         btnCerrar.addActionListener(e -> dispose());
         header.add(btnCerrar, BorderLayout.EAST);
-
         return header;
     }
 
@@ -100,10 +139,20 @@ public abstract class DialogoEventoRuleta extends JDialog {
         return btn;
     }
 
+    /**
+     * Gets resultado.
+     *
+     * @return the resultado
+     */
     public Object getResultado() {
         return resultado;
     }
 
+    /**
+     * Sets solo lectura.
+     *
+     * @param soloLectura the solo lectura
+     */
     public void setSoloLectura(boolean soloLectura) {
         this.soloLectura = soloLectura;
     }
