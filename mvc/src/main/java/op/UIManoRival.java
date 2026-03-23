@@ -1,5 +1,4 @@
 package op;
-
 import interfaces.IComponent;
 import javax.swing.*;
 import java.awt.*;

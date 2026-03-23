@@ -2,9 +2,18 @@ package styles;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The type Button.
+ */
 public class Button extends JButton {
     private final Color fondoBase;
 
+    /**
+     * Instantiates a new Button.
+     *
+     * @param texto     the texto
+     * @param fondoBase the fondo base
+     */
     public Button(String texto, Color fondoBase) {
         super(texto);
         this.fondoBase = fondoBase;

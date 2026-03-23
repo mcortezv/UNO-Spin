@@ -13,9 +13,10 @@
         <module>mvc</module>
         <module>dominio</module>
         <module>builder</module>
-        <module>DTOs</module>
+        <module>dto</module>
         <module>conexion</module>
         <module>conexionInterfaces</module>
+        <module>servidor</module>
     </modules>
 
     <properties>

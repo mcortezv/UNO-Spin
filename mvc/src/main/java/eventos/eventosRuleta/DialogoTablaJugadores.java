@@ -1,15 +1,25 @@
 package eventos.eventosRuleta;
-
 import eventos.DialogoEventoRuleta;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * The type Dialogo tabla jugadores.
+ */
 public abstract class DialogoTablaJugadores extends DialogoEventoRuleta {
-
+    /**
+     * The Nombres jugadores.
+     */
     protected List<String> nombresJugadores;
 
+    /**
+     * Instantiates a new Dialogo tabla jugadores.
+     *
+     * @param owner     the owner
+     * @param titulo    the titulo
+     * @param jugadores the jugadores
+     */
     public DialogoTablaJugadores(Frame owner, String titulo, List<String> jugadores) {
         super(owner, titulo);
         this.nombresJugadores = jugadores;
@@ -33,5 +43,11 @@ public abstract class DialogoTablaJugadores extends DialogoEventoRuleta {
         return panel;
     }
 
+    /**
+     * Crear contenido jugador j component.
+     *
+     * @param indice the indice
+     * @return the j component
+     */
     protected abstract JComponent crearContenidoJugador(int indice);
 }

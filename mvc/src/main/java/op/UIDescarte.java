@@ -1,5 +1,4 @@
 package op;
-
 import interfaces.IComponent;
 import dto.CartaDTO;
 import javax.swing.*;
@@ -102,11 +101,21 @@ public class UIDescarte extends JPanel implements IComponent {
         };
     }
 
+    /**
+     * Sets on carta spin jugada.
+     *
+     * @param callback the callback
+     */
     public void setOnCartaSpinJugada(Runnable callback) {
         this.onCartaSpinJugada = callback;
 
     }
 
+    /**
+     * Is carta tope spin boolean.
+     *
+     * @return the boolean
+     */
     public boolean isCartaTopeSpin() {
         return cartaTope != null && cartaTope.getTipoCarta() != null && cartaTope.getTipoCarta().equalsIgnoreCase("NUMERO_SPIN");
 
