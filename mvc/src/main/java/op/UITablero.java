@@ -1,8 +1,6 @@
 package op;
-
 import dto.CartaDTO;
 import interfaces.IComponent;
-
 import javax.swing.*;
 import java.awt.*;
 

@@ -1,5 +1,4 @@
 package mock;
-
 import dominio.entidades.Carta;
 import dominio.entidades.Jugador;
 import dominio.entidades.enums.TipoCarta;
@@ -10,16 +9,21 @@ import interfaces.IModeloLectura;
 import interfaces.ISuscriptor;
 import dto.CartaDTO;
 import dto.JugadorDTO;
-
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Modelo mock.
+ */
 public class ModeloMock implements IModeloControlador, IModeloLectura {
 
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
     private final PartidaMock partidaMock;
     private boolean ultimaJugadaValida = true;
 
+    /**
+     * Instantiates a new Modelo mock.
+     */
     public ModeloMock() {
         this.partidaMock = new PartidaMock();
     }
@@ -149,6 +153,11 @@ public class ModeloMock implements IModeloControlador, IModeloLectura {
     @Override
     public void aplicarSeleccionColor(String color) {}
 
+    /**
+     * Subscribe.
+     *
+     * @param suscriptor the suscriptor
+     */
     public void subscribe(ISuscriptor suscriptor) {
         this.suscriptores.add(suscriptor);
     }

@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.itson</groupId>
-            <artifactId>DTOs</artifactId>
+            <artifactId>dto</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>

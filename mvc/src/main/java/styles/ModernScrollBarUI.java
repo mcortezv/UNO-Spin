@@ -3,6 +3,9 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
 
+/**
+ * The type Modern scroll bar ui.
+ */
 public class ModernScrollBarUI extends BasicScrollBarUI {
 
     @Override

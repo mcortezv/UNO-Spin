@@ -1,5 +1,4 @@
 package op;
-
 import dominio.entidades.enums.TipoEventoRuleta;
 import dto.CartaDTO;
 import dto.JugadorDTO;
@@ -15,6 +14,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * The type Ui turno jugador.
+ */
 public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
 
     private static final int ANCHO_VENTANA = 1040;
@@ -40,6 +42,13 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
 
     private boolean ultimaJugadaValidaAnterior = true;
 
+    /**
+     * Instantiates a new Ui turno jugador.
+     *
+     * @param controlador   the controlador
+     * @param modeloLectura the modelo lectura
+     * @param relative      the relative
+     */
     public UITurnoJugador(IControlador controlador, IModeloLectura modeloLectura, List<Integer> relative) {
         super("UNO-SPIN");
         this.controlador = controlador;

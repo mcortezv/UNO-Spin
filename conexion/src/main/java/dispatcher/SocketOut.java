@@ -1,20 +1,26 @@
 package dispatcher;
-
-import interfaces.IDispatcher;
 import interfaces.IDispatcherObserver;
-
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * The type Socket out.
+ */
 public class SocketOut implements IDispatcherObserver {
     private ExecutorService worker;
 
+    /**
+     * Start.
+     */
     public void start() {
         this.worker = Executors.newCachedThreadPool();
     }
 
+    /**
+     * Close.
+     */
     public void close() {
         if (worker != null && !worker.isShutdown()) {
             worker.shutdown();
