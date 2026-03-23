@@ -1,15 +1,24 @@
 package eventos.eventosRuleta;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The type Dialogo puntuacion mas baja.
+ */
 public class DialogoPuntuacionMasBaja extends DialogoTablaJugadores {
     private final List<Integer> puntajes;
 
 
+    /**
+     * Instantiates a new Dialogo puntuacion mas baja.
+     *
+     * @param owner          the owner
+     * @param jugadores      the jugadores
+     * @param puntajesReales the puntajes reales
+     */
     public DialogoPuntuacionMasBaja(Frame owner, List<String> jugadores, List<Integer> puntajesReales) {
         super(owner, "¡PUNTUACION MAS BAJA!", jugadores);
         this.puntajes = new ArrayList<>(puntajesReales);

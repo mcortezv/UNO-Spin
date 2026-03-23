@@ -1,5 +1,4 @@
 package mock;
-
 import dominio.entidades.enums.TipoEventoRuleta;
 import dto.CartaDTO;
 import dto.JugadorDTO;
@@ -11,6 +10,9 @@ import mvc.Modelo;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Modelo vista jugador.
+ */
 public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, ISuscriptor {
 
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
@@ -22,6 +24,12 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
     private TipoEventoRuleta ultimoEventoVisto = null;
     private int ultimoPasoVisto = 0;
 
+    /**
+     * Instantiates a new Modelo vista jugador.
+     *
+     * @param vistaJugador the vista jugador
+     * @param modelo       the modelo
+     */
     public ModeloVistaJugador(int vistaJugador, Modelo modelo) {
         this.vistaJugador = vistaJugador;
         this.modeloLectura = modelo;
@@ -94,6 +102,11 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
         return modeloLectura.getManoJugadorEspecifico(vistaJugador);
     }
 
+    /**
+     * Gets carta cima.
+     *
+     * @return the carta cima
+     */
     @Override
     public CartaDTO getCartaCima() {
         return modeloLectura.getCartaCima();
@@ -158,6 +171,11 @@ public class ModeloVistaJugador implements IModeloLectura, IModeloControlador, I
     }
 
 
+    /**
+     * Subscribe.
+     *
+     * @param suscriptor the suscriptor
+     */
     public void subscribe(ISuscriptor suscriptor) {
         suscriptores.add(suscriptor);
     }

@@ -1,14 +1,21 @@
 package mvc;
-
 import dominio.entidades.enums.TipoEventoRuleta;
 import dto.CartaDTO;
 import interfaces.IControlador;
 import interfaces.IModeloControlador;
 
+/**
+ * The type Controlador.
+ */
 public class Controlador implements IControlador {
 
     private final IModeloControlador modelo;
 
+    /**
+     * Instantiates a new Controlador.
+     *
+     * @param modelo the modelo
+     */
     public Controlador(IModeloControlador modelo) {
         this.modelo = modelo;
     }
@@ -63,6 +70,4 @@ public class Controlador implements IControlador {
     public void onSeleccionColor(String color) {
         modelo.aplicarSeleccionColor(color);
     }
-
-    
 }

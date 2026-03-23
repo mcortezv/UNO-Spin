@@ -1,11 +1,18 @@
 package eventos.eventosRuleta;
-
 import eventos.DialogoEventoRuleta;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The type Dialogo intercambio de manos.
+ */
 public class DialogoIntercambioDeManos extends DialogoEventoRuleta {
 
+    /**
+     * Instantiates a new Dialogo intercambio de manos.
+     *
+     * @param owner the owner
+     */
     public DialogoIntercambioDeManos(Frame owner) {
         super(owner, "¡INTERCAMBIO DE MANOS!");
         construirDialogo("¡INTERCAMBIO DE MANOS!");
