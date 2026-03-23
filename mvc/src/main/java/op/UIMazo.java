@@ -1,5 +1,4 @@
 package op;
-
 import interfaces.IComponent;
 import javax.swing.*;
 import java.awt.*;
@@ -126,6 +125,11 @@ public class UIMazo extends JPanel implements IComponent {
     public void execute() {
     }
 
+    /**
+     * Sets active.
+     *
+     * @param active the active
+     */
     public void setActive(boolean active) {
         isActive = active;
     }

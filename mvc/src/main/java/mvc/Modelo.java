@@ -1,5 +1,4 @@
 package mvc;
-
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoEventoRuleta;
 import dominio.interfaces.IDominio;
@@ -8,12 +7,14 @@ import dto.JugadorDTO;
 import interfaces.IModeloControlador;
 import interfaces.IModeloLectura;
 import interfaces.ISuscriptor;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * The type Modelo.
+ */
 public class Modelo implements IModeloControlador, IModeloLectura {
 
     private final IDominio dominio;
@@ -27,6 +28,11 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     private boolean ultimaJugadaValida = true;
 
+    /**
+     * Instantiates a new Modelo.
+     *
+     * @param dominio the dominio
+     */
     public Modelo(IDominio dominio) {
         this.dominio = dominio;
         this.totalJugadores = dominio.getJugadores().size();
@@ -201,10 +207,20 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         return dominio.getIndiceJugadorActual() == indiceJugador;
     }
 
+    /**
+     * Subscribe.
+     *
+     * @param suscriptor the suscriptor
+     */
     public void subscribe(ISuscriptor suscriptor) {
         suscriptores.add(suscriptor);
     }
 
+    /**
+     * Unsubscribe.
+     *
+     * @param suscriptor the suscriptor
+     */
     public void unsubscribe(ISuscriptor suscriptor) {
         suscriptores.remove(suscriptor);
     }

@@ -2,13 +2,28 @@ package styles;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The type Custom scroll pane.
+ */
 public class CustomScrollPane extends JScrollPane {
 
+    /**
+     * Instantiates a new Custom scroll pane.
+     *
+     * @param vista              the vista
+     * @param politicaVertical   the politica vertical
+     * @param politicaHorizontal the politica horizontal
+     */
     public CustomScrollPane(Component vista, int politicaVertical, int politicaHorizontal) {
         super(vista, politicaVertical, politicaHorizontal);
         configurarEstilo();
     }
 
+    /**
+     * Instantiates a new Custom scroll pane.
+     *
+     * @param vista the vista
+     */
     public CustomScrollPane(Component vista) {
         super(vista);
         configurarEstilo();

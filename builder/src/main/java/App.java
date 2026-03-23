@@ -5,7 +5,6 @@ import mock.ModeloVistaJugador;
 import mvc.Controlador;
 import mvc.Modelo;
 import op.UITurnoJugador;
-
 import java.util.ArrayList;
 import java.util.List;
 
