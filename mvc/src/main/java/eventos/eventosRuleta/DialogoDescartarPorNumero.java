@@ -1,12 +1,19 @@
 package eventos.eventosRuleta;
-
 import eventos.DialogoEventoRuleta;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The type Dialogo descartar por numero.
+ */
 public class DialogoDescartarPorNumero extends DialogoEventoRuleta {
     private int numeroElegido = -1;
 
+    /**
+     * Instantiates a new Dialogo descartar por numero.
+     *
+     * @param owner the owner
+     */
     public DialogoDescartarPorNumero(Frame owner) {
         super(owner, "¡DESCARTAR POR NUMERO!");
         construirDialogo("¡DESCARTAR POR NUMERO!");

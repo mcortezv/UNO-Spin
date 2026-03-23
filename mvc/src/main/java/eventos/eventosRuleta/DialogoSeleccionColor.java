@@ -1,17 +1,26 @@
 package eventos.eventosRuleta;
-
 import eventos.DialogoEventoRuleta;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * The type Dialogo seleccion color.
+ */
 public abstract class DialogoSeleccionColor extends DialogoEventoRuleta {
-
+    /**
+     * The Color seleccionado.
+     */
     protected String colorSeleccionado;
     private final Map<JButton, String> botonesColor = new LinkedHashMap<>();
 
+    /**
+     * Instantiates a new Dialogo seleccion color.
+     *
+     * @param owner  the owner
+     * @param titulo the titulo
+     */
     public DialogoSeleccionColor(Frame owner, String titulo) {
         super(owner, titulo);
     }
@@ -40,6 +49,13 @@ public abstract class DialogoSeleccionColor extends DialogoEventoRuleta {
         return panel;
     }
 
+    /**
+     * Crear circulo j button.
+     *
+     * @param color the color
+     * @param size  the size
+     * @return the j button
+     */
     protected JButton crearCirculo(Color color, int size) {
         JButton btn = new JButton() {
             @Override
@@ -59,4 +75,3 @@ public abstract class DialogoSeleccionColor extends DialogoEventoRuleta {
         return btn;
     }
 }
-

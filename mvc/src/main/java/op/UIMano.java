@@ -1,5 +1,4 @@
 package op;
-
 import interfaces.IComponent;
 import styles.CustomScrollPane;
 import dto.CartaDTO;

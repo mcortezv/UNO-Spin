@@ -1,5 +1,4 @@
 package op;
-
 import dto.JugadorDTO;
 import interfaces.IComponent;
 import javax.swing.Icon;

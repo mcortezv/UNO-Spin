@@ -1,7 +1,6 @@
 package mock;
 import dominio.entidades.*;
 import dominio.entidades.enums.TipoCarta;
-
 import java.util.ArrayList;
 
 /**

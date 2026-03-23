@@ -1,14 +1,21 @@
 package eventos.eventosRuleta;
-
 import eventos.DialogoEventoRuleta;
-
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The type Dialogo color informativo.
+ */
 public abstract class DialogoColorInformativo extends DialogoEventoRuleta {
-
     private final Color colorMostrar;
 
+    /**
+     * Instantiates a new Dialogo color informativo.
+     *
+     * @param owner  the owner
+     * @param titulo the titulo
+     * @param color  the color
+     */
     public DialogoColorInformativo(Frame owner, String titulo, Color color) {
         super(owner, titulo);
         this.colorMostrar = color;
