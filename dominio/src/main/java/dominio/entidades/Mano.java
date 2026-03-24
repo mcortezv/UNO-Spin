@@ -9,7 +9,8 @@ public class Mano {
 
     private List<Carta> cartas;
 
-    public Mano() {}
+    public Mano() {
+    cartas = new ArrayList<>();}
 
     public Mano(List<Carta> cartas) {
         this.cartas = cartas;
