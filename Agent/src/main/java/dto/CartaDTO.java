@@ -1,7 +1,5 @@
 package dto;
 
-import dominio.enums.TipoCarta;
-
 /**
  * The type Carta dto.
  */

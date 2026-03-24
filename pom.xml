@@ -7,12 +7,30 @@
     <groupId>com.itson</groupId>
     <artifactId>UNO-Spin</artifactId>
     <version>1.0</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>Blackboard</module>
+        <module>Agent</module>
+        <module>Control</module>
+        <module>Conexion</module>
+        <module>InterfacesConexion</module>
+        <module>Serializer</module>
+        <module>Assembler</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+            <version>2.21.1</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
