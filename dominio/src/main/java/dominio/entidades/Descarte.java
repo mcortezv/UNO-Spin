@@ -1,6 +1,7 @@
 package dominio.entidades;
 
 import dominio.entidades.enums.TipoCarta;
+import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Objects;
@@ -9,7 +10,8 @@ public class Descarte {
 
     private List<Carta> cartas;
 
-    public Descarte() {}
+    public Descarte() {
+    cartas = new ArrayList<>();}
 
     public Descarte(List<Carta> cartas) {
         this.cartas = cartas;
