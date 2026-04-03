@@ -1,5 +1,4 @@
 package receptor;
-import interfaces.IReceptorComponente;
 import interfaces.IReceptorObserver;
 
 /**
