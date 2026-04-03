@@ -1,33 +1,29 @@
-package dto;
+package dominio.entidades;
+import dominio.entidades.enums.TipoCarta;
 
-<<<<<<<< HEAD:Agent/src/main/java/dto/CartaDTO.java
-========
-
->>>>>>>> main:dto/src/main/java/dto/CartaDTO.java
 /**
- * The type Carta dto.
+ * The type Carta.
  */
-public class CartaDTO {
+public class Carta {
     private Integer numero;
-    private String tipoCarta;
+    private TipoCarta tipoCarta;
     private String color;
-    private String valor;
+    private int valor;
 
     /**
-     * Instantiates a new Carta dto.
+     * Instantiates a new Carta.
      */
-    public CartaDTO() {
-    }
+    public Carta() {}
 
     /**
-     * Instantiates a new Carta dto.
+     * Instantiates a new Carta.
      *
      * @param color     the color
      * @param numero    the numero
      * @param tipoCarta the tipo carta
      * @param valor     the valor
      */
-    public CartaDTO(String color, Integer numero, String tipoCarta, String valor) {
+    public Carta(String color, Integer numero, TipoCarta tipoCarta, int valor) {
         this.color = color;
         this.numero = numero;
         this.tipoCarta = tipoCarta;
@@ -75,7 +71,7 @@ public class CartaDTO {
      *
      * @return the tipo carta
      */
-    public String getTipoCarta() {
+    public TipoCarta getTipoCarta() {
         return tipoCarta;
     }
 
@@ -84,7 +80,7 @@ public class CartaDTO {
      *
      * @param tipoCarta the tipo carta
      */
-    public void setTipoCarta(String tipoCarta) {
+    public void setTipoCarta(TipoCarta tipoCarta) {
         this.tipoCarta = tipoCarta;
     }
 
@@ -93,7 +89,7 @@ public class CartaDTO {
      *
      * @return the valor
      */
-    public String getValor() {
+    public int getValor() {
         return valor;
     }
 
@@ -102,7 +98,37 @@ public class CartaDTO {
      *
      * @param valor the valor
      */
-    public void setValor(String valor) {
+    public void setValor(int valor) {
         this.valor = valor;
+    }
+
+    /**
+     * Es comodin boolean.
+     *
+     * @return the boolean
+     */
+    public boolean esComodin(){
+        return this.tipoCarta == TipoCarta.CAMBIO_COLOR ||
+                this.tipoCarta == TipoCarta.TOMA_CUATRO;
+    }
+
+    /**
+     * Efecto especial boolean.
+     *
+     * @return the boolean
+     */
+    public boolean efectoEspecial(){
+        return this.tipoCarta == TipoCarta.REVERSA ||
+                this.tipoCarta == TipoCarta.TOMA_DOS ||
+                this.tipoCarta == TipoCarta.BLOQUEO;
+    }
+
+    /**
+     * Es spin boolean.
+     *
+     * @return the boolean
+     */
+    public boolean esSpin(){
+        return this.tipoCarta == TipoCarta.NUMERO_SPIN;
     }
 }
