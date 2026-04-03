@@ -1,5 +1,4 @@
 package receptor;
-
 import interfaces.IReceptor;
 
 public class Receptor implements IReceptor {
@@ -11,6 +10,6 @@ public class Receptor implements IReceptor {
 
     @Override
     public void update(String json, int port, String ip) {
-        componente.recibirMensaje(json);
+        componente.update(json, port, ip);
     }
 }

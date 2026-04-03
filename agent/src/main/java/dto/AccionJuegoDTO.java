@@ -1,12 +1,10 @@
 package dto;
 
 public class AccionJuegoDTO {
-
     private String accion;
     private CartaDTO carta;
-    public AccionJuegoDTO() {
 
-    }
+    public AccionJuegoDTO() {}
 
     public AccionJuegoDTO(String accion, CartaDTO carta) {
         this.accion = accion;

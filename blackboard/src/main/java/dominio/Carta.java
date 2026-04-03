@@ -1,5 +1,5 @@
-package dominio.entidades;
-import dominio.entidades.enums.TipoCarta;
+package dominio;
+import dominio.enums.TipoCarta;
 
 /**
  * The type Carta.
