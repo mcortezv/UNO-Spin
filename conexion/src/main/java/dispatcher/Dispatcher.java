@@ -1,5 +1,4 @@
 package dispatcher;
-
 import interfaces.IDispatcher;
 
 public class Dispatcher implements IDispatcher {

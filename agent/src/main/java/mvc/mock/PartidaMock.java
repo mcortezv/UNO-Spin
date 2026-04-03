@@ -1,10 +1,9 @@
-package mock;
+package mvc.mock;
+import dominio.Mano;
+import dominio.Partida;
 import dominio.entidades.Carta;
 import dominio.entidades.Jugador;
-import dominio.entidades.Mano;
-import dominio.entidades.Partida;
-import dominio.entidades.enums.EstadoPartida;
-import dominio.entidades.enums.TipoCarta;
+import dominio.enums.TipoCarta;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,9 +1,5 @@
 package dto;
 
-<<<<<<<< HEAD:Agent/src/main/java/dto/CartaDTO.java
-========
-
->>>>>>>> main:dto/src/main/java/dto/CartaDTO.java
 /**
  * The type Carta dto.
  */

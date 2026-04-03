@@ -1,5 +1,4 @@
 package receptor;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,14 +7,14 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SocketIN {
+public class SocketIn {
     private ServerSocket server;
     private ExecutorService pool;
     private int puertoEscucha;
 
     private ColaReceptor colaReceptor;
 
-    public SocketIN(int puerto, ColaReceptor cola) {
+    public SocketIn(int puerto, ColaReceptor cola) {
         this.puertoEscucha = puerto;
         this.colaReceptor = cola;
     }
