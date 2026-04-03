@@ -1,8 +1,10 @@
 package dominio;
-
 import dominio.enums.EstadoPartida;
 import dominio.enums.TipoEventoRuleta;
 import dominio.interfaces.IDominio;
+import dto.JugadorDTO;
+import mappers.JugadorMapper;
+
 import java.util.List;
 
 /**
@@ -79,8 +81,8 @@ public class Partida implements IDominio {
      *
      * @return the jugadores
      */
-    public List<Jugador> getJugadores() {
-        return jugadores;
+    public List<JugadorDTO> getJugadores() {
+        return JugadorMapper.toDTO(jugadores);
     }
 
     /**

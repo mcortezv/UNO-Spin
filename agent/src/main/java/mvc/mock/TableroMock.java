@@ -1,6 +1,4 @@
-package mock;
-import dominio.entidades.*;
-import dominio.entidades.enums.TipoCarta;
+package mvc.mock;
 import java.util.ArrayList;
 
 /**
@@ -13,7 +11,7 @@ public class TableroMock extends Tablero {
     public TableroMock() {
         super();
 
-        ArrayList<Carta> descarte = new ArrayList<Carta>();
+        ArrayList<dominio.entidades.Carta> descarte = new ArrayList<Carta>();
         descarte.add(new Carta("ROJO", 5, TipoCarta.NUMERICA, 5));
         setDescarte(new Descarte(descarte));
 

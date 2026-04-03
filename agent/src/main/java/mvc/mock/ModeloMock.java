@@ -1,14 +1,14 @@
-package mock;
+package mvc.mock;
 import dominio.entidades.Carta;
 import dominio.entidades.Jugador;
-import dominio.entidades.enums.TipoCarta;
-import dominio.entidades.enums.TipoEventoRuleta;
-import dominio.mappers.CartaMapper;
-import interfaces.IModeloControlador;
-import interfaces.IModeloLectura;
-import interfaces.ISuscriptor;
+import dominio.enums.TipoEventoRuleta;
 import dto.CartaDTO;
 import dto.JugadorDTO;
+import mappers.CartaMapper;
+import mock.PartidaMock;
+import mvc.interfaces.IModeloControlador;
+import mvc.interfaces.IModeloLectura;
+import mvc.interfaces.ISuscriptor;
 import java.util.ArrayList;
 import java.util.List;
 

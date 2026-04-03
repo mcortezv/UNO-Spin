@@ -1,5 +1,4 @@
 package dispatcherFactory;
-
 import dispatcher.ColaDispatcher;
 import dispatcher.Dispatcher;
 import interfaces.IDispatcher;

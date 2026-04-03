@@ -19,19 +19,19 @@
     <dependencies>
         <dependency>
             <groupId>com.itson</groupId>
-            <artifactId>dominio</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.itson</groupId>
             <artifactId>serializer</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.itson</groupId>
-            <artifactId>conexion-interfaces</artifactId>
+            <artifactId>interfaces-conexion</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.itson</groupId>
+            <artifactId>blackboard</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
