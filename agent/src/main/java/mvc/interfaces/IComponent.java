@@ -1,4 +1,4 @@
-package interfaces;
+package mvc.interfaces;
 
 /**
  * The interface Component.

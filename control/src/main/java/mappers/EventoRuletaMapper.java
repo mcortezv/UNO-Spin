@@ -2,9 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package dominio.mappers;
-
-import dominio.entidades.enums.TipoEventoRuleta;
+package mappers;
+import dominio.enums.TipoEventoRuleta;
 import dto.EventoRuletaDTO;
 
 /**

@@ -1,5 +1,5 @@
 package receptor;
-import interfaces.IReceptorObserver;
+import interfaces.IReceptor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -10,7 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class ColaReceptor {
     private BlockingQueue<String> entrada = new LinkedBlockingQueue<>();
-    private List<IReceptorObserver> observadores = new ArrayList<>();
+    private List<IReceptor> observadores = new ArrayList<>();
 
     /**
      * Recibir.
@@ -26,7 +26,7 @@ public class ColaReceptor {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-        for (IReceptorObserver obs : observadores) {
+        for (IReceptor obs : observadores) {
             obs.update(json, port, ip);
         }
     }
@@ -36,7 +36,7 @@ public class ColaReceptor {
      *
      * @param receptor the receptor
      */
-    public void attach(IReceptorObserver receptor) {
+    public void attach(IReceptor receptor) {
         observadores.add(receptor);
     }
 }

@@ -1,12 +1,11 @@
-package mock;
-import dominio.entidades.enums.TipoEventoRuleta;
+package mvc.mock;
+import dominio.enums.TipoEventoRuleta;
 import dto.CartaDTO;
 import dto.JugadorDTO;
-import interfaces.IModeloControlador;
-import interfaces.IModeloLectura;
-import interfaces.ISuscriptor;
 import mvc.Modelo;
-
+import mvc.interfaces.IModeloControlador;
+import mvc.interfaces.IModeloLectura;
+import mvc.interfaces.ISuscriptor;
 import java.util.ArrayList;
 import java.util.List;
 

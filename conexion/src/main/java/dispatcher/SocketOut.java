@@ -4,7 +4,7 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SocketOUT {
+public class SocketOut {
     private ExecutorService worker;
 
     public void start() {

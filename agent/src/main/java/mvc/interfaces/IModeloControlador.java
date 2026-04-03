@@ -1,5 +1,4 @@
 package mvc.interfaces;
-
 import dto.CartaDTO;
 import dto.EventoRuletaDTO;
 
