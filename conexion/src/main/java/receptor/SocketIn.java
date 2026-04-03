@@ -1,4 +1,5 @@
 package receptor;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,30 +8,18 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * The type Socket in.
- */
-public class SocketIn {
+public class SocketIN {
     private ServerSocket server;
     private ExecutorService pool;
     private int puertoEscucha;
 
     private ColaReceptor colaReceptor;
 
-    /**
-     * Instantiates a new Socket in.
-     *
-     * @param puerto the puerto
-     * @param cola   the cola
-     */
-    public SocketIn(int puerto, ColaReceptor cola) {
+    public SocketIN(int puerto, ColaReceptor cola) {
         this.puertoEscucha = puerto;
         this.colaReceptor = cola;
     }
 
-    /**
-     * Start.
-     */
     public void start() {
         pool = Executors.newCachedThreadPool();
 
@@ -51,9 +40,6 @@ public class SocketIn {
         }).start();
     }
 
-    /**
-     * Close.
-     */
     public void close() {
         try {
             if (pool != null && !pool.isShutdown()) {
@@ -72,12 +58,6 @@ public class SocketIn {
         private Socket socket;
         private ColaReceptor colaReceptor;
 
-        /**
-         * Instantiates a new Cliente handler.
-         *
-         * @param socket the socket
-         * @param cola   the cola
-         */
         public ClienteHandler(Socket socket, ColaReceptor cola) {
             this.socket = socket;
             this.colaReceptor = cola;
