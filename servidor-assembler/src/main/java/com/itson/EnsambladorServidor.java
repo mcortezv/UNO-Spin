@@ -1,4 +1,4 @@
-package ensamblador;
+package com.itson;
 
 import Interfaces.IControlServidor;
 import dominio.entidades.Partida;
@@ -13,13 +13,12 @@ public class EnsambladorServidor {
     private final ControlServidor controlServidor;
 
     public EnsambladorServidor(ISerializer serializer, IDispatcher dispatcher) {
-        this.partida = new Partida(serializer);
+        this.partida = new Partida();
         this.controlServidor = new ControlServidor(partida, dispatcher, serializer);
-        this.partida.addObservador(controlServidor);
     }
 
     public IReceptorComponente getReceptor() {
-        return partida;
+        return controlServidor;
     }
 
     public IDominio getDominio() {
@@ -29,5 +28,4 @@ public class EnsambladorServidor {
     public IControlServidor getControlServidor() {
         return controlServidor;
     }
-
 }

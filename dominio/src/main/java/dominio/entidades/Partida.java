@@ -3,20 +3,10 @@ package dominio.entidades;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoEventoRuleta;
 import dominio.interfaces.IDominio;
-import dominio.interfaces.IObservadorDominio;
-import dominio.mappers.CartaMapper;
-import dominio.mappers.EventoRuletaMapper;
-import dominio.mappers.JugadorMapper;
-import dto.*;
-import interfaces.IReceptorComponente;
-import interfaces.ISerializer;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static enums.TipoAccion.*;
-
-public class Partida implements IDominio, IReceptorComponente {
+public class Partida implements IDominio {
 
     private List<Jugador> jugadores;
     private EstadoPartida estadoPartida;
@@ -25,12 +15,8 @@ public class Partida implements IDominio, IReceptorComponente {
     private Tablero tablero;
     private boolean unoGritado = false;
     private boolean ultimaJugadaValida = true;
-    private ISerializer serializer;
-    private final List<IObservadorDominio> observador = new ArrayList<IObservadorDominio>();
 
-    public Partida(ISerializer serializer) {
-        this.serializer = serializer;
-    }
+    public Partida() {}
 
     public Partida(EstadoPartida estadoPartida, int indiceJugadorActual,
                    List<Jugador> jugadores, boolean sentidoHorario) {
@@ -50,16 +36,13 @@ public class Partida implements IDominio, IReceptorComponente {
     }
 
     @Override
-    public boolean validarJugada(CartaDTO cartaDTO) {
-        Carta carta = CartaMapper.toEntity(cartaDTO);
+    public boolean validarJugada(Carta carta) {
         return tablero.getDescarte().validarCartaEntrante(carta);
     }
 
     @Override
-    public boolean aplicarJugada(CartaDTO cartaDTO) {
-        Carta c = CartaMapper.toEntity(cartaDTO);
-
-        if (!tablero.getDescarte().validarCartaEntrante(c)) return false;
+    public boolean aplicarJugada(Carta carta) {
+        if (!tablero.getDescarte().validarCartaEntrante(carta)) return false;
 
         this.ultimaJugadaValida = true;
 
@@ -69,9 +52,9 @@ public class Partida implements IDominio, IReceptorComponente {
         boolean removida = false;
         for (int i = 0; i < cartasMano.size(); i++) {
             Carta enMano = cartasMano.get(i);
-            if (enMano.getTipoCarta() == c.getTipoCarta()
-                    && enMano.getValor() == c.getValor()
-                    && matchColor(enMano.getColor(), c.getColor())) {
+            if (enMano.getTipoCarta() == carta.getTipoCarta()
+                    && enMano.getValor() == carta.getValor()
+                    && matchColor(enMano.getColor(), carta.getColor())) {
                 cartasMano.remove(i);
                 removida = true;
                 break;
@@ -80,9 +63,9 @@ public class Partida implements IDominio, IReceptorComponente {
 
         if (!removida) return false;
 
-        tablero.getDescarte().getCartas().add(c);
+        tablero.getDescarte().getCartas().add(carta);
 
-        switch (c.getTipoCarta()) {
+        switch (carta.getTipoCarta()) {
             case NUMERO_SPIN  -> estadoPartida = EstadoPartida.GIRO_PENDIENTE;
             case REVERSA      -> { sentidoHorario = !sentidoHorario; avanzarTurno(); }
             case BLOQUEO      -> { avanzarTurno(); avanzarTurno(); }
@@ -191,23 +174,23 @@ public class Partida implements IDominio, IReceptorComponente {
     }
 
     @Override
-    public List<JugadorDTO> getJugadores() {
-        return JugadorMapper.toDTO(jugadores);
+    public List<Jugador> getJugadores() {
+        return jugadores;
     }
 
     @Override
-    public List<CartaDTO> getManoJugador(int indiceJugador) {
-        return CartaMapper.toDTO(jugadores.get(indiceJugador).getMano().getCartas());
+    public List<Carta> getManoJugador(int indiceJugador) {
+        return jugadores.get(indiceJugador).getMano().getCartas();
     }
 
     @Override
-    public CartaDTO getCartaCima() {
-        return CartaMapper.toDTO(tablero.getDescarte().getUltimaCarta());
+    public Carta getCartaCima() {
+        return tablero.getDescarte().getUltimaCarta();
     }
 
     @Override
-    public List<CartaDTO> getCartasDescarte() {
-        return CartaMapper.toDTO(tablero.getDescarte().getCartas());
+    public List<Carta> getCartasDescarte() {
+        return tablero.getDescarte().getCartas();
     }
 
     @Override
@@ -216,26 +199,9 @@ public class Partida implements IDominio, IReceptorComponente {
     }
 
     @Override
-    public EstadoPartidaDTO obtenerEstadoPartidaJugador(int indiceJugador) {
-
-        List<JugadorDTO> listaJugadores = JugadorMapper.toDTO(this.jugadores);
-        CartaDTO cartaCima = CartaMapper.toDTO(this.tablero.getDescarte().getUltimaCarta());
-        List<CartaDTO> cartaMano = CartaMapper.toDTO(this.jugadores.get(indiceJugador).getMano().getCartas());
-        EventoRuletaDTO eventoRuletaDTO = null;
-        if (this.estadoPartida == EstadoPartida.GIRO_PENDIENTE){
-            eventoRuletaDTO = EventoRuletaMapper.toDTO(this.tablero.getRuleta().getEventoRuleta());
-        }
-        return new EstadoPartidaDTO(
-                this.indiceJugadorActual,
-                this.estadoPartida.name(),
-                cartaCima,
-                this.getJugadores(),
-                cartaMano,
-                (this.indiceJugadorActual == indiceJugador),
-                eventoRuletaDTO,
-                this.isUltimaJugadaValida());
+    public TipoEventoRuleta getEventoRuleta() {
+        return tablero.getRuleta().getEventoRuleta();
     }
-
 
     public Tablero getTablero() {
         return tablero;
@@ -273,18 +239,12 @@ public class Partida implements IDominio, IReceptorComponente {
         this.unoGritado = u;
     }
 
-    public List<Jugador> getJugadoresEntidades() {
-        return jugadores;
-    }
-
-
     private int siguienteIndice() {
         int n = jugadores.size();
         return sentidoHorario
                 ? (indiceJugadorActual + 1) % n
                 : (indiceJugadorActual - 1 + n) % n;
     }
-
 
     private boolean matchColor(String colorMano, String colorJugada) {
         if (colorMano == null || colorJugada == null) return true;
@@ -357,36 +317,5 @@ public class Partida implements IDominio, IReceptorComponente {
                     try { j.getMano().getCartas().add(tablero.getMazo().robarCarta()); }
                     catch (Exception e) { System.out.println("Mazo vacío."); }
                 });
-    }
-
-    @Override
-    public void recibirMensaje(String json) {
-        TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
-        switch (accion){
-            case JUGAR_CARTA -> {
-                this.aplicarJugada(accion.getCartaDTO());
-            }
-            case PEDIR_CARTA -> {
-                this.robarCartaJugadorActual();
-            }
-            case GRITAR_UNO -> {
-                this.gritarUno();
-            }
-            default -> {
-                break;
-            }
-
-        }
-        for (IObservadorDominio obs: observador) {
-            obs.onEstadoCambiado(this);
-        }
-    }
-
-    public void setSerializer(ISerializer serializer) {
-        this.serializer = serializer;
-    }
-
-    public void addObservador(IObservadorDominio obs){
-        this.observador.add(obs);
     }
 }

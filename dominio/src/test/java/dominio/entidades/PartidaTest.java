@@ -1,12 +1,13 @@
 package dominio.entidades;
+
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoCarta;
 import dominio.entidades.enums.TipoEventoRuleta;
-import dominio.mappers.CartaMapper;
-import implementacion.JsonSerializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.*;
 
 class PartidaTest {
@@ -18,17 +19,13 @@ class PartidaTest {
 
     @BeforeEach
     void setUp() {
-
-        JsonSerializer serializer = new JsonSerializer();
         jugador1 = new Jugador("Miss wasabe", new Mano(new ArrayList<>()), Arrays.asList("ROJO"), 0, 1);
         jugador2 = new Jugador("Juanpi", new Mano(new ArrayList<>()), Arrays.asList("AZUL"), 0, 2);
         tablero = new Tablero(new Descarte(), new Mazo(), new Ruleta());
 
-        partida = new Partida(serializer);
+        partida = new Partida();
         partida.iniciarPartida(Arrays.asList(jugador1, jugador2), tablero);
 
-        // Carta inicial en el descarte para evitar NoSuchElementException
-        
         tablero.getDescarte().getCartas().add(new Carta("ROJO", 3, TipoCarta.NUMERICA, 3));
     }
 
@@ -44,7 +41,7 @@ class PartidaTest {
     void testValidarJugadaCorrecta() {
         Carta carta = new Carta("ROJO", 5, TipoCarta.NUMERICA, 5);
         tablero.getDescarte().getCartas().add(new Carta("ROJO", 3, TipoCarta.NUMERICA, 3));
-        assertTrue(partida.validarJugada(CartaMapper.toDTO(carta)));
+        assertTrue(partida.validarJugada(carta));
     }
 
     @Test
@@ -55,7 +52,7 @@ class PartidaTest {
         Carta carta = new Carta("AZUL", 7, TipoCarta.NUMERO_SPIN, 7);
         jugador1.getMano().getCartas().add(carta);
 
-        boolean resultado = partida.aplicarJugada(CartaMapper.toDTO(carta));
+        boolean resultado = partida.aplicarJugada(carta);
 
         assertTrue(resultado, "La jugada Spin debería ser válida");
         assertEquals(EstadoPartida.GIRO_PENDIENTE, partida.getEstadoPartida());
@@ -63,14 +60,13 @@ class PartidaTest {
 
     @Test
     void testAplicarJugadaReversa() {
-        // Ajustar descarte para que coincida en color
         tablero.getDescarte().getCartas().clear();
         tablero.getDescarte().getCartas().add(new Carta("VERDE", 5, TipoCarta.NUMERICA, 5));
 
         Carta carta = new Carta("VERDE", 0, TipoCarta.REVERSA, 20);
         jugador1.getMano().getCartas().add(carta);
 
-        boolean resultado = partida.aplicarJugada(CartaMapper.toDTO(carta));
+        boolean resultado = partida.aplicarJugada(carta);
 
         assertTrue(resultado, "La jugada Reversa debería ser válida");
         assertFalse(partida.isSentidoHorario(), "El sentido debe invertirse");
@@ -84,7 +80,7 @@ class PartidaTest {
         Carta carta = new Carta("AMARILLO", 0, TipoCarta.BLOQUEO, 20);
         jugador1.getMano().getCartas().add(carta);
 
-        boolean resultado = partida.aplicarJugada(CartaMapper.toDTO(carta));
+        boolean resultado = partida.aplicarJugada(carta);
 
         assertTrue(resultado, "La jugada Bloqueo debería ser válida");
     }
@@ -94,11 +90,10 @@ class PartidaTest {
         Carta carta = new Carta("ROJO", 5, TipoCarta.NUMERICA, 5);
         jugador1.getMano().getCartas().add(carta);
 
-        boolean resultado = partida.aplicarJugada(CartaMapper.toDTO(carta));
+        boolean resultado = partida.aplicarJugada(carta);
 
         assertTrue(resultado, "La jugada normal debería ser válida");
         assertEquals(1, partida.getIndiceJugadorActual(), "El turno debe avanzar al siguiente jugador");
-        
     }
 
     @Test
@@ -106,7 +101,7 @@ class PartidaTest {
         Carta carta = new Carta("AZUL", 9, TipoCarta.NUMERICA, 9);
         jugador1.getMano().getCartas().add(carta);
 
-        boolean resultado = partida.aplicarJugada(CartaMapper.toDTO(carta));
+        boolean resultado = partida.aplicarJugada(carta);
 
         assertFalse(resultado, "La jugada inválida debería devolver false");
         assertFalse(tablero.getDescarte().getCartas().contains(carta), "La carta no debe estar en el descarte");
@@ -122,7 +117,7 @@ class PartidaTest {
     void testAvanzarTurnoAntihorario() {
         partida.setSentidoHorario(false);
         partida.avanzarTurno();
-        assertEquals(1, partida.getIndiceJugadorActual()); // con 2 jugadores retrocede
+        assertEquals(1, partida.getIndiceJugadorActual());
     }
 
     @Test

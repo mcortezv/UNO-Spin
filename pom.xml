@@ -12,12 +12,13 @@
         <module>serializer</module>
         <module>mvc</module>
         <module>dominio</module>
-        <module>ensamblador</module>
         <module>dto</module>
         <module>conexion</module>
-        <module>conexionInterfaces</module>
+        <module>interfaces-conexion</module>
         <module>servidor</module>
-
+        <module>cliente-assembler</module>
+        <module>servidor-assembler</module>
+        <module>mappers</module>
     </modules>
 
     <properties>
@@ -25,18 +26,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>com.itson</groupId>
-            <artifactId>mvc</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.itson</groupId>
-            <artifactId>servidor</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 
 

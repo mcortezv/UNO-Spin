@@ -26,19 +26,7 @@
         </dependency>
         <dependency>
             <groupId>com.itson</groupId>
-            <artifactId>dominio</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.itson</groupId>
-            <artifactId>conexionInterfaces</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.itson</groupId>
-            <artifactId>serializer</artifactId>
+            <artifactId>interfaces-conexion</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>

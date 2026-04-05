@@ -1,5 +1,4 @@
 package interfaces;
-import dominio.entidades.enums.TipoEventoRuleta;
 import dto.CartaDTO;
 import dto.EventoRuletaDTO;
 
