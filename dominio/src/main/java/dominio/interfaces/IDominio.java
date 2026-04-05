@@ -5,6 +5,7 @@ import dominio.entidades.Tablero;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoEventoRuleta;
 import dto.CartaDTO;
+import dto.EstadoPartidaDTO;
 import dto.JugadorDTO;
 
 import java.util.List;
@@ -28,4 +29,6 @@ public interface IDominio {
     List<CartaDTO> getManoJugador(int indiceJugador);
     CartaDTO getCartaCima();
     List<CartaDTO> getCartasDescarte();
+    boolean isUltimaJugadaValida();
+    EstadoPartidaDTO obtenerEstadoPartidaJugador(int indiceJugador);
 }

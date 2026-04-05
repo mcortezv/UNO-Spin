@@ -1,6 +1,7 @@
 package interfaces;
 import dominio.entidades.enums.TipoEventoRuleta;
 import dto.CartaDTO;
+import dto.EventoRuletaDTO;
 
 /**
  * The interface Modelo controlador.
@@ -42,17 +43,12 @@ public interface IModeloControlador {
     void reconocerEvento(int indiceJugador);
 
     /**
-     * Avanzar paso evento.
-     */
-    void avanzarPasoEvento();
-
-    /**
      * Aplicar evento ruleta.
      *
      * @param evento    the evento
      * @param resultado the resultado
      */
-    void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado);
+    void aplicarEventoRuleta(EventoRuletaDTO evento, Object resultado);
 
     /**
      * Aplicar seleccion color.

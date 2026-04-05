@@ -1,164 +1,115 @@
 package mvc;
-import dominio.entidades.enums.EstadoPartida;
-import dominio.entidades.enums.TipoEventoRuleta;
-import dominio.interfaces.IDominio;
-import dto.CartaDTO;
-import dto.JugadorDTO;
-import interfaces.IModeloControlador;
-import interfaces.IModeloLectura;
-import interfaces.ISuscriptor;
+
+import dto.*;
+import interfaces.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import static enums.TipoAccion.*;
 
 /**
  * The type Modelo.
  */
-public class Modelo implements IModeloControlador, IModeloLectura {
-
-    private final IDominio dominio;
+public class Modelo implements IModeloControlador, IModeloLectura, IModeloConexion {
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
+    private final IDispatcher dispatcher;
+    private final ISerializer serializer;
+    private int puertoServidor;
+    private String ipServidor;
+    private EstadoPartidaDTO estadoPartida;
+    private boolean ultimaJugadaValida;
 
-    private boolean botonUnoPresionado = false;
-    private TipoEventoRuleta eventoRuletaActual;
-    private int pasoEventoActual = 0;
-    private final Set<Integer> jugadoresQueReconocieron = new HashSet<>();
-    private final int totalJugadores;
-
-    private boolean ultimaJugadaValida = true;
-
-    /**
-     * Instantiates a new Modelo.
-     *
-     * @param dominio the dominio
-     */
-    public Modelo(IDominio dominio) {
-        this.dominio = dominio;
-        this.totalJugadores = dominio.getJugadores().size();
+    public Modelo(ISerializer serializer, IDispatcher dispatcher) {
+        this.serializer = serializer;
+        this.dispatcher = dispatcher;
     }
 
     @Override
     public void jugarCarta(CartaDTO cartaDTO) {
-        int indiceActual = dominio.getIndiceJugadorActual();
-
-        boolean exito = dominio.aplicarJugada(cartaDTO);
-        ultimaJugadaValida = exito;
-
-        if (exito) {
-            notifyObservers();
-            if (dominio.getCantidadCartasJugador(indiceActual) == 1) {
-                if (botonUnoPresionado) {
-                    System.out.println("UNO gritado correctamente antes de tirar.");
-                    botonUnoPresionado = false;
-                } else {
-                    System.out.println("3 segundos para gritar UNO...");
-                    javax.swing.Timer timer = new javax.swing.Timer(3000, e -> {
-                        if (!botonUnoPresionado) {
-                            System.out.println("Castigo UNO aplicado.");
-                            dominio.aplicarCastigoUno(indiceActual);
-                            notifyObservers();
-                        } else {
-                            System.out.println("UNO gritado en el último momento.");
-                        }
-                        botonUnoPresionado = false;
-                    });
-                    timer.setRepeats(false);
-                    timer.start();
-                }
-            } else {
-                botonUnoPresionado = false;
-            }
-        } else {
-            notifyObservers();
-        }
+       String json = serializer.serialize(new TipoAccionDTO(JUGAR_CARTA, cartaDTO));
+       this.dispatcher.enviar(json, puertoServidor, ipServidor);
     }
 
     @Override
     public void pedirCarta() {
-        dominio.robarCartaJugadorActual();
-        notifyObservers();
+        String json = serializer.serialize(new TipoAccionDTO(PEDIR_CARTA));
+        this.dispatcher.enviar(json, puertoServidor, ipServidor);
     }
 
     @Override
     public void girarRuleta() {
-        try {
-            eventoRuletaActual = dominio.procesarGiroRuleta();
-            pasoEventoActual = 1;
-            jugadoresQueReconocieron.clear();
-            notifyObservers();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        String json = serializer.serialize(new TipoAccionDTO(GIRAR_RULETA));
+        this.dispatcher.enviar(json, puertoServidor, ipServidor);
     }
 
     @Override
     public void gritarUno() {
-        this.botonUnoPresionado = true;
-        dominio.gritarUno();
-        System.out.println("Botón UNO presionado");
+        String json = serializer.serialize(new TipoAccionDTO(GRITAR_UNO));
+        this.dispatcher.enviar(json, puertoServidor, ipServidor);
     }
 
     @Override
     public void limpiarEventoRuleta() {
-        eventoRuletaActual = null;
-        pasoEventoActual = 0;
-        jugadoresQueReconocieron.clear();
+        if (estadoPartida != null) {
+            estadoPartida.setEventoRuletaActivo(null);
+        }
+        notifyObservers();
     }
 
     @Override
     public void reconocerEvento(int indiceJugador) {
-        jugadoresQueReconocieron.add(indiceJugador);
-        if (jugadoresQueReconocieron.size() == totalJugadores) {
-            limpiarEventoRuleta();
-            notifyObservers();
-        }
-    }
-
-    @Override
-    public void avanzarPasoEvento() {
-        pasoEventoActual++;
-        jugadoresQueReconocieron.clear();
-        notifyObservers();
+        String json = serializer.serialize(new TipoAccionDTO(RECONOCER_EVENTO));
+        this.dispatcher.enviar(json, puertoServidor, ipServidor);
+        limpiarEventoRuleta();
     }
 
     @Override
     public void aplicarSeleccionColor(String color) {
-        dominio.aplicarSeleccionColor(color);
-        notifyObservers();
+        String json = serializer.serialize(new TipoAccionDTO(SELECCIONAR_COLOR));
+        this.dispatcher.enviar(json, puertoServidor, ipServidor);
     }
 
     @Override
-    public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {
-        eventoRuletaActual = null;
-        dominio.aplicarEfectoRuleta(evento, resultado);
-        dominio.avanzarTurno();
+    public void aplicarEventoRuleta(EventoRuletaDTO evento, Object resultado) {
         notifyObservers();
     }
 
     @Override
     public boolean isUltimaJugadaValida() {
-        return ultimaJugadaValida;
+        if (estadoPartida != null) {
+            return estadoPartida.isUltimaJugadaValida();
+        }
+        return false;
     }
 
     @Override
     public List<CartaDTO> getDescarte() {
-        return dominio.getCartasDescarte();
+        List<CartaDTO> descarte = new ArrayList<>();
+        if (getCartaCima() != null) {
+            descarte.add(getCartaCima());
+        }
+        return descarte;
     }
 
     @Override
     public List<CartaDTO> getManoJugador() {
-        return dominio.getManoJugador(dominio.getIndiceJugadorActual());
+        return estadoPartida != null && estadoPartida.getManoJugador() != null
+                ? estadoPartida.getManoJugador() : new ArrayList<>();
     }
 
     @Override
     public CartaDTO getCartaCima() {
-        return dominio.getCartaCima();
+        return estadoPartida != null ? estadoPartida.getCartaCima() : null;
     }
 
     @Override
     public String getNombreTurnoActual() {
-        return dominio.getJugadores().get(dominio.getIndiceJugadorActual()).getNombre();
+        if (estadoPartida != null && estadoPartida.getJugadores() != null) {
+            int indice = estadoPartida.getIndiceJugadorActual();
+            if (indice >= 0 && indice < estadoPartida.getJugadores().size()) {
+                return estadoPartida.getJugadores().get(indice).getNombre();
+            }
+        }
+        return "Esperando...";
     }
 
     @Override
@@ -168,43 +119,44 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public List<JugadorDTO> getTodosLosJugadores() {
-        return dominio.getJugadores();
+        return estadoPartida != null && estadoPartida.getJugadores() != null
+                ? estadoPartida.getJugadores() : new ArrayList<>();
     }
 
     @Override
     public boolean isTurnoActivo() {
-        return dominio.getEstadoPartida() == EstadoPartida.EN_PROCESO;
+        return estadoPartida != null && estadoPartida.isEsTuTurno() && "EN_PROCESO".equals(estadoPartida.getEstadoPartida());
     }
 
     @Override
     public boolean isSpinActivo() {
-        return dominio.getEstadoPartida() == EstadoPartida.GIRO_PENDIENTE
-                && eventoRuletaActual == null;
+        return estadoPartida != null && "GIRO_PENDIENTE".equals(estadoPartida.getEstadoPartida()) && getEventoRuletaActual() == null;
     }
 
     @Override
     public boolean isSeleccionColorPendiente() {
-        return dominio.getEstadoPartida() == EstadoPartida.SELECCION_COLOR_PENDIENTE;
+        return estadoPartida != null && "SELECCION_COLOR_PENDIENTE".equals(estadoPartida.getEstadoPartida());
     }
 
     @Override
-    public TipoEventoRuleta getEventoRuletaActual() {
-        return eventoRuletaActual;
-    }
-
-    @Override
-    public int getPasoEventoActual() {
-        return pasoEventoActual;
+    public EventoRuletaDTO getEventoRuletaActual() {
+        return estadoPartida != null ? estadoPartida.getEventoRuletaActivo() : null;
     }
 
     @Override
     public List<CartaDTO> getManoJugadorEspecifico(int indiceJugador) {
-        return dominio.getManoJugador(indiceJugador);
+        if (estadoPartida != null && estadoPartida.getJugadores() != null) {
+            if (indiceJugador >= 0 && indiceJugador < estadoPartida.getJugadores().size()) {
+                List<CartaDTO> cartasDelRival = estadoPartida.getJugadores().get(indiceJugador).getCartasMano();
+                return cartasDelRival != null ? cartasDelRival : new ArrayList<>();
+            }
+        }
+        return new ArrayList<>();
     }
 
     @Override
     public boolean isTurnoActivoEspecifico(int indiceJugador) {
-        return dominio.getIndiceJugadorActual() == indiceJugador;
+        return estadoPartida != null && estadoPartida.getIndiceJugadorActual() == indiceJugador;
     }
 
     /**
@@ -228,6 +180,13 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     private void notifyObservers() {
         for (ISuscriptor s : suscriptores) {
             s.update(this);
+        }
+    }
+
+    @Override
+    public void enviar(String json, int port, String ip) {
+        if (this.dispatcher == null) {
+            this.enviar(json, port, ip);
         }
     }
 }

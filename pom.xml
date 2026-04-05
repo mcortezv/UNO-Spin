@@ -12,18 +12,32 @@
         <module>serializer</module>
         <module>mvc</module>
         <module>dominio</module>
-        <module>builder</module>
+        <module>ensamblador</module>
         <module>dto</module>
         <module>conexion</module>
         <module>conexionInterfaces</module>
         <module>servidor</module>
+
     </modules>
 
     <properties>
         <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
+    <dependencies>
+        <dependency>
+            <groupId>com.itson</groupId>
+            <artifactId>mvc</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.itson</groupId>
+            <artifactId>servidor</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
 
 </project>

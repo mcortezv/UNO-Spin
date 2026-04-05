@@ -1,16 +1,9 @@
-
-import dominio.entidades.Carta;
-import dominio.entidades.Descarte;
-import dominio.entidades.Jugador;
-import dominio.entidades.Mano;
-import dominio.entidades.Mazo;
-import dominio.entidades.Partida;
-import dominio.entidades.Ruleta;
-import dominio.entidades.Tablero;
+package dominio.entidades;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoCarta;
 import dominio.entidades.enums.TipoEventoRuleta;
 import dominio.mappers.CartaMapper;
+import implementacion.JsonSerializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,11 +18,13 @@ class PartidaTest {
 
     @BeforeEach
     void setUp() {
+
+        JsonSerializer serializer = new JsonSerializer();
         jugador1 = new Jugador("Miss wasabe", new Mano(new ArrayList<>()), Arrays.asList("ROJO"), 0, 1);
         jugador2 = new Jugador("Juanpi", new Mano(new ArrayList<>()), Arrays.asList("AZUL"), 0, 2);
         tablero = new Tablero(new Descarte(), new Mazo(), new Ruleta());
 
-        partida = new Partida();
+        partida = new Partida(serializer);
         partida.iniciarPartida(Arrays.asList(jugador1, jugador2), tablero);
 
         // Carta inicial en el descarte para evitar NoSuchElementException

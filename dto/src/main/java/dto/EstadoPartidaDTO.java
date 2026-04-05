@@ -11,6 +11,8 @@ public class EstadoPartidaDTO {
     private List<JugadorDTO> jugadores;
     private List<CartaDTO> manoJugador;
     private boolean esTuTurno;
+    private EventoRuletaDTO eventoRuletaActivo;
+    private boolean ultimaJugadaValida;
 
     /**
      * Instantiates a new Estado partida dto.
@@ -27,13 +29,15 @@ public class EstadoPartidaDTO {
      * @param manoJugador         the mano jugador
      * @param esTuTurno           the es tu turno
      */
-    public EstadoPartidaDTO(int indiceJugadorActual, String estadoPartida, CartaDTO cartaCima, List<JugadorDTO> jugadores, List<CartaDTO> manoJugador, boolean esTuTurno) {
+    public EstadoPartidaDTO(int indiceJugadorActual, String estadoPartida, CartaDTO cartaCima, List<JugadorDTO> jugadores, List<CartaDTO> manoJugador, boolean esTuTurno, EventoRuletaDTO eventoRuletaActivo, boolean ultimaJugadaValida) {
         this.indiceJugadorActual = indiceJugadorActual;
         this.estadoPartida = estadoPartida;
         this.cartaCima = cartaCima;
         this.jugadores = jugadores;
         this.manoJugador = manoJugador;
         this.esTuTurno = esTuTurno;
+        this.eventoRuletaActivo = eventoRuletaActivo;
+        this.ultimaJugadaValida = ultimaJugadaValida;
     }
 
     /**
@@ -142,5 +146,21 @@ public class EstadoPartidaDTO {
      */
     public void setEsTuTurno(boolean esTuTurno) {
         this.esTuTurno = esTuTurno;
+    }
+
+    public EventoRuletaDTO getEventoRuletaActivo() {
+        return eventoRuletaActivo;
+    }
+
+    public void setEventoRuletaActivo(EventoRuletaDTO eventoRuletaActivo) {
+        this.eventoRuletaActivo = eventoRuletaActivo;
+    }
+
+    public boolean isUltimaJugadaValida() {
+        return ultimaJugadaValida;
+    }
+
+    public void setUltimaJugadaValida(boolean ultimaJugadaValida) {
+        this.ultimaJugadaValida = ultimaJugadaValida;
     }
 }
