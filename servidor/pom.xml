@@ -25,16 +25,23 @@
         </dependency>
         <dependency>
             <groupId>com.itson</groupId>
-            <artifactId>serializer</artifactId>
+            <artifactId>dto</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.itson</groupId>
-            <artifactId>conexionInterfaces</artifactId>
+            <artifactId>mappers</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.itson</groupId>
+            <artifactId>interfaces-conexion</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
 
 </project>

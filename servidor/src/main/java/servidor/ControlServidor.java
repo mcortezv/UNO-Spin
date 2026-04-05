@@ -1,31 +1,29 @@
 package servidor;
+
 import Interfaces.IControlServidor;
+import dominio.entidades.enums.EstadoPartida;
 import dominio.interfaces.IDominio;
-import dominio.interfaces.IObservadorDominio;
 import dto.CartaDTO;
 import dto.EstadoPartidaDTO;
+import dto.EventoRuletaDTO;
 import dto.JugadorDTO;
+import dto.TipoAccionDTO;
 import interfaces.IDispatcher;
+import interfaces.IReceptorComponente;
 import interfaces.ISerializer;
+import mappers.CartaMapper;
+import mappers.EventoRuletaMapper;
+import mappers.JugadorMapper;
+
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The type Control servidor.
- */
-public class ControlServidor implements IObservadorDominio, IControlServidor {
-    private IDominio dominio;
+public class ControlServidor implements IReceptorComponente, IControlServidor {
+    private final IDominio dominio;
     private final IDispatcher dispatcher;
     private final ISerializer serializer;
     private final List<SocketCliente> clientes;
 
-    /**
-     * Instantiates a new Control servidor.
-     *
-     * @param dominio    the dominio
-     * @param dispatcher the dispatcher
-     * @param serializer the serializer
-     */
     public ControlServidor(IDominio dominio, IDispatcher dispatcher, ISerializer serializer) {
         this.dominio = dominio;
         this.dispatcher = dispatcher;
@@ -33,33 +31,50 @@ public class ControlServidor implements IObservadorDominio, IControlServidor {
         this.clientes = new ArrayList<>();
     }
 
-    /**
-     * Registrar cliente.
-     *
-     * @param indiceJugador the indice jugador
-     * @param ip            the ip
-     * @param puerto        the puerto
-     */
     public void registrarCliente(int indiceJugador, String ip, int puerto) {
         clientes.removeIf(c -> c.getIndiceJugador() == indiceJugador);
         clientes.add(new SocketCliente(indiceJugador, ip, puerto));
     }
 
-    /**
-     * Desconectar cliente.
-     *
-     * @param indiceJugador the indice jugador
-     */
     public void desconectarCliente(int indiceJugador) {
         clientes.removeIf(c -> c.getIndiceJugador() == indiceJugador);
     }
 
     @Override
-    public void onEstadoCambiado(IDominio dominio) {
-        for (SocketCliente cliente: clientes) {
-            EstadoPartidaDTO dto = dominio.obtenerEstadoPartidaJugador(cliente.getIndiceJugador());
+    public void recibirMensaje(String json) {
+        TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
+        switch (accion.getTipoAccion()) {
+            case JUGAR_CARTA -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
+            case PEDIR_CARTA -> dominio.robarCartaJugadorActual();
+            case GRITAR_UNO -> dominio.gritarUno();
+        }
+        broadcastEstado();
+    }
+
+    private void broadcastEstado() {
+        for (SocketCliente cliente : clientes) {
+            EstadoPartidaDTO dto = buildEstadoPartida(cliente.getIndiceJugador());
             String json = serializer.serialize(dto);
             dispatcher.enviar(json, cliente.getPuerto(), cliente.getIp());
         }
+    }
+
+    private EstadoPartidaDTO buildEstadoPartida(int indiceJugador) {
+        List<JugadorDTO> jugadores = JugadorMapper.toDTO(dominio.getJugadores());
+        CartaDTO cartaCima = CartaMapper.toDTO(dominio.getCartaCima());
+        List<CartaDTO> mano = CartaMapper.toDTO(dominio.getManoJugador(indiceJugador));
+        EventoRuletaDTO eventoRuleta = null;
+        if (dominio.getEstadoPartida() == EstadoPartida.GIRO_PENDIENTE) {
+            eventoRuleta = EventoRuletaMapper.toDTO(dominio.getEventoRuleta());
+        }
+        return new EstadoPartidaDTO(
+                dominio.getIndiceJugadorActual(),
+                dominio.getEstadoPartida().name(),
+                cartaCima,
+                jugadores,
+                mano,
+                (dominio.getIndiceJugadorActual() == indiceJugador),
+                eventoRuleta,
+                dominio.isUltimaJugadaValida());
     }
 }

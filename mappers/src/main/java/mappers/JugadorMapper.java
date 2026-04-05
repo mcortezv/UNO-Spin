@@ -1,4 +1,4 @@
-package dominio.mappers;
+package mappers;
 import dominio.entidades.Jugador;
 import dto.JugadorDTO;
 
