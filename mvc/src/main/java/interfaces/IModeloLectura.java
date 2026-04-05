@@ -1,7 +1,7 @@
 package interfaces;
 import dto.CartaDTO;
+import dto.EventoRuletaDTO;
 import dto.JugadorDTO;
-import dominio.entidades.enums.TipoEventoRuleta;
 import java.util.List;
 
 /**
@@ -82,14 +82,7 @@ public interface IModeloLectura {
       *
       * @return the evento ruleta actual
       */
-     TipoEventoRuleta getEventoRuletaActual();
-
-     /**
-      * Gets paso evento actual.
-      *
-      * @return the paso evento actual
-      */
-     int getPasoEventoActual();
+     EventoRuletaDTO getEventoRuletaActual();
 
      /**
       * Is ultima jugada valida boolean.

@@ -1,5 +1,5 @@
 package eventos;
-import dominio.entidades.enums.TipoEventoRuleta;
+import dto.EventoRuletaDTO;
 import eventos.eventosRuleta.*;
 import interfaces.IModeloLectura;
 import dto.CartaDTO;
@@ -22,22 +22,27 @@ public class FabricaDialogosEvento {
      * @param modelo the modelo
      * @return the dialogo evento ruleta
      */
-    public static DialogoEventoRuleta crear(TipoEventoRuleta evento, JFrame owner, IModeloLectura modelo) {
+    public static DialogoEventoRuleta crear(EventoRuletaDTO evento, JFrame owner, IModeloLectura modelo) {
         List<JugadorDTO> todosLosJugadores = modelo.getTodosLosJugadores();
         List<String> todosLosNombres = todosLosJugadores.stream()
                 .map(JugadorDTO::getNombre)
                 .collect(Collectors.toList());
 
-        return switch (evento) {
-            case CASI_UNO -> new DialogoCasiUno(owner, modelo.getManoJugador());
-            case DESCARTAR_POR_COLOR -> new DialogoDescartarPorColor(owner);
-            case ROBAR_HASTA_ROJO -> new DialogoRobarHastaRojo(owner);
-            case ROBAR_HASTA_AZUL -> new DialogoRobarHastaAzul(owner);
-            case GUERRA -> new DialogoGuerra(owner, todosLosNombres);
-            case MOSTRAR_LA_MANO -> new DialogoMostrarMano(owner, modelo.getNombreTurnoActual(), modelo.getManoJugador());
-            case INTERCAMBIO_DE_MANOS -> new DialogoIntercambioDeManos(owner);
-            case PUNTUACION_MAS_BAJA -> new DialogoPuntuacionMasBaja(owner, todosLosNombres, calcularPuntajes(todosLosJugadores, modelo));
-            case DESCARTAR_POR_NUMERO -> new DialogoDescartarPorNumero(owner);
+        if (evento == null || evento.getNombre() == null) {
+            throw new IllegalArgumentException("El evento es nulo");
+        }
+
+        return switch (evento.getNombre()) {
+            case "CASI_UNO" -> new DialogoCasiUno(owner, modelo.getManoJugador());
+            case "DESCARTAR_POR_COLOR" -> new DialogoDescartarPorColor(owner);
+            case "ROBAR_HASTA_ROJO" -> new DialogoRobarHastaRojo(owner);
+            case "ROBAR_HASTA_AZUL" -> new DialogoRobarHastaAzul(owner);
+            case "GUERRA" -> new DialogoGuerra(owner, todosLosNombres);
+            case "MOSTRAR_LA_MANO" -> new DialogoMostrarMano(owner, modelo.getNombreTurnoActual(), modelo.getManoJugador());
+            case "INTERCAMBIO_DE_MANOS" -> new DialogoIntercambioDeManos(owner);
+            case "PUNTUACION_MAS_BAJA" -> new DialogoPuntuacionMasBaja(owner, todosLosNombres, calcularPuntajes(todosLosJugadores, modelo));
+            case "DESCARTAR_POR_NUMERO" -> new DialogoDescartarPorNumero(owner);
+            default -> throw new IllegalStateException("Unexpected value: " + evento.getNombre());
         };
     }
 

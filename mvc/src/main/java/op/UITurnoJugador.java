@@ -1,14 +1,14 @@
 package op;
-import dominio.entidades.enums.TipoEventoRuleta;
 import dto.CartaDTO;
+import dto.EventoRuletaDTO;
 import dto.JugadorDTO;
 import eventos.DialogoElegirColor;
 import eventos.DialogoEventoRuleta;
 import eventos.FabricaDialogosEvento;
 import interfaces.IComponent;
-import interfaces.IControlador;
 import interfaces.IModeloLectura;
 import interfaces.ISuscriptor;
+import mvc.Controlador;
 import styles.Button;
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +22,7 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
     private static final int ANCHO_VENTANA = 1040;
     private static final int ALTO_VENTANA  = 680;
 
-    private final IControlador controlador;
+    private final Controlador controlador;
 
     private final UITablero tablero;
     private final UIMano mano;
@@ -49,7 +49,7 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
      * @param modeloLectura the modelo lectura
      * @param relative      the relative
      */
-    public UITurnoJugador(IControlador controlador, IModeloLectura modeloLectura, List<Integer> relative) {
+    public UITurnoJugador(Controlador controlador, IModeloLectura modeloLectura, List<Integer> relative) {
         super("UNO-SPIN");
         this.controlador = controlador;
 
@@ -196,14 +196,14 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         actualizarRival(rivales, 1, slotLeft, UIJugador.Posicion.LEFT);
         actualizarRival(rivales, 2, slotRight, UIJugador.Posicion.RIGHT);
 
-        TipoEventoRuleta evento = modelo.getEventoRuletaActual();
+        EventoRuletaDTO evento = modelo.getEventoRuletaActual();
         if (evento != null) {
             mostrarDialogoEvento(evento, modelo);
         }
 
     }
 
-    private void mostrarDialogoEvento(TipoEventoRuleta evento, IModeloLectura modelo) {
+    private void mostrarDialogoEvento(EventoRuletaDTO evento, IModeloLectura modelo) {
         boolean esTurnoPropio = modelo.isTurnoActivo();
         DialogoEventoRuleta dialogo = FabricaDialogosEvento.crear(evento, this, modelo);
 

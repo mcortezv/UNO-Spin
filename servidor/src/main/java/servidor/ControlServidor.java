@@ -1,4 +1,5 @@
 package servidor;
+import Interfaces.IControlServidor;
 import dominio.interfaces.IDominio;
 import dominio.interfaces.IObservadorDominio;
 import dto.CartaDTO;
@@ -12,7 +13,7 @@ import java.util.List;
 /**
  * The type Control servidor.
  */
-public class ControlServidor implements IObservadorDominio {
+public class ControlServidor implements IObservadorDominio, IControlServidor {
     private IDominio dominio;
     private final IDispatcher dispatcher;
     private final ISerializer serializer;
@@ -55,17 +56,10 @@ public class ControlServidor implements IObservadorDominio {
 
     @Override
     public void onEstadoCambiado(IDominio dominio) {
-        this.dominio = dominio;
-        int indiceActual = dominio.getIndiceJugadorActual();
-        String estado = dominio.getEstadoPartida().name();
-        CartaDTO cartaCima = dominio.getCartaCima();
-        List<JugadorDTO> jugadores = dominio.getJugadores();
-
-        for (SocketCliente cliente : clientes) {
-            int indice = cliente.getIndiceJugador();
-            boolean esTurno = indiceActual == indice;
-            EstadoPartidaDTO dto = new EstadoPartidaDTO(indiceActual, estado, cartaCima, jugadores, dominio.getManoJugador(indice), esTurno);
-            dispatcher.enviar(serializer.serialize(dto), cliente.getPuerto(), cliente.getIp());
+        for (SocketCliente cliente: clientes) {
+            EstadoPartidaDTO dto = dominio.obtenerEstadoPartidaJugador(cliente.getIndiceJugador());
+            String json = serializer.serialize(dto);
+            dispatcher.enviar(json, cliente.getPuerto(), cliente.getIp());
         }
     }
 }

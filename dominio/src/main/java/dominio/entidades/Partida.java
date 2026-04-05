@@ -3,14 +3,20 @@ package dominio.entidades;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoEventoRuleta;
 import dominio.interfaces.IDominio;
+import dominio.interfaces.IObservadorDominio;
 import dominio.mappers.CartaMapper;
+import dominio.mappers.EventoRuletaMapper;
 import dominio.mappers.JugadorMapper;
-import dto.CartaDTO;
-import dto.JugadorDTO;
+import dto.*;
+import interfaces.IReceptorComponente;
+import interfaces.ISerializer;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Partida implements IDominio {
+import static enums.TipoAccion.*;
+
+public class Partida implements IDominio, IReceptorComponente {
 
     private List<Jugador> jugadores;
     private EstadoPartida estadoPartida;
@@ -18,8 +24,13 @@ public class Partida implements IDominio {
     private boolean sentidoHorario;
     private Tablero tablero;
     private boolean unoGritado = false;
+    private boolean ultimaJugadaValida = true;
+    private ISerializer serializer;
+    private final List<IObservadorDominio> observador = new ArrayList<IObservadorDominio>();
 
-    public Partida() {}
+    public Partida(ISerializer serializer) {
+        this.serializer = serializer;
+    }
 
     public Partida(EstadoPartida estadoPartida, int indiceJugadorActual,
                    List<Jugador> jugadores, boolean sentidoHorario) {
@@ -49,6 +60,8 @@ public class Partida implements IDominio {
         Carta c = CartaMapper.toEntity(cartaDTO);
 
         if (!tablero.getDescarte().validarCartaEntrante(c)) return false;
+
+        this.ultimaJugadaValida = true;
 
         Jugador jugadorActual = jugadores.get(indiceJugadorActual);
         List<Carta> cartasMano = jugadorActual.getMano().getCartas();
@@ -197,6 +210,32 @@ public class Partida implements IDominio {
         return CartaMapper.toDTO(tablero.getDescarte().getCartas());
     }
 
+    @Override
+    public boolean isUltimaJugadaValida() {
+        return this.ultimaJugadaValida;
+    }
+
+    @Override
+    public EstadoPartidaDTO obtenerEstadoPartidaJugador(int indiceJugador) {
+
+        List<JugadorDTO> listaJugadores = JugadorMapper.toDTO(this.jugadores);
+        CartaDTO cartaCima = CartaMapper.toDTO(this.tablero.getDescarte().getUltimaCarta());
+        List<CartaDTO> cartaMano = CartaMapper.toDTO(this.jugadores.get(indiceJugador).getMano().getCartas());
+        EventoRuletaDTO eventoRuletaDTO = null;
+        if (this.estadoPartida == EstadoPartida.GIRO_PENDIENTE){
+            eventoRuletaDTO = EventoRuletaMapper.toDTO(this.tablero.getRuleta().getEventoRuleta());
+        }
+        return new EstadoPartidaDTO(
+                this.indiceJugadorActual,
+                this.estadoPartida.name(),
+                cartaCima,
+                this.getJugadores(),
+                cartaMano,
+                (this.indiceJugadorActual == indiceJugador),
+                eventoRuletaDTO,
+                this.isUltimaJugadaValida());
+    }
+
 
     public Tablero getTablero() {
         return tablero;
@@ -318,5 +357,36 @@ public class Partida implements IDominio {
                     try { j.getMano().getCartas().add(tablero.getMazo().robarCarta()); }
                     catch (Exception e) { System.out.println("Mazo vacío."); }
                 });
+    }
+
+    @Override
+    public void recibirMensaje(String json) {
+        TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
+        switch (accion){
+            case JUGAR_CARTA -> {
+                this.aplicarJugada(accion.getCartaDTO());
+            }
+            case PEDIR_CARTA -> {
+                this.robarCartaJugadorActual();
+            }
+            case GRITAR_UNO -> {
+                this.gritarUno();
+            }
+            default -> {
+                break;
+            }
+
+        }
+        for (IObservadorDominio obs: observador) {
+            obs.onEstadoCambiado(this);
+        }
+    }
+
+    public void setSerializer(ISerializer serializer) {
+        this.serializer = serializer;
+    }
+
+    public void addObservador(IObservadorDominio obs){
+        this.observador.add(obs);
     }
 }
