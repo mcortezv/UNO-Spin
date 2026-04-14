@@ -8,43 +8,25 @@
     <artifactId>UNO-Spin</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
-
     <modules>
-        <module>agent</module>
-        <module>cliente-assembler</module>
-        <module>blackboard</module>
+        <module>serializer</module>
+        <module>mvc</module>
+        <module>dominio</module>
+        <module>dto</module>
         <module>conexion</module>
         <module>interfaces-conexion</module>
-        <module>control</module>
-        <module>serializer</module>
         <module>servidor</module>
+        <module>cliente-assembler</module>
         <module>servidor-assembler</module>
+        <module>mappers</module>
     </modules>
 
     <properties>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jdk8</artifactId>
-            <version>2.21.1</version>
-        </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <mainClass>assembler.Main</mainClass>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

@@ -9,7 +9,7 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>servidor-assembler</artifactId>
+    <artifactId>dominio</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
@@ -18,22 +18,22 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>com.itson</groupId>
-            <artifactId>dominio</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.10.3</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.itson</groupId>
-            <artifactId>servidor</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.10.3</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.itson</groupId>
-            <artifactId>interfaces-conexion</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.10.3</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

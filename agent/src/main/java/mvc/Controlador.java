@@ -1,7 +1,6 @@
 package mvc;
-import dominio.entidades.enums.TipoEventoRuleta;
 import dto.CartaDTO;
-import interfaces.IControlador;
+import dto.EventoRuletaDTO;
 import interfaces.IModeloControlador;
 
 /**
@@ -48,7 +47,7 @@ public class Controlador implements IControlador {
     }
 
     @Override
-    public void onResultadoEvento(TipoEventoRuleta evento, Object resultado) {
+    public void onResultadoEvento(EventoRuletaDTO evento, Object resultado) {
         System.out.println("Enviando evento al modelo: " + evento + " | Resultado: " + resultado);
         modelo.aplicarEventoRuleta(evento, resultado);
     }
@@ -59,7 +58,7 @@ public class Controlador implements IControlador {
     }
 
     @Override
-    public void aplicarEventoRuleta(TipoEventoRuleta evento, Object resultado) {
+    public void aplicarEventoRuleta(EventoRuletaDTO evento, Object resultado) {
         modelo.aplicarEventoRuleta(evento, resultado);
     }
 
