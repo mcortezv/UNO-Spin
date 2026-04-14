@@ -1,4 +1,4 @@
-package mvc.interfaces;
+package interfaces;
 
 public interface IModeloConexion {
 

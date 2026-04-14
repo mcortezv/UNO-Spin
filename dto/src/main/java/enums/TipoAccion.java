@@ -1,0 +1,11 @@
+package enums;
+
+public enum TipoAccion {
+    JUGAR_CARTA,
+    PEDIR_CARTA,
+    GIRAR_RULETA,
+    GRITAR_UNO,
+    ABANDONAR_PARTIDA,
+    RECONOCER_EVENTO,
+    SELECCIONAR_COLOR
+}
