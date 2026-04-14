@@ -1,4 +1,5 @@
 package dominio.entidades;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +13,9 @@ public class Mazo {
     /**
      * Instantiates a new Mazo.
      */
-    public Mazo() {cartas= new ArrayList<>();}
+    public Mazo() {
+        cartas = new ArrayList<>();
+    }
 
     /**
      * Instantiates a new Mazo.
@@ -44,18 +47,21 @@ public class Mazo {
     /**
      * Mezclar.
      */
-    public void mezclar(){
+    public void mezclar() {
         Collections.shuffle(this.cartas);
     }
 
     /**
      * Robar carta carta.
+     * Toma la ultima carta de la bajara y la descarta
      *
-     * @return the carta
-     * @throws Exception the exception
+     * @return the last carta
+     * @throws Exception the exception Cuando el mazo de las cartas se encuentra vacio, significa que no hay más cartas
+     * en el mazo
+     *
      */
-    public Carta robarCarta() throws Exception{
-        if (this.cartas.isEmpty()){
+    public Carta robarCarta() throws Exception {
+        if (this.cartas.isEmpty()) {
             throw new Exception("El mazo no tiene cartas");
         }
         int ultimaPosicion = cartas.size() - 1;
