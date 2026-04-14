@@ -1,4 +1,4 @@
-package op;
+package dominio.entidades;
 
 import java.awt.Color;
 
