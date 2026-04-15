@@ -81,7 +81,7 @@ public class UICarta extends JPanel implements IComponent {
         int offsetY = (hover || seleccionada) ? 0 : ELEVACION;
 
         pintarSombra(g2, offsetY);
-        pintarFondoColor(g2, offsetY);
+       // pintarFondoColor(g2, offsetY);
         pintarImagen(g2, offsetY);
         pintarBordeBlanco(g2, offsetY);
 
@@ -99,11 +99,11 @@ public class UICarta extends JPanel implements IComponent {
         g2.setColor(COLOR_SOMBRA);
         g2.fillRoundRect(4, y + 4, ANCHO - 2, ALTO - 2, ARCO, ARCO);
     }
-
-    private void pintarFondoColor(Graphics2D g2, int y) {
-        g2.setColor(op.ColorCarta.toAWT(carta.getColor()));
-        g2.fillRoundRect(1, y + 1, ANCHO - 2, ALTO - 2, ARCO, ARCO);
-    }
+//
+//    private void pintarFondoColor(Graphics2D g2, int y) {
+//        g2.setColor(ColorCarta.toAWT(carta.getColor()));
+//        g2.fillRoundRect(1, y + 1, ANCHO - 2, ALTO - 2, ARCO, ARCO);
+//    }
 
     private void pintarImagen(Graphics2D g2, int y) {
         int margen = 5;
