@@ -1,6 +1,11 @@
 package mappers;
+<<<<<<<< HEAD:control/src/main/java/mappers/CartaMapper.java
 import dominio.Carta;
 import dominio.enums.TipoCarta;
+========
+import dominio.entidades.Carta;
+import dominio.entidades.enums.TipoCarta;
+>>>>>>>> origin/dev:mappers/src/main/java/mappers/CartaMapper.java
 import dto.CartaDTO;
 import java.util.ArrayList;
 import java.util.List;

@@ -9,7 +9,7 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>servidor-assembler</artifactId>
+    <artifactId>mappers</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>
@@ -25,13 +25,7 @@
         </dependency>
         <dependency>
             <groupId>com.itson</groupId>
-            <artifactId>servidor</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.itson</groupId>
-            <artifactId>interfaces-conexion</artifactId>
+            <artifactId>dto</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
