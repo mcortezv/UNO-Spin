@@ -3,8 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package mappers;
+<<<<<<<< HEAD:control/src/main/java/mappers/EventoRuletaMapper.java
+import dominio.enums.TipoEventoRuleta;
+========
 
 import dominio.entidades.enums.TipoEventoRuleta;
+>>>>>>>> main:mappers/src/main/java/mappers/EventoRuletaMapper.java
 import dto.EventoRuletaDTO;
 
 /**

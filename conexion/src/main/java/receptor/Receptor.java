@@ -1,24 +1,15 @@
 package receptor;
-import interfaces.IReceptorComponente;
-import interfaces.IReceptorObserver;
+import interfaces.IReceptor;
 
-/**
- * The type Receptor.
- */
-public class Receptor implements IReceptorObserver {
-    private final IReceptorComponente componente;
+public class Receptor implements IReceptor {
+    private final IReceptor componente;
 
-    /**
-     * Instantiates a new Receptor.
-     *
-     * @param componente the componente
-     */
-    public Receptor(IReceptorComponente componente) {
+    public Receptor(IReceptor componente) {
         this.componente = componente;
     }
 
     @Override
     public void update(String json, int port, String ip) {
-        componente.recibirMensaje(json);
+        componente.update(json, port, ip);
     }
 }
