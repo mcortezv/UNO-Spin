@@ -377,6 +377,11 @@ public class Partida implements IDominio {
         }
     }
 
+    /**
+     * Inicia la partida
+     * @param jugadoresIniciales
+     * @param tableroInicial
+     */
     public void iniciarPartida(List<Jugador> jugadoresIniciales, Tablero tableroInicial) {
         this.jugadores = jugadoresIniciales;
         this.tablero = tableroInicial;
