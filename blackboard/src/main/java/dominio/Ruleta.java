@@ -1,4 +1,4 @@
-package dominio;
+λpackage dominio;
 import dominio.enums.TipoEventoRuleta;
 
 import java.util.Random;
@@ -12,7 +12,8 @@ public class Ruleta {
     /**
      * Instantiates a new Ruleta.
      */
-    public Ruleta() {}
+    public Ruleta() {
+    }
 
     /**
      * Instantiates a new Ruleta.
@@ -46,7 +47,7 @@ public class Ruleta {
      *
      * @return the tipo evento ruleta
      */
-    public TipoEventoRuleta girar(){
+    public TipoEventoRuleta girar() {
         TipoEventoRuleta[] eventos = TipoEventoRuleta.values();
         int indice = new Random().nextInt(eventos.length);
         return this.eventoRuleta = eventos[indice];

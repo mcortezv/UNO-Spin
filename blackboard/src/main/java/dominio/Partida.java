@@ -1,4 +1,5 @@
 package dominio;
+
 import dominio.enums.EstadoPartida;
 import dominio.enums.TipoEventoRuleta;
 import dominio.interfaces.IDominio;
@@ -33,7 +34,7 @@ public class Partida implements IDominio {
      * @param sentidoHorario      the sentido horario
      */
     public Partida(EstadoPartida estadoPartida, int indiceJugadorActual, List<Jugador> jugadores,
-            boolean sentidoHorario) {
+                   boolean sentidoHorario) {
         this.estadoPartida = estadoPartida;
         this.indiceJugadorActual = indiceJugadorActual;
         this.jugadores = jugadores;
@@ -112,6 +113,14 @@ public class Partida implements IDominio {
         this.sentidoHorario = sentidoHorario;
     }
 
+    /**
+     * recicla los metodos de validarCartaEntrante(c) del tablero y elimina esa carta de la mano del jugador, añade esa
+     * misma carta a la lista de descarte y valida la carta si es especial o de ruleta, deja el estado en GIRO_PENDIENTE
+     * y finalmente avanzarTurno()
+     *
+     * @param c carta a jugar
+     * @return true si jugada fue valida y false si falla
+     */
     public boolean aplicarJugada(Carta c) {
         if (tablero.getDescarte().validarCartaEntrante(c)) {
             Jugador jugadorActual = jugadores.get(indiceJugadorActual);
@@ -142,21 +151,33 @@ public class Partida implements IDominio {
         return false;
     }
 
+    /**
+     * Se activa true en unoGritado
+     */
     @Override
     public void gritarUno() {
         this.unoGritado = true;
     }
 
+    /**
+     * Usa el metodo de validarCartaEntrante(c) del tablero
+     *
+     * @param carta
+     * @return true si la jugada es valida y false si no es valida la carta
+     */
     @Override
     public boolean validarJugada(Carta carta) {
         return tablero.getDescarte().validarCartaEntrante(carta);
     }
 
     /**
-     * Procesar giro ruleta tipo evento ruleta.
+     * Procesa los tipo de eventos que hay en el juego (CASI UNO, ROBA HASTA AZUL, ROBA HASTA ROJO, INTERCAMBIO DE MANOS
+     * GUERRA, MOSTRAR LA MANO, PUNTUACIÓN MÁS BAJA, DESCARTAR POR COLOR, DESCARTAR POR NUMERO, DESCARTAR CARTA, ELEGIR COLOR)
+     *
+     * Si el evento es GUERRA o DESCARTAR POR COLOR queda el EstadoPartida en EN_PROCESO
      *
      * @return the tipo evento ruleta
-     * @throws Exception the exception
+     * @throws Exception the exception: tira excepción si el estado de la partida es GIRO_PENDIENTE
      */
     public TipoEventoRuleta procesarGiroRuleta() throws Exception {
         if (this.estadoPartida != EstadoPartida.GIRO_PENDIENTE) {
@@ -203,6 +224,10 @@ public class Partida implements IDominio {
         return evento;
     }
 
+    /**
+     * Puedes descartar todas tus cartas excepto dos.
+     * @param jugador
+     */
     private void aplicarCasiUno(Jugador jugador) {
         while (jugador.getMano().getCartas().size() > 2) {
             Carta cartaEliminada = jugador.getMano().getCartas().remove(0); // Quita la primera
@@ -210,6 +235,12 @@ public class Partida implements IDominio {
         }
     }
 
+    /**
+     * Robar cartas del mazo hasta que te salga una de color.
+     * @param jugador
+     * @param colorObjetivo
+     * @throws Exception
+     */
     private void robarHastaColor(Jugador jugador, String colorObjetivo) throws Exception {
         boolean encontroColor = false;
         while (!encontroColor) {
@@ -221,6 +252,9 @@ public class Partida implements IDominio {
         }
     }
 
+    /**
+     * Todos los jugadores pasan sus cartas al jugador de la izquierda.
+     */
     private void intercambiarManos() {
         int cantidadJugadores = jugadores.size();
 
@@ -239,6 +273,10 @@ public class Partida implements IDominio {
         }
     }
 
+    /**
+     * Cada jugador elige su carta más alta y la muestra. Quien tenga el número más alto puede descartar todas sus
+     * cartas de ese número.
+     */
     private void aplicarGuerra() {
         int numeroGanador = -1;
 
@@ -269,7 +307,7 @@ public class Partida implements IDominio {
     }
 
     /**
-     * Avanzar turno.
+     * Avanzar turno correspondiente al sentido de rotación del momento.
      */
     public void avanzarTurno() {
         if (!jugadores.isEmpty()) {
@@ -282,6 +320,10 @@ public class Partida implements IDominio {
         }
     }
 
+    /**
+     * Robar cartas del mazo hasta que te salga una de color azul o rojo (según indique el icono).
+     * @param jugador Jugador a quien aplicar la jugada
+     */
     private void aplicarDescartarPorColor(Jugador jugador) {
         Carta cartaTope = tablero.getDescarte().getUltimaCarta();
         if (cartaTope == null)
@@ -301,6 +343,9 @@ public class Partida implements IDominio {
         tablero.getDescarte().getCartas().addAll(cartasADescartar);
     }
 
+    /**
+     * checa quien tiene la menor cantidad de cartas y le dan una
+     */
     private void aplicarPuntuacionMasBaja() {
         if (jugadores.isEmpty())
             return;
@@ -318,6 +363,9 @@ public class Partida implements IDominio {
         }
     }
 
+    /**
+     * El jugador actual roba una carta del tablero
+     */
     public void robarCartaJugadorActual() {
         try {
             Carta cartaRobada = tablero.getMazo().robarCarta();
