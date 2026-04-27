@@ -9,7 +9,7 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>servidor</artifactId>
+    <artifactId>control-servidor</artifactId>
 
     <properties>
         <maven.compiler.source>25</maven.compiler.source>

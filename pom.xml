@@ -15,7 +15,7 @@
         <module>dto</module>
         <module>conexion</module>
         <module>interfaces-conexion</module>
-        <module>servidor</module>
+        <module>control-servidor</module>
         <module>cliente-assembler</module>
         <module>servidor-assembler</module>
         <module>mappers</module>

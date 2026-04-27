@@ -25,13 +25,19 @@
         </dependency>
         <dependency>
             <groupId>com.itson</groupId>
-            <artifactId>servidor</artifactId>
+            <artifactId>control-servidor</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.itson</groupId>
             <artifactId>interfaces-conexion</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.itson</groupId>
+            <artifactId>conexion</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
