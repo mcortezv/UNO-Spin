@@ -2,10 +2,8 @@ package assembler;
 import conexion.Conexion;
 import factory.FactoryConexion;
 import factory.FactoryMVC;
-import interfaces.IDispatcher;
-import interfaces.IFactoryConexion;
-import interfaces.IFactoryMVC;
-import interfaces.IReceptor;
+import implementacion.JsonSerializer;
+import interfaces.*;
 import mvc.MVC;
 
 public class Main {
@@ -14,8 +12,9 @@ public class Main {
 
         IFactoryMVC factoryMVC = new FactoryMVC();
         IFactoryConexion factoryConexion = new FactoryConexion();
+        ISerializer serializer = new JsonSerializer();
 
-        IReceptor receptorMVC = factoryMVC.crearMVC();
+        IReceptor receptorMVC = factoryMVC.crearMVC(serializer);
         IDispatcher dispatcherConn = factoryConexion.crearConn();
 
         Conexion.suscribir(receptorMVC);

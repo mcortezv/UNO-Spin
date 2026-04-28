@@ -2,5 +2,5 @@ package interfaces;
 
 public interface IFactoryControlServidor {
 
-    IReceptor crearControlServidor();
+    IReceptor crearControlServidor(IBlackboard blackboard, IDispatcher dispatcherConn, ISerializer serializer);
 }

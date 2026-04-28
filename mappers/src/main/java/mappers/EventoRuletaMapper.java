@@ -4,7 +4,7 @@
  */
 package mappers;
 
-import dominio.entidades.enums.TipoEventoRuleta;
+import blackboard.dominio.entidades.enums.TipoEventoRuleta;
 import dto.EventoRuletaDTO;
 
 /**

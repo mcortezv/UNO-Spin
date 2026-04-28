@@ -1,5 +1,4 @@
 package conexion;
-
 import interfaces.IReceptor;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,5 +14,4 @@ public class Conexion {
     public static void suscribir (IReceptor receptor){
         instance.suscriptores.add(receptor);
     }
-
 }

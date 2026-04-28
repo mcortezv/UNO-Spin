@@ -1,4 +1,4 @@
-package dominio.entidades;
+package blackboard.dominio.entidades;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,5 +1,5 @@
-package dominio.entidades;
-import dominio.entidades.enums.TipoCarta;
+package blackboard.dominio.entidades;
+import blackboard.dominio.entidades.enums.TipoCarta;
 
 /**
  * The type Carta.

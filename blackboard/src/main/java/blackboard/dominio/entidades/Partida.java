@@ -1,13 +1,10 @@
-package dominio.entidades;
-
-import dominio.entidades.enums.EstadoPartida;
-import dominio.entidades.enums.TipoEventoRuleta;
-import dominio.interfaces.IDominio;
-
+package blackboard.dominio.entidades;
+import blackboard.dominio.entidades.enums.EstadoPartida;
+import blackboard.dominio.entidades.enums.TipoEventoRuleta;
+import blackboard.dominio.IDominio;
 import java.util.List;
 
 public class Partida implements IDominio {
-
     private List<Jugador> jugadores;
     private EstadoPartida estadoPartida;
     private int indiceJugadorActual;
