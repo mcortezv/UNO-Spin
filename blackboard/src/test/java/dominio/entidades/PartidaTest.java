@@ -1,8 +1,9 @@
 package dominio.entidades;
 
-import dominio.entidades.enums.EstadoPartida;
-import dominio.entidades.enums.TipoCarta;
-import dominio.entidades.enums.TipoEventoRuleta;
+import blackboard.dominio.entidades.*;
+import blackboard.dominio.entidades.enums.EstadoPartida;
+import blackboard.dominio.entidades.enums.TipoCarta;
+import blackboard.dominio.entidades.enums.TipoEventoRuleta;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

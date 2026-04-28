@@ -1,4 +1,4 @@
-package dominio.entidades;
+package blackboard.dominio.entidades;
 
 import java.awt.Color;
 

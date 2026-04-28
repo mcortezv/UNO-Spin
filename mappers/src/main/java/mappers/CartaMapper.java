@@ -1,6 +1,6 @@
 package mappers;
-import dominio.entidades.Carta;
-import dominio.entidades.enums.TipoCarta;
+import blackboard.dominio.entidades.Carta;
+import blackboard.dominio.entidades.enums.TipoCarta;
 import dto.CartaDTO;
 import java.util.ArrayList;
 import java.util.List;

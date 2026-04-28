@@ -2,5 +2,5 @@ package interfaces;
 
 public interface IFactoryBlackboard {
 
-    IReceptor crearBlackboard();
+    IBlackboard crearBlackboard(ISerializer serializer);
 }

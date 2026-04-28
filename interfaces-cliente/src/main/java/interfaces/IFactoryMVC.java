@@ -2,5 +2,5 @@ package interfaces;
 
 public interface IFactoryMVC {
 
-    IReceptor crearMVC();
+    IReceptor crearMVC(ISerializer serializer);
 }

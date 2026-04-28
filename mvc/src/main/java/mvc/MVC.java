@@ -1,15 +1,19 @@
 package mvc;
 import interfaces.IDispatcher;
 import interfaces.IReceptor;
+import interfaces.ISerializer;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MVC implements IReceptor {
     private static MVC instance;
     private final List<IDispatcher> suscriptores = new ArrayList<>();
+    private ISerializer serializer;
 
-    MVC() {
+    MVC(ISerializer serializer) {
         instance = this;
+        this.serializer = serializer;
     }
 
     public static void suscribir(IDispatcher dispatcher) {

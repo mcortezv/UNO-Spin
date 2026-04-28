@@ -1,5 +1,5 @@
 package mappers;
-import dominio.entidades.Jugador;
+import blackboard.dominio.entidades.Jugador;
 import dto.JugadorDTO;
 
 import java.util.ArrayList;
