@@ -15,10 +15,13 @@
         <module>dto</module>
         <module>conexion</module>
         <module>interfaces-conexion</module>
+        <module>interfaces-factory-cliente</module>
         <module>control-servidor</module>
         <module>cliente-assembler</module>
         <module>servidor-assembler</module>
         <module>mappers</module>
+        <module>interfaces-factory-cliente</module>
+        <module>interfaces-factory-servidor</module>
     </modules>
 
     <properties>
