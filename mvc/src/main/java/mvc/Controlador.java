@@ -1,6 +1,5 @@
 package mvc;
 import dto.CartaDTO;
-import dto.EventoRuletaDTO;
 import interfaces.IModeloControlador;
 
 /**

@@ -1,6 +1,5 @@
 package op;
 import dto.CartaDTO;
-import dto.EventoRuletaDTO;
 import dto.JugadorDTO;
 import eventos.DialogoElegirColor;
 import eventos.DialogoEventoRuleta;

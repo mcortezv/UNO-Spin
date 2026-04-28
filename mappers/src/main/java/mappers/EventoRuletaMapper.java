@@ -5,7 +5,6 @@
 package mappers;
 
 import blackboard.dominio.entidades.enums.TipoEventoRuleta;
-import dto.EventoRuletaDTO;
 
 /**
  *
