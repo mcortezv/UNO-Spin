@@ -1,5 +1,4 @@
 package servidor;
-
 import Interfaces.IControlServidor;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.interfaces.IDominio;
@@ -9,26 +8,36 @@ import dto.EventoRuletaDTO;
 import dto.JugadorDTO;
 import dto.TipoAccionDTO;
 import interfaces.IDispatcher;
-import interfaces.IReceptorComponente;
+import interfaces.IReceptor;
 import interfaces.ISerializer;
 import mappers.CartaMapper;
 import mappers.EventoRuletaMapper;
 import mappers.JugadorMapper;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class ControlServidor implements IReceptorComponente, IControlServidor {
+public class ControlServidor implements IReceptor, IControlServidor {
+    private static ControlServidor instance;
+    private final List<IDispatcher> suscriptores = new ArrayList<>();
     private final IDominio dominio;
     private final IDispatcher dispatcher;
     private final ISerializer serializer;
     private final List<SocketCliente> clientes;
 
-    public ControlServidor(IDominio dominio, IDispatcher dispatcher, ISerializer serializer) {
+    ControlServidor(IDominio dominio, IDispatcher dispatcher, ISerializer serializer) {
         this.dominio = dominio;
         this.dispatcher = dispatcher;
         this.serializer = serializer;
         this.clientes = new ArrayList<>();
+        instance = this;
+    }
+
+    public static void suscribir(IDispatcher receptor) {
+        instance.suscriptores.add(receptor);
+    }
+
+    public static void iniciar() {
+
     }
 
     public void registrarCliente(int indiceJugador, String ip, int puerto) {

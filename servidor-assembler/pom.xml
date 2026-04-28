@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.itson</groupId>
-            <artifactId>blackboard</artifactId>
+            <artifactId>interfaces-servidor</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
@@ -32,6 +32,12 @@
         <dependency>
             <groupId>com.itson</groupId>
             <artifactId>conexion</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.itson</groupId>
+            <artifactId>blackboard</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>

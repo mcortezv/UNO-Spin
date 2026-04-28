@@ -3,7 +3,7 @@ package interfaces;
 /**
  * The interface Receptor componente.
  */
-public interface IReceptorComponente {
+public interface IReceptor {
 
     /**
      * Recibir mensaje.
