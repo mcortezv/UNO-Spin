@@ -1,7 +1,6 @@
 package blackboard;
 import blackboard.dominio.IDominio;
 import dto.CartaDTO;
-import dto.EventoRuletaDTO;
 import dto.JugadorDTO;
 import interfaces.IBlackboard;
 import interfaces.IReceptor;
@@ -56,7 +55,7 @@ public class Blackboard implements IBlackboard {
     }
 
     @Override
-    public EventoRuletaDTO getEventoRuleta() {
+    public String getEventoRuleta() {
         return null;
     }
 

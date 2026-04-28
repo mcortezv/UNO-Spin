@@ -1,5 +1,4 @@
 package eventos;
-import dto.EventoRuletaDTO;
 import eventos.eventosRuleta.*;
 import interfaces.IModeloLectura;
 import dto.CartaDTO;

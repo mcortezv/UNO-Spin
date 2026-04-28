@@ -2,7 +2,6 @@ package servidor;
 import Interfaces.IControlServidor;
 import dto.CartaDTO;
 import dto.EstadoPartidaDTO;
-import dto.EventoRuletaDTO;
 import dto.JugadorDTO;
 import interfaces.IBlackboard;
 import interfaces.IDispatcher;
