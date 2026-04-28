@@ -1,6 +1,4 @@
-package factory;
+package interfaces;
 
 public interface IBlackboardFactory {
-
-
 }
