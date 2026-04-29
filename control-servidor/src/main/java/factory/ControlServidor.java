@@ -1,5 +1,5 @@
 package factory;
-import Interfaces.IControlServidor;
+import interfaces.IControlServidor;
 import dto.CartaDTO;
 import dto.EstadoPartidaDTO;
 import dto.JugadorDTO;
@@ -13,12 +13,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The type Control servidor.
+ */
 public class ControlServidor implements IReceptor, IControlServidor {
     private final IBlackboard blackboard;
     private final IDispatcher dispatcher;
     private final ISerializer serializer;
     private final List<SocketCliente> clientes = new ArrayList<>();
 
+    /**
+     * Instantiates a new Control servidor.
+     *
+     * @param blackboard the blackboard
+     * @param dispatcher the dispatcher
+     * @param serializer the serializer
+     */
     ControlServidor(IBlackboard blackboard, IDispatcher dispatcher, ISerializer serializer) {
         this.blackboard = blackboard;
         this.dispatcher = dispatcher;

@@ -1,6 +1,6 @@
-package eventos.eventosRuleta;
+package dialogs.eventosRuleta;
 import dto.CartaDTO;
-import eventos.DialogoEventoRuleta;
+import dialogs.DialogoEventoRuleta;
 import op.UICarta;
 import javax.swing.*;
 import java.awt.*;

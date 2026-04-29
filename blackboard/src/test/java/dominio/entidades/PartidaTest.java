@@ -1,21 +1,24 @@
 package dominio.entidades;
-
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoCarta;
 import dominio.entidades.enums.TipoEventoRuleta;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.*;
 
+/**
+ * The type Partida test.
+ */
 class PartidaTest {
 
     private Partida partida;
     private Jugador jugador1;
     private Jugador jugador2;
 
+    /**
+     * Sets up.
+     */
     @BeforeEach
     void setUp() {
         jugador1 = new Jugador("Miss wasabe", new Mano(new ArrayList<>()), List.of("ROJO"), 0, 1);
@@ -32,6 +35,9 @@ class PartidaTest {
         partida.iniciarPartida(Arrays.asList(jugador1, jugador2), config);
     }
 
+    /**
+     * Test iniciar partida.
+     */
     @Test
     void testIniciarPartida() {
         assertEquals(EstadoPartida.EN_PROCESO, partida.getEstadoPartida());
@@ -40,18 +46,27 @@ class PartidaTest {
         assertEquals(2, partida.getJugadores().size());
     }
 
+    /**
+     * Test reparto inicial.
+     */
     @Test
     void testRepartoInicial() {
         assertEquals(7, jugador1.getMano().getCartas().size());
         assertEquals(7, jugador2.getMano().getCartas().size());
     }
 
+    /**
+     * Test carta inicial en descarte.
+     */
     @Test
     void testCartaInicialEnDescarte() {
         assertNotNull(partida.getCartaCima());
         assertEquals(TipoCarta.NUMERICA, partida.getCartaCima().getTipoCarta());
     }
 
+    /**
+     * Test validar jugada correcta.
+     */
     @Test
     void testValidarJugadaCorrecta() {
         Carta cima = partida.getCartaCima();
@@ -59,6 +74,9 @@ class PartidaTest {
         assertTrue(partida.validarJugada(carta));
     }
 
+    /**
+     * Test aplicar jugada numero spin.
+     */
     @Test
     void testAplicarJugadaNumeroSpin() {
         partida.getTablero().getDescarte().getCartas().clear();
@@ -73,6 +91,9 @@ class PartidaTest {
         assertEquals(EstadoPartida.GIRO_PENDIENTE, partida.getEstadoPartida());
     }
 
+    /**
+     * Test aplicar jugada reversa.
+     */
     @Test
     void testAplicarJugadaReversa() {
         partida.getTablero().getDescarte().getCartas().clear();
@@ -87,6 +108,9 @@ class PartidaTest {
         assertFalse(partida.isSentidoHorario());
     }
 
+    /**
+     * Test aplicar jugada bloqueo.
+     */
     @Test
     void testAplicarJugadaBloqueo() {
         partida.getTablero().getDescarte().getCartas().clear();
@@ -98,6 +122,9 @@ class PartidaTest {
         assertTrue(partida.aplicarJugada(carta));
     }
 
+    /**
+     * Test aplicar jugada normal.
+     */
     @Test
     void testAplicarJugadaNormal() {
         Carta cima = partida.getCartaCima();
@@ -110,6 +137,9 @@ class PartidaTest {
         assertEquals(1, partida.getIndiceJugadorActual());
     }
 
+    /**
+     * Test aplicar jugada invalida.
+     */
     @Test
     void testAplicarJugadaInvalida() {
         Carta cima = partida.getCartaCima();
@@ -123,12 +153,18 @@ class PartidaTest {
         assertFalse(partida.getTablero().getDescarte().getCartas().contains(carta));
     }
 
+    /**
+     * Test avanzar turno horario.
+     */
     @Test
     void testAvanzarTurnoHorario() {
         partida.avanzarTurno();
         assertEquals(1, partida.getIndiceJugadorActual());
     }
 
+    /**
+     * Test avanzar turno antihorario.
+     */
     @Test
     void testAvanzarTurnoAntihorario() {
         partida.setSentidoHorario(false);
@@ -136,6 +172,9 @@ class PartidaTest {
         assertEquals(1, partida.getIndiceJugadorActual());
     }
 
+    /**
+     * Test robar carta jugador actual.
+     */
     @Test
     void testRobarCartaJugadorActual() {
         int cartasAntes = jugador1.getMano().getCartas().size();
@@ -143,11 +182,17 @@ class PartidaTest {
         assertEquals(cartasAntes + 1, jugador1.getMano().getCartas().size());
     }
 
+    /**
+     * Test procesar giro ruleta no pendiente.
+     */
     @Test
     void testProcesarGiroRuletaNoPendiente() {
         assertThrows(Exception.class, () -> partida.procesarGiroRuleta());
     }
 
+    /**
+     * Test aplicar efecto ruleta casi uno.
+     */
     @Test
     void testAplicarEfectoRuletaCasiUno() {
         jugador1.getMano().getCartas().clear();
@@ -163,6 +208,9 @@ class PartidaTest {
         assertEquals(2, jugador1.getMano().getCartas().size());
     }
 
+    /**
+     * Test aplicar efecto ruleta descartar por color.
+     */
     @Test
     void testAplicarEfectoRuletaDescartarPorColor() {
         jugador1.getMano().getCartas().clear();

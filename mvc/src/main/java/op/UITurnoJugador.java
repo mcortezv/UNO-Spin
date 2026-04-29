@@ -1,9 +1,9 @@
 package op;
 import dto.CartaDTO;
 import dto.JugadorDTO;
-import eventos.DialogoElegirColor;
-import eventos.DialogoEventoRuleta;
-import eventos.FabricaDialogosEvento;
+import dialogs.DialogoElegirColor;
+import dialogs.DialogoEventoRuleta;
+import dialogs.FabricaDialogosEvento;
 import interfaces.IComponent;
 import interfaces.IModeloLectura;
 import interfaces.ISuscriptor;

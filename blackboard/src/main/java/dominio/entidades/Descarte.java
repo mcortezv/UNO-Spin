@@ -1,31 +1,55 @@
 package dominio.entidades;
-
 import dominio.entidades.enums.TipoCarta;
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The type Descarte.
+ */
 public class Descarte {
 
     private List<Carta> cartas;
 
+    /**
+     * Instantiates a new Descarte.
+     */
     public Descarte() {
         cartas = new ArrayList<>();
     }
 
+    /**
+     * Instantiates a new Descarte.
+     *
+     * @param cartas the cartas
+     */
     public Descarte(List<Carta> cartas) {
         this.cartas = cartas;
     }
 
+    /**
+     * Gets cartas.
+     *
+     * @return the cartas
+     */
     public List<Carta> getCartas() {
         return cartas;
     }
 
+    /**
+     * Sets cartas.
+     *
+     * @param cartas the cartas
+     */
     public void setCartas(List<Carta> cartas) {
         this.cartas = cartas;
     }
 
+    /**
+     * Gets ultima carta.
+     *
+     * @return the ultima carta
+     */
     public Carta getUltimaCarta() {
         return cartas.getLast();
     }

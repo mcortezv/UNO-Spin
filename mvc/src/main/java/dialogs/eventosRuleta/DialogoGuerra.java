@@ -1,4 +1,4 @@
-package eventos.eventosRuleta;
+package dialogs.eventosRuleta;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;

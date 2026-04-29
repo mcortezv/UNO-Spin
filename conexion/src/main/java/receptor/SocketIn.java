@@ -8,17 +8,29 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * The type Socket in.
+ */
 public class SocketIn {
     private ServerSocket server;
     private ExecutorService pool;
     private final int puertoEscucha;
     private final IReceptorObserver observador;
 
+    /**
+     * Instantiates a new Socket in.
+     *
+     * @param puerto     the puerto
+     * @param observador the observador
+     */
     public SocketIn(int puerto, IReceptorObserver observador) {
         this.puertoEscucha = puerto;
         this.observador = observador;
     }
 
+    /**
+     * Start.
+     */
     public void start() {
         pool = Executors.newCachedThreadPool();
 
@@ -39,6 +51,9 @@ public class SocketIn {
         }).start();
     }
 
+    /**
+     * Close.
+     */
     public void close() {
         try {
             if (pool != null && !pool.isShutdown()) {
@@ -57,6 +72,12 @@ public class SocketIn {
         private final Socket socket;
         private final IReceptorObserver observador;
 
+        /**
+         * Instantiates a new Cliente handler.
+         *
+         * @param socket     the socket
+         * @param observador the observador
+         */
         public ClienteHandler(Socket socket, IReceptorObserver observador) {
             this.socket = socket;
             this.observador = observador;

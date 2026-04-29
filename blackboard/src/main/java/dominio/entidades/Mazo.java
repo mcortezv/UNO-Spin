@@ -1,5 +1,4 @@
 package dominio.entidades;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,9 +55,7 @@ public class Mazo {
      * Toma la ultima carta de la bajara y la descarta
      *
      * @return the last carta
-     * @throws Exception the exception Cuando el mazo de las cartas se encuentra vacio, significa que no hay más cartas
-     * en el mazo
-     *
+     * @throws Exception the exception Cuando el mazo de las cartas se encuentra vacio, significa que no hay más cartas en el mazo
      */
     public Carta robarCarta() throws Exception {
         if (this.cartas.isEmpty()) {

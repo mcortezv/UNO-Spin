@@ -5,6 +5,9 @@ import interfaces.IReceptor;
 import interfaces.ISerializer;
 import mvc.Modelo;
 
+/**
+ * The type Factory mvc.
+ */
 public class FactoryMVC implements IFactoryMVC {
 
     private static final String IP_SERVIDOR = "127.0.0.1";

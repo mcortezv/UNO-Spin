@@ -1,6 +1,5 @@
 package dto;
 
-
 /**
  * The type Carta dto.
  */

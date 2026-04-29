@@ -1,4 +1,4 @@
-package eventos.eventosRuleta;
+package dialogs.eventosRuleta;
 import dto.CartaDTO;
 import java.awt.Frame;
 import java.util.List;

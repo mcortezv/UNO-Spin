@@ -1,4 +1,4 @@
-package eventos.eventosRuleta;
+package dialogs.eventosRuleta;
 import java.awt.*;
 
 /**

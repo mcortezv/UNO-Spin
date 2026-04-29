@@ -1,5 +1,5 @@
-package eventos;
-import eventos.eventosRuleta.*;
+package dialogs;
+import dialogs.eventosRuleta.*;
 import interfaces.IModeloLectura;
 import dto.JugadorDTO;
 import javax.swing.*;
@@ -7,8 +7,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The type Fabrica dialogos evento.
+ */
 public class FabricaDialogosEvento {
 
+    /**
+     * Crear dialogo evento ruleta.
+     *
+     * @param evento the evento
+     * @param owner  the owner
+     * @param modelo the modelo
+     * @return the dialogo evento ruleta
+     */
     public static DialogoEventoRuleta crear(String evento, JFrame owner, IModeloLectura modelo) {
         if (evento == null) {
             throw new IllegalArgumentException("El evento es nulo");

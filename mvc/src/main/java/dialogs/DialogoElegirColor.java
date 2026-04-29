@@ -1,5 +1,5 @@
-package eventos;
-import eventos.eventosRuleta.DialogoSeleccionColor;
+package dialogs;
+import dialogs.eventosRuleta.DialogoSeleccionColor;
 import java.awt.*;
 
 /**

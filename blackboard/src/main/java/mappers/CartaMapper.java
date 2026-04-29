@@ -5,8 +5,17 @@ import dto.CartaDTO;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Carta mapper.
+ */
 public class CartaMapper {
 
+    /**
+     * To dto list.
+     *
+     * @param cartas the cartas
+     * @return the list
+     */
     public static List<CartaDTO> toDTO(List<Carta> cartas) {
         List<CartaDTO> listaDTO = new ArrayList<>();
         if (cartas != null) {
@@ -17,6 +26,12 @@ public class CartaMapper {
         return listaDTO;
     }
 
+    /**
+     * To dto carta dto.
+     *
+     * @param c the c
+     * @return the carta dto
+     */
     public static CartaDTO toDTO(Carta c) {
         if (c == null) return null;
         CartaDTO dto = new CartaDTO();
@@ -27,6 +42,12 @@ public class CartaMapper {
         return dto;
     }
 
+    /**
+     * To entity carta.
+     *
+     * @param dto the dto
+     * @return the carta
+     */
     public static Carta toEntity(CartaDTO dto) {
         if (dto == null) return null;
         Carta c = new Carta();

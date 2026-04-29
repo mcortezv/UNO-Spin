@@ -1,30 +1,55 @@
 package dominio.entidades;
-
 import dominio.entidades.enums.TipoCarta;
-
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Mano.
+ */
 public class Mano {
 
     private List<Carta> cartas;
 
+    /**
+     * Instantiates a new Mano.
+     */
     public Mano() {
         cartas = new ArrayList<>();
     }
 
+    /**
+     * Instantiates a new Mano.
+     *
+     * @param cartas the cartas
+     */
     public Mano(List<Carta> cartas) {
         this.cartas = cartas;
     }
 
+    /**
+     * Gets cartas.
+     *
+     * @return the cartas
+     */
     public List<Carta> getCartas() {
         return cartas;
     }
 
+    /**
+     * Sets cartas.
+     *
+     * @param cartas the cartas
+     */
     public void setCartas(List<Carta> cartas) {
         this.cartas = cartas;
     }
 
+    /**
+     * Tiene carta boolean.
+     *
+     * @param carta the carta
+     * @return the boolean
+     */
     public boolean tieneCarta(Carta carta) {
         return cartas.contains(carta);
     }

@@ -5,8 +5,14 @@ import factory.FactoryMVC;
 import implementacion.JsonSerializer;
 import interfaces.*;
 
+/**
+ * The type Main.
+ */
 public class Main {
 
+    /**
+     * Main.
+     */
     static void main() {
         int puertoCliente = 6000;
 
