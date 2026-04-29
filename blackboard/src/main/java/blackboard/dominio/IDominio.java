@@ -1,14 +1,14 @@
 package blackboard.dominio;
 import blackboard.dominio.entidades.Carta;
+import blackboard.dominio.entidades.ConfiguracionPartida;
 import blackboard.dominio.entidades.Jugador;
-import blackboard.dominio.entidades.Tablero;
 import blackboard.dominio.entidades.enums.EstadoPartida;
 import blackboard.dominio.entidades.enums.TipoEventoRuleta;
 import java.util.List;
 
 public interface IDominio {
 
-    void iniciarPartida(List<Jugador> jugadoresIniciales, Tablero tableroInicial);
+    void iniciarPartida(List<Jugador> jugadoresIniciales, ConfiguracionPartida configuracion);
 
     boolean validarJugada(Carta carta);
 

@@ -6,7 +6,6 @@ import factory.FactoryConexion;
 import factory.FactoryControlServidor;
 import implementacion.JsonSerializer;
 import interfaces.*;
-import servidor.ControlServidor;
 
 public class Main {
 
@@ -25,9 +24,7 @@ public class Main {
 
         Conexion.suscribir(blackboard);
         Blackboard.suscribir(receptorControlServidor);
-        ControlServidor.suscribir(dispatcherConn);
 
         Conexion.iniciar();
-        ControlServidor.iniciar();
     }
 }

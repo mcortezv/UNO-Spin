@@ -3,6 +3,8 @@ import Interfaces.IControlServidor;
 import dto.CartaDTO;
 import dto.EstadoPartidaDTO;
 import dto.JugadorDTO;
+import dto.TipoAccionDTO;
+import enums.TipoAccion;
 import interfaces.IBlackboard;
 import interfaces.IDispatcher;
 import interfaces.IReceptor;
@@ -11,40 +13,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ControlServidor implements IReceptor, IControlServidor {
-    private static ControlServidor instance;
-    private final List<IDispatcher> suscriptores = new ArrayList<>();
     private final IBlackboard blackboard;
     private final IDispatcher dispatcher;
     private final ISerializer serializer;
-    private final List<SocketCliente> clientes;
+    private final List<SocketCliente> clientes = new ArrayList<>();
 
     ControlServidor(IBlackboard blackboard, IDispatcher dispatcher, ISerializer serializer) {
         this.blackboard = blackboard;
         this.dispatcher = dispatcher;
         this.serializer = serializer;
-        this.clientes = new ArrayList<>();
-        instance = this;
     }
 
-    public static void suscribir(IDispatcher receptor) {
-        instance.suscriptores.add(receptor);
-    }
-
-    public static void iniciar() {
-
-    }
-
+    @Override
     public void registrarCliente(int indiceJugador, String ip, int puerto) {
         clientes.removeIf(c -> c.getIndiceJugador() == indiceJugador);
         clientes.add(new SocketCliente(indiceJugador, ip, puerto));
     }
 
+    @Override
     public void desconectarCliente(int indiceJugador) {
         clientes.removeIf(c -> c.getIndiceJugador() == indiceJugador);
     }
 
     @Override
     public void recibirMensaje(String json) {
+        TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
+        if (accion.getTipoAccion() == TipoAccion.UNIRSE_PARTIDA) {
+            registrarCliente(clientes.size(), accion.getIp(), accion.getPuerto());
+        }
         broadcastEstado();
     }
 
@@ -60,17 +56,16 @@ public class ControlServidor implements IReceptor, IControlServidor {
         List<JugadorDTO> jugadores = blackboard.getJugadores();
         CartaDTO cartaCima = blackboard.getCartaCima();
         List<CartaDTO> mano = blackboard.getManoJugador(indiceJugador);
-        String eventoRuleta = null;
-        if (blackboard.getEstadoPartida().equals("GIRO_PENDIENTE")) {
-            eventoRuleta = blackboard.getEventoRuleta();
-        }
+        String eventoRuleta = "GIRO_PENDIENTE".equals(blackboard.getEstadoPartida())
+                ? blackboard.getEventoRuleta()
+                : null;
         return new EstadoPartidaDTO(
                 blackboard.getIndiceJugadorActual(),
                 blackboard.getEstadoPartida(),
                 cartaCima,
                 jugadores,
                 mano,
-                (blackboard.getIndiceJugadorActual() == indiceJugador),
+                blackboard.getIndiceJugadorActual() == indiceJugador,
                 eventoRuleta,
                 blackboard.isUltimaJugadaValida());
     }
