@@ -3,6 +3,7 @@ import blackboard.dominio.entidades.Jugador;
 import blackboard.dominio.entidades.Partida;
 import blackboard.dominio.IDominio;
 import blackboard.dominio.entidades.enums.EstadoPartida;
+import interfaces.IBlackboard;
 import interfaces.IFactoryBlackboard;
 import interfaces.ISerializer;
 import java.util.ArrayList;

@@ -7,7 +7,7 @@ public class MVC implements IReceptor {
     private final ISerializer serializer;
     private final Modelo modelo;
 
-    MVC(ISerializer serializer, Modelo modelo) {
+    public MVC(ISerializer serializer, Modelo modelo) {
         this.serializer = serializer;
         this.modelo = modelo;
     }
