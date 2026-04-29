@@ -2,5 +2,5 @@ package interfaces;
 
 public interface IFactoryConexion {
 
-    IDispatcher crearConn();
+    IDispatcher crearConn(int puerto);
 }
