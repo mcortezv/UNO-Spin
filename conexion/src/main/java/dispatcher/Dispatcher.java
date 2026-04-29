@@ -1,23 +1,28 @@
 package dispatcher;
 import interfaces.IDispatcher;
+import interfaces.IDispatcherObserver;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
-/**
- * The type Dispatcher.
- */
 public class Dispatcher implements IDispatcher {
-    private final ColaDispatcher cola;
+    private final BlockingQueue<String> salida = new LinkedBlockingQueue<>();
+    private final List<IDispatcherObserver> observadores = new ArrayList<>();
 
-    /**
-     * Instantiates a new Dispatcher.
-     *
-     * @param cola the cola
-     */
-    public Dispatcher(ColaDispatcher cola) {
-        this.cola = cola;
+    public void attach(IDispatcherObserver observador) {
+        observadores.add(observador);
     }
 
     @Override
     public void enviar(String json, int port, String ip) {
-        cola.encolar(json, port, ip);
+        try {
+            salida.put(json);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        for (IDispatcherObserver obs : observadores) {
+            obs.update(json, port, ip);
+        }
     }
 }
