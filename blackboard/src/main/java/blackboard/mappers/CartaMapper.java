@@ -1,4 +1,4 @@
-package mappers;
+package blackboard.mappers;
 import blackboard.dominio.entidades.Carta;
 import blackboard.dominio.entidades.enums.TipoCarta;
 import dto.CartaDTO;

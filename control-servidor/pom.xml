@@ -31,13 +31,13 @@
         </dependency>
         <dependency>
             <groupId>com.itson</groupId>
-            <artifactId>mappers</artifactId>
+            <artifactId>interfaces-conexion</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.itson</groupId>
-            <artifactId>interfaces-conexion</artifactId>
+            <artifactId>interfaces-servidor</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>

@@ -19,7 +19,6 @@
         <module>control-servidor</module>
         <module>cliente-assembler</module>
         <module>servidor-assembler</module>
-        <module>mappers</module>
         <module>interfaces-servidor</module>
     </modules>
 
