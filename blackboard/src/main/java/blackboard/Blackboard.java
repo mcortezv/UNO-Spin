@@ -1,7 +1,9 @@
 package blackboard;
 import blackboard.dominio.IDominio;
+import blackboard.mappers.CartaMapper;
 import dto.CartaDTO;
 import dto.JugadorDTO;
+import dto.TipoAccionDTO;
 import interfaces.IBlackboard;
 import interfaces.IReceptor;
 import interfaces.ISerializer;
@@ -26,7 +28,20 @@ public class Blackboard implements IBlackboard {
 
     @Override
     public void recibirMensaje(String json) {
+        TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
+        switch (accion.getTipoAccion()) {
+            case JUGAR_CARTA       -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
+            case PEDIR_CARTA       -> dominio.robarCartaJugadorActual();
+            case GRITAR_UNO        -> dominio.gritarUno();
+            case SELECCIONAR_COLOR -> dominio.aplicarSeleccionColor(accion.getCartaDTO().getColor());
+        }
+        notificar();
+    }
 
+    private void notificar() {
+        for (IReceptor s : suscriptores) {
+            s.recibirMensaje("");
+        }
     }
 
     @Override
