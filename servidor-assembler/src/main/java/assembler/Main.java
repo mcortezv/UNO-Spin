@@ -7,8 +7,14 @@ import factory.FactoryControlServidor;
 import implementacion.JsonSerializer;
 import interfaces.*;
 
+/**
+ * The type Main.
+ */
 public class Main {
 
+    /**
+     * Main.
+     */
     static void main() {
 
         int puertoServidor = 5000;

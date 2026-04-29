@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * The type Partida.
+ */
 public class Partida implements IDominio {
-
     private static final int CARTAS_INICIALES = 7;
     private static final int VALOR_CARTA_ACCION = 20;
     private static final int VALOR_CARTA_COMODIN = 50;
@@ -22,8 +24,19 @@ public class Partida implements IDominio {
     private boolean unoGritado = false;
     private boolean ultimaJugadaValida = true;
 
+    /**
+     * Instantiates a new Partida.
+     */
     public Partida() {}
 
+    /**
+     * Instantiates a new Partida.
+     *
+     * @param estadoPartida       the estado partida
+     * @param indiceJugadorActual the indice jugador actual
+     * @param jugadores           the jugadores
+     * @param sentidoHorario      the sentido horario
+     */
     public Partida(EstadoPartida estadoPartida, int indiceJugadorActual,
                    List<Jugador> jugadores, boolean sentidoHorario) {
         this.estadoPartida = estadoPartida;
@@ -284,38 +297,83 @@ public class Partida implements IDominio {
         return tablero.getRuleta().getEventoRuleta();
     }
 
+    /**
+     * Gets tablero.
+     *
+     * @return the tablero
+     */
     public Tablero getTablero() {
         return tablero;
     }
 
+    /**
+     * Sets tablero.
+     *
+     * @param t the t
+     */
     public void setTablero(Tablero t) {
         this.tablero = t;
     }
 
+    /**
+     * Sets estado partida.
+     *
+     * @param e the e
+     */
     public void setEstadoPartida(EstadoPartida e) {
         this.estadoPartida = e;
     }
 
+    /**
+     * Sets indice jugador actual.
+     *
+     * @param i the
+     */
     public void setIndiceJugadorActual(int i) {
         this.indiceJugadorActual = i;
     }
 
+    /**
+     * Sets jugadores.
+     *
+     * @param j the j
+     */
     public void setJugadores(List<Jugador> j) {
         this.jugadores = j;
     }
 
+    /**
+     * Sets sentido horario.
+     *
+     * @param s the s
+     */
     public void setSentidoHorario(boolean s) {
         this.sentidoHorario = s;
     }
 
+    /**
+     * Is sentido horario boolean.
+     *
+     * @return the boolean
+     */
     public boolean isSentidoHorario() {
         return sentidoHorario;
     }
 
+    /**
+     * Is uno gritado boolean.
+     *
+     * @return the boolean
+     */
     public boolean isUnoGritado() {
         return unoGritado;
     }
 
+    /**
+     * Sets uno gritado.
+     *
+     * @param u the u
+     */
     public void setUnoGritado(boolean u) {
         this.unoGritado = u;
     }

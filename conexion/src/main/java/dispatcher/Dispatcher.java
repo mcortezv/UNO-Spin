@@ -4,9 +4,17 @@ import interfaces.IDispatcherObserver;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Dispatcher.
+ */
 public class Dispatcher implements IDispatcher {
     private final List<IDispatcherObserver> observadores = new ArrayList<>();
 
+    /**
+     * Attach.
+     *
+     * @param observador the observador
+     */
     public void attach(IDispatcherObserver observador) {
         observadores.add(observador);
     }

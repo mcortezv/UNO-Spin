@@ -1,4 +1,4 @@
-package eventos;
+package dialogs;
 import javax.swing.*;
 import java.awt.*;
 

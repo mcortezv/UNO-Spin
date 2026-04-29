@@ -1,5 +1,5 @@
-package eventos.eventosRuleta;
-import eventos.DialogoEventoRuleta;
+package dialogs.eventosRuleta;
+import dialogs.DialogoEventoRuleta;
 import javax.swing.*;
 import java.awt.*;
 

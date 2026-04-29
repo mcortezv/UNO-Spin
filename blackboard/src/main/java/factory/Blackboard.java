@@ -19,8 +19,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static dominio.entidades.enums.TipoAccion.*;
-
+/**
+ * The type Blackboard.
+ */
 public class Blackboard implements IBlackboard {
 
     private static final int MIN_JUGADORES = 2;
@@ -34,12 +35,23 @@ public class Blackboard implements IBlackboard {
     private final Set<String> confirmaciones = new HashSet<>();
     private ConfiguracionPartida configuracion;
 
+    /**
+     * Instantiates a new Blackboard.
+     *
+     * @param dominio    the dominio
+     * @param serializer the serializer
+     */
     Blackboard(IDominio dominio, ISerializer serializer) {
         this.dominio = dominio;
         this.serializer = serializer;
         instance = this;
     }
 
+    /**
+     * Suscribir.
+     *
+     * @param receptor the receptor
+     */
     public static void suscribir(IReceptor receptor) {
         instance.suscriptores.add(receptor);
     }

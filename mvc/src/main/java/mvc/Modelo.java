@@ -4,6 +4,9 @@ import interfaces.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Modelo.
+ */
 public class Modelo implements IModeloControlador, IModeloLectura {
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
     private final IDispatcher dispatcher;
@@ -12,6 +15,14 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     private final int puertoServidor;
     private EstadoPartidaDTO estadoPartida;
 
+    /**
+     * Instantiates a new Modelo.
+     *
+     * @param serializer     the serializer
+     * @param dispatcher     the dispatcher
+     * @param ipServidor     the ip servidor
+     * @param puertoServidor the puerto servidor
+     */
     public Modelo(ISerializer serializer, IDispatcher dispatcher, String ipServidor, int puertoServidor) {
         this.serializer = serializer;
         this.dispatcher = dispatcher;
@@ -19,6 +30,11 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         this.puertoServidor = puertoServidor;
     }
 
+    /**
+     * Actualizar estado.
+     *
+     * @param estado the estado
+     */
     public void actualizarEstado(EstadoPartidaDTO estado) {
         this.estadoPartida = estado;
         notifyObservers();
@@ -157,10 +173,20 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         return estadoPartida != null ? estadoPartida.getEventoRuletaActivo() : null;
     }
 
+    /**
+     * Subscribe.
+     *
+     * @param suscriptor the suscriptor
+     */
     public void subscribe(ISuscriptor suscriptor) {
         suscriptores.add(suscriptor);
     }
 
+    /**
+     * Unsubscribe.
+     *
+     * @param suscriptor the suscriptor
+     */
     public void unsubscribe(ISuscriptor suscriptor) {
         suscriptores.remove(suscriptor);
     }

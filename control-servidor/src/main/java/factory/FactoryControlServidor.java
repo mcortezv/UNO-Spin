@@ -1,6 +1,9 @@
 package factory;
 import interfaces.*;
 
+/**
+ * The type Factory control servidor.
+ */
 public class FactoryControlServidor implements IFactoryControlServidor {
 
     @Override

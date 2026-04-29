@@ -5,8 +5,18 @@ import dto.JugadorDTO;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Jugador mapper.
+ */
 public class JugadorMapper {
 
+    /**
+     * To dto jugador dto.
+     *
+     * @param jugador       the jugador
+     * @param esTurnoActual the es turno actual
+     * @return the jugador dto
+     */
     public static JugadorDTO toDTO(Jugador jugador, boolean esTurnoActual) {
         return new JugadorDTO(
                 jugador.getNombre(),
@@ -16,6 +26,13 @@ public class JugadorMapper {
         );
     }
 
+    /**
+     * To dto list.
+     *
+     * @param jugadores    the jugadores
+     * @param indiceActual the indice actual
+     * @return the list
+     */
     public static List<JugadorDTO> toDTO(List<Jugador> jugadores, int indiceActual) {
         List<JugadorDTO> lista = new ArrayList<>();
         if (jugadores != null) {
@@ -26,6 +43,12 @@ public class JugadorMapper {
         return lista;
     }
 
+    /**
+     * To entity jugador.
+     *
+     * @param dto the dto
+     * @return the jugador
+     */
     public static Jugador toEntity(JugadorDTO dto) {
         if (dto == null) return null;
         return new Jugador(

@@ -2,6 +2,9 @@ package factory;
 import interfaces.IDispatcher;
 import interfaces.IFactoryConexion;
 
+/**
+ * The type Factory conexion.
+ */
 public class FactoryConexion implements IFactoryConexion {
 
     @Override

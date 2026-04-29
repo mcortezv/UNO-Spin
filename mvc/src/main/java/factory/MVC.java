@@ -4,10 +4,19 @@ import interfaces.IReceptor;
 import interfaces.ISerializer;
 import mvc.Modelo;
 
+/**
+ * The type Mvc.
+ */
 public class MVC implements IReceptor {
     private final ISerializer serializer;
     private final Modelo modelo;
 
+    /**
+     * Instantiates a new Mvc.
+     *
+     * @param serializer the serializer
+     * @param modelo     the modelo
+     */
     MVC(ISerializer serializer, Modelo modelo) {
         this.serializer = serializer;
         this.modelo = modelo;

@@ -9,6 +9,9 @@ import interfaces.ISerializer;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Factory blackboard.
+ */
 public class FactoryBlackboard implements IFactoryBlackboard {
 
     @Override
