@@ -6,21 +6,21 @@ import java.util.List;
 
 public class JugadorMapper {
 
-    public static JugadorDTO toDTO(Jugador jugador) {
-        JugadorDTO dto = new JugadorDTO(
+    public static JugadorDTO toDTO(Jugador jugador, boolean esTurnoActual) {
+        return new JugadorDTO(
                 jugador.getNombre(),
                 jugador.getNumeroAvatar(),
                 jugador.getMano().getCartas().size(),
-                false,
-                CartaMapper.toDTO(jugador.getMano().getCartas())
+                esTurnoActual
         );
-        return dto;
     }
 
-    public static List<JugadorDTO> toDTO(List<Jugador> jugadores) {
+    public static List<JugadorDTO> toDTO(List<Jugador> jugadores, int indiceActual) {
         List<JugadorDTO> lista = new ArrayList<>();
-        for (Jugador j : jugadores) {
-            lista.add(toDTO(j));
+        if (jugadores != null) {
+            for (int i = 0; i < jugadores.size(); i++) {
+                lista.add(toDTO(jugadores.get(i), i == indiceActual));
+            }
         }
         return lista;
     }
