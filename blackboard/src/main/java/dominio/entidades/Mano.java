@@ -1,6 +1,6 @@
-package blackboard.dominio.entidades;
+package dominio.entidades;
 
-import blackboard.dominio.entidades.enums.TipoCarta;
+import dominio.entidades.enums.TipoCarta;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package blackboard.dominio.entidades.enums;
+package dominio.entidades.enums;
 
 /**
  * The enum Tipo carta.

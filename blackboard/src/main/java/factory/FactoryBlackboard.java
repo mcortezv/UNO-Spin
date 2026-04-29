@@ -1,8 +1,8 @@
-package blackboard;
-import blackboard.dominio.entidades.Jugador;
-import blackboard.dominio.entidades.Partida;
-import blackboard.dominio.IDominio;
-import blackboard.dominio.entidades.enums.EstadoPartida;
+package factory;
+import dominio.entidades.Jugador;
+import dominio.entidades.Partida;
+import dominio.IDominio;
+import dominio.entidades.enums.EstadoPartida;
 import interfaces.IBlackboard;
 import interfaces.IFactoryBlackboard;
 import interfaces.ISerializer;

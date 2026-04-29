@@ -1,7 +1,7 @@
 package assembler;
-import blackboard.Blackboard;
-import conexion.Conexion;
-import blackboard.FactoryBlackboard;
+import factory.Blackboard;
+import factory.Conexion;
+import factory.FactoryBlackboard;
 import factory.FactoryConexion;
 import factory.FactoryControlServidor;
 import implementacion.JsonSerializer;

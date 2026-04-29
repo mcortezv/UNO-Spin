@@ -1,5 +1,5 @@
-package blackboard.mappers;
-import blackboard.dominio.entidades.ConfiguracionPartida;
+package mappers;
+import dominio.entidades.ConfiguracionPartida;
 import dto.ConfiguracionPartidaDTO;
 
 public class ConfiguracionPartidaMapper {

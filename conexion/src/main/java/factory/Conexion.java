@@ -1,4 +1,4 @@
-package conexion;
+package factory;
 import dispatcher.Dispatcher;
 import dispatcher.SocketOut;
 import interfaces.IDispatcher;
@@ -15,7 +15,7 @@ public class Conexion implements IReceptorObserver {
     private final SocketOut socketOut;
     private final IDispatcher dispatcher;
 
-    public Conexion(int puerto) {
+    Conexion(int puerto) {
         this.socketIn = new SocketIn(puerto, this);
 
         Dispatcher dispatcher = new Dispatcher();

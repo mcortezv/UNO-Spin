@@ -3,7 +3,6 @@ import dto.*;
 import interfaces.*;
 import java.util.ArrayList;
 import java.util.List;
-import static enums.TipoAccion.*;
 
 public class Modelo implements IModeloControlador, IModeloLectura {
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
@@ -27,7 +26,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public void unirsePartida(JugadorDTO jugador, ConfiguracionPartidaDTO configuracion) {
-        TipoAccionDTO accion = new TipoAccionDTO(UNIRSE_PARTIDA);
+        TipoAccionDTO accion = new TipoAccionDTO("UNIRSE_PARTIDA");
         accion.setJugadorDTO(jugador);
         accion.setConfiguracion(configuracion);
         enviar(accion);
@@ -35,29 +34,29 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public void confirmarInicio(JugadorDTO jugador) {
-        TipoAccionDTO accion = new TipoAccionDTO(CONFIRMAR_INICIO);
+        TipoAccionDTO accion = new TipoAccionDTO("CONFIRMAR_INICIO");
         accion.setJugadorDTO(jugador);
         enviar(accion);
     }
 
     @Override
     public void jugarCarta(CartaDTO cartaDTO) {
-        enviar(new TipoAccionDTO(JUGAR_CARTA, cartaDTO));
+        enviar(new TipoAccionDTO("JUGAR_CARTA", cartaDTO));
     }
 
     @Override
     public void pedirCarta() {
-        enviar(new TipoAccionDTO(PEDIR_CARTA));
+        enviar(new TipoAccionDTO("PEDIR_CARTA"));
     }
 
     @Override
     public void girarRuleta() {
-        enviar(new TipoAccionDTO(GIRAR_RULETA));
+        enviar(new TipoAccionDTO("GIRAR_RULETA"));
     }
 
     @Override
     public void gritarUno() {
-        enviar(new TipoAccionDTO(GRITAR_UNO));
+        enviar(new TipoAccionDTO("GRITAR_UNO"));
     }
 
     @Override
@@ -70,7 +69,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public void reconocerEvento(int indiceJugador) {
-        enviar(new TipoAccionDTO(RECONOCER_EVENTO));
+        enviar(new TipoAccionDTO("RECONOCER_EVENTO"));
         limpiarEventoRuleta();
     }
 
@@ -78,7 +77,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     public void aplicarSeleccionColor(String color) {
         CartaDTO payload = new CartaDTO();
         payload.setColor(color);
-        enviar(new TipoAccionDTO(SELECCIONAR_COLOR, payload));
+        enviar(new TipoAccionDTO("SELECCIONAR_COLOR", payload));
     }
 
     @Override

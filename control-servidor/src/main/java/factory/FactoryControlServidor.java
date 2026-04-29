@@ -1,6 +1,5 @@
 package factory;
 import interfaces.*;
-import servidor.ControlServidor;
 
 public class FactoryControlServidor implements IFactoryControlServidor {
 

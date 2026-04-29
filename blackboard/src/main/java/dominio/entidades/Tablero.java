@@ -1,4 +1,4 @@
-package blackboard.dominio.entidades;
+package dominio.entidades;
 
 /**
  * The type Tablero.

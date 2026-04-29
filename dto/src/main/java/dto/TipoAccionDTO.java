@@ -1,9 +1,7 @@
 package dto;
 
-import enums.TipoAccion;
-
 public class TipoAccionDTO {
-    private TipoAccion tipoAccion;
+    private String tipoAccion;
     private CartaDTO cartaDTO;
     private JugadorDTO jugadorDTO;
     private String ip;
@@ -12,17 +10,18 @@ public class TipoAccionDTO {
 
     public TipoAccionDTO() {}
 
-    public TipoAccionDTO(TipoAccion tipoAccion) {
+    public TipoAccionDTO(String tipoAccion) {
         this.tipoAccion = tipoAccion;
     }
 
-    public TipoAccionDTO(TipoAccion tipoAccion, CartaDTO cartaDTO) {
+    public TipoAccionDTO(String tipoAccion, CartaDTO cartaDTO) {
         this.tipoAccion = tipoAccion;
         this.cartaDTO = cartaDTO;
     }
 
-    public TipoAccion getTipoAccion() { return tipoAccion; }
-    public void setTipoAccion(TipoAccion tipoAccion) { this.tipoAccion = tipoAccion; }
+    public String getTipoAccion() { return tipoAccion; }
+
+    public void setTipoAccion(String tipoAccion) { this.tipoAccion = tipoAccion; }
 
     public CartaDTO getCartaDTO() { return cartaDTO; }
     public void setCartaDTO(CartaDTO cartaDTO) { this.cartaDTO = cartaDTO; }
