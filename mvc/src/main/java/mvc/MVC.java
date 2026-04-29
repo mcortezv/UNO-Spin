@@ -1,31 +1,20 @@
 package mvc;
-import interfaces.IDispatcher;
+import dto.EstadoPartidaDTO;
 import interfaces.IReceptor;
 import interfaces.ISerializer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MVC implements IReceptor {
-    private static MVC instance;
-    private final List<IDispatcher> suscriptores = new ArrayList<>();
-    private ISerializer serializer;
+    private final ISerializer serializer;
+    private final Modelo modelo;
 
-    MVC(ISerializer serializer) {
-        instance = this;
+    MVC(ISerializer serializer, Modelo modelo) {
         this.serializer = serializer;
-    }
-
-    public static void suscribir(IDispatcher dispatcher) {
-        instance.suscriptores.add(dispatcher);
-    }
-
-    public static void iniciar(){
-
+        this.modelo = modelo;
     }
 
     @Override
     public void recibirMensaje(String json) {
-
+        EstadoPartidaDTO estado = serializer.deserialize(json, EstadoPartidaDTO.class);
+        modelo.actualizarEstado(estado);
     }
 }

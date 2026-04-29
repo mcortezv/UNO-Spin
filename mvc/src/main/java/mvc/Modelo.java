@@ -5,45 +5,59 @@ import java.util.ArrayList;
 import java.util.List;
 import static enums.TipoAccion.*;
 
-/**
- * The type Modelo.
- */
-public class Modelo implements IModeloControlador, IModeloLectura, IModeloConexion {
+public class Modelo implements IModeloControlador, IModeloLectura {
     private final List<ISuscriptor> suscriptores = new ArrayList<>();
     private final IDispatcher dispatcher;
     private final ISerializer serializer;
-    private int puertoServidor;
-    private String ipServidor;
+    private final String ipServidor;
+    private final int puertoServidor;
     private EstadoPartidaDTO estadoPartida;
-    private boolean ultimaJugadaValida;
 
-    public Modelo(ISerializer serializer, IDispatcher dispatcher) {
+    public Modelo(ISerializer serializer, IDispatcher dispatcher, String ipServidor, int puertoServidor) {
         this.serializer = serializer;
         this.dispatcher = dispatcher;
+        this.ipServidor = ipServidor;
+        this.puertoServidor = puertoServidor;
+    }
+
+    public void actualizarEstado(EstadoPartidaDTO estado) {
+        this.estadoPartida = estado;
+        notifyObservers();
+    }
+
+    @Override
+    public void unirsePartida(JugadorDTO jugador, ConfiguracionPartidaDTO configuracion) {
+        TipoAccionDTO accion = new TipoAccionDTO(UNIRSE_PARTIDA);
+        accion.setJugadorDTO(jugador);
+        accion.setConfiguracion(configuracion);
+        enviar(accion);
+    }
+
+    @Override
+    public void confirmarInicio(JugadorDTO jugador) {
+        TipoAccionDTO accion = new TipoAccionDTO(CONFIRMAR_INICIO);
+        accion.setJugadorDTO(jugador);
+        enviar(accion);
     }
 
     @Override
     public void jugarCarta(CartaDTO cartaDTO) {
-       String json = serializer.serialize(new TipoAccionDTO(JUGAR_CARTA, cartaDTO));
-       this.dispatcher.enviar(json, puertoServidor, ipServidor);
+        enviar(new TipoAccionDTO(JUGAR_CARTA, cartaDTO));
     }
 
     @Override
     public void pedirCarta() {
-        String json = serializer.serialize(new TipoAccionDTO(PEDIR_CARTA));
-        this.dispatcher.enviar(json, puertoServidor, ipServidor);
+        enviar(new TipoAccionDTO(PEDIR_CARTA));
     }
 
     @Override
     public void girarRuleta() {
-        String json = serializer.serialize(new TipoAccionDTO(GIRAR_RULETA));
-        this.dispatcher.enviar(json, puertoServidor, ipServidor);
+        enviar(new TipoAccionDTO(GIRAR_RULETA));
     }
 
     @Override
     public void gritarUno() {
-        String json = serializer.serialize(new TipoAccionDTO(GRITAR_UNO));
-        this.dispatcher.enviar(json, puertoServidor, ipServidor);
+        enviar(new TipoAccionDTO(GRITAR_UNO));
     }
 
     @Override
@@ -56,28 +70,25 @@ public class Modelo implements IModeloControlador, IModeloLectura, IModeloConexi
 
     @Override
     public void reconocerEvento(int indiceJugador) {
-        String json = serializer.serialize(new TipoAccionDTO(RECONOCER_EVENTO));
-        this.dispatcher.enviar(json, puertoServidor, ipServidor);
+        enviar(new TipoAccionDTO(RECONOCER_EVENTO));
         limpiarEventoRuleta();
     }
 
     @Override
     public void aplicarSeleccionColor(String color) {
-        String json = serializer.serialize(new TipoAccionDTO(SELECCIONAR_COLOR));
-        this.dispatcher.enviar(json, puertoServidor, ipServidor);
+        CartaDTO payload = new CartaDTO();
+        payload.setColor(color);
+        enviar(new TipoAccionDTO(SELECCIONAR_COLOR, payload));
     }
 
     @Override
-    public void aplicarEventoRuleta(EventoRuletaDTO evento, Object resultado) {
+    public void aplicarEventoRuleta(String evento, Object resultado) {
         notifyObservers();
     }
 
     @Override
     public boolean isUltimaJugadaValida() {
-        if (estadoPartida != null) {
-            return estadoPartida.isUltimaJugadaValida();
-        }
-        return false;
+        return estadoPartida != null && estadoPartida.isUltimaJugadaValida();
     }
 
     @Override
@@ -102,13 +113,14 @@ public class Modelo implements IModeloControlador, IModeloLectura, IModeloConexi
 
     @Override
     public String getNombreTurnoActual() {
-        if (estadoPartida != null && estadoPartida.getJugadores() != null) {
-            int indice = estadoPartida.getIndiceJugadorActual();
-            if (indice >= 0 && indice < estadoPartida.getJugadores().size()) {
-                return estadoPartida.getJugadores().get(indice).getNombre();
-            }
+        if (estadoPartida == null || estadoPartida.getJugadores() == null) {
+            return "Esperando...";
         }
-        return "Esperando...";
+        int indice = estadoPartida.getIndiceJugadorActual();
+        if (indice < 0 || indice >= estadoPartida.getJugadores().size()) {
+            return "Esperando...";
+        }
+        return estadoPartida.getJugadores().get(indice).getNombre();
     }
 
     @Override
@@ -124,54 +136,32 @@ public class Modelo implements IModeloControlador, IModeloLectura, IModeloConexi
 
     @Override
     public boolean isTurnoActivo() {
-        return estadoPartida != null && estadoPartida.isEsTuTurno() && "EN_PROCESO".equals(estadoPartida.getEstadoPartida());
+        return estadoPartida != null && estadoPartida.isEsTuTurno()
+                && "EN_PROCESO".equals(estadoPartida.getEstadoPartida());
     }
 
     @Override
     public boolean isSpinActivo() {
-        return estadoPartida != null && "GIRO_PENDIENTE".equals(estadoPartida.getEstadoPartida()) && getEventoRuletaActual() == null;
+        return estadoPartida != null
+                && "GIRO_PENDIENTE".equals(estadoPartida.getEstadoPartida())
+                && getEventoRuletaActual() == null;
     }
 
     @Override
     public boolean isSeleccionColorPendiente() {
-        return estadoPartida != null && "SELECCION_COLOR_PENDIENTE".equals(estadoPartida.getEstadoPartida());
+        return estadoPartida != null
+                && "SELECCION_COLOR_PENDIENTE".equals(estadoPartida.getEstadoPartida());
     }
 
     @Override
-    public EventoRuletaDTO getEventoRuletaActual() {
+    public String getEventoRuletaActual() {
         return estadoPartida != null ? estadoPartida.getEventoRuletaActivo() : null;
     }
 
-    @Override
-    public List<CartaDTO> getManoJugadorEspecifico(int indiceJugador) {
-        if (estadoPartida != null && estadoPartida.getJugadores() != null) {
-            if (indiceJugador >= 0 && indiceJugador < estadoPartida.getJugadores().size()) {
-                List<CartaDTO> cartasDelRival = estadoPartida.getJugadores().get(indiceJugador).getCartasMano();
-                return cartasDelRival != null ? cartasDelRival : new ArrayList<>();
-            }
-        }
-        return new ArrayList<>();
-    }
-
-    @Override
-    public boolean isTurnoActivoEspecifico(int indiceJugador) {
-        return estadoPartida != null && estadoPartida.getIndiceJugadorActual() == indiceJugador;
-    }
-
-    /**
-     * Subscribe.
-     *
-     * @param suscriptor the suscriptor
-     */
     public void subscribe(ISuscriptor suscriptor) {
         suscriptores.add(suscriptor);
     }
 
-    /**
-     * Unsubscribe.
-     *
-     * @param suscriptor the suscriptor
-     */
     public void unsubscribe(ISuscriptor suscriptor) {
         suscriptores.remove(suscriptor);
     }
@@ -182,10 +172,8 @@ public class Modelo implements IModeloControlador, IModeloLectura, IModeloConexi
         }
     }
 
-    @Override
-    public void enviar(String json, int port, String ip) {
-        if (this.dispatcher == null) {
-            this.enviar(json, port, ip);
-        }
+    private void enviar(TipoAccionDTO accion) {
+        String json = serializer.serialize(accion);
+        dispatcher.enviar(json, puertoServidor, ipServidor);
     }
 }

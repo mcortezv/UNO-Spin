@@ -4,22 +4,21 @@ import factory.FactoryConexion;
 import factory.FactoryMVC;
 import implementacion.JsonSerializer;
 import interfaces.*;
-import mvc.MVC;
 
 public class Main {
 
     static void main() {
+        int puertoCliente = 6000;
 
         IFactoryMVC factoryMVC = new FactoryMVC();
         IFactoryConexion factoryConexion = new FactoryConexion();
         ISerializer serializer = new JsonSerializer();
 
-        IReceptor receptorMVC = factoryMVC.crearMVC(serializer);
-        IDispatcher dispatcherConn = factoryConexion.crearConn();
+        IDispatcher dispatcherConn = factoryConexion.crearConn(puertoCliente);
+        IReceptor receptorMVC = factoryMVC.crearMVC(serializer, dispatcherConn);
 
         Conexion.suscribir(receptorMVC);
-        MVC.suscribir(dispatcherConn);
 
-        MVC.iniciar();
+        Conexion.iniciar();
     }
 }
