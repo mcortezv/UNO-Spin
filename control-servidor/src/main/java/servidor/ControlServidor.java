@@ -60,7 +60,7 @@ public class ControlServidor implements IReceptor, IControlServidor {
         List<JugadorDTO> jugadores = blackboard.getJugadores();
         CartaDTO cartaCima = blackboard.getCartaCima();
         List<CartaDTO> mano = blackboard.getManoJugador(indiceJugador);
-        EventoRuletaDTO eventoRuleta = null;
+        String eventoRuleta = null;
         if (blackboard.getEstadoPartida().equals("GIRO_PENDIENTE")) {
             eventoRuleta = blackboard.getEventoRuleta();
         }
