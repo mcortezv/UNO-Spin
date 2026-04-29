@@ -15,7 +15,7 @@ public class Conexion implements IReceptorObserver {
     private final SocketOut socketOut;
     private final IDispatcher dispatcher;
 
-    Conexion(int puerto) {
+    public Conexion(int puerto) {
         this.socketIn = new SocketIn(puerto, this);
 
         Dispatcher dispatcher = new Dispatcher();

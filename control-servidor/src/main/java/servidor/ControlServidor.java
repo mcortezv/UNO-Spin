@@ -18,7 +18,7 @@ public class ControlServidor implements IReceptor, IControlServidor {
     private final ISerializer serializer;
     private final List<SocketCliente> clientes = new ArrayList<>();
 
-    ControlServidor(IBlackboard blackboard, IDispatcher dispatcher, ISerializer serializer) {
+    public ControlServidor(IBlackboard blackboard, IDispatcher dispatcher, ISerializer serializer) {
         this.blackboard = blackboard;
         this.dispatcher = dispatcher;
         this.serializer = serializer;
