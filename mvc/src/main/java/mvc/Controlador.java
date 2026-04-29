@@ -1,33 +1,30 @@
 package mvc;
 import dto.CartaDTO;
+import dto.ConfiguracionPartidaDTO;
+import dto.JugadorDTO;
 import interfaces.IModeloControlador;
 
-/**
- * The type Controlador.
- */
-public class Controlador{
+public class Controlador {
 
     private final IModeloControlador modelo;
 
-    /**
-     * Instantiates a new Controlador.
-     *
-     * @param modelo the modelo
-     */
     public Controlador(IModeloControlador modelo) {
         this.modelo = modelo;
+    }
+
+    public void unirsePartida(JugadorDTO jugador, ConfiguracionPartidaDTO configuracion) {
+        modelo.unirsePartida(jugador, configuracion);
+    }
+
+    public void confirmarInicio(JugadorDTO jugador) {
+        modelo.confirmarInicio(jugador);
     }
 
     public void jugarCarta(CartaDTO carta) {
         modelo.jugarCarta(carta);
     }
 
-    public void onCartaJugada(String valorCarta) {
-        System.out.println("Carta jugada: " + valorCarta);
-    }
-
     public void onPedirCarta() {
-        System.out.println("Pedir carta del mazo");
         modelo.pedirCarta();
     }
 
@@ -36,12 +33,10 @@ public class Controlador{
     }
 
     public void onSpinCompletado() {
-        System.out.println("Spin completado");
         modelo.girarRuleta();
     }
 
-    public void onResultadoEvento(EventoRuletaDTO evento, Object resultado) {
-        System.out.println("Enviando evento al modelo: " + evento + " | Resultado: " + resultado);
+    public void onResultadoEvento(String evento, Object resultado) {
         modelo.aplicarEventoRuleta(evento, resultado);
     }
 
@@ -49,11 +44,9 @@ public class Controlador{
         modelo.limpiarEventoRuleta();
     }
 
-    public void aplicarEventoRuleta(EventoRuletaDTO evento, Object resultado) {
+    public void aplicarEventoRuleta(String evento, Object resultado) {
         modelo.aplicarEventoRuleta(evento, resultado);
     }
-
-    public void avanzarTurno() { }
 
     public void onSeleccionColor(String color) {
         modelo.aplicarSeleccionColor(color);

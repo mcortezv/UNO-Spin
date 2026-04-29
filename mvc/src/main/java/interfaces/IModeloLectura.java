@@ -3,97 +3,27 @@ import dto.CartaDTO;
 import dto.JugadorDTO;
 import java.util.List;
 
-/**
- * The interface Modelo lectura.
- */
 public interface IModeloLectura {
 
-     /**
-      * Gets descarte.
-      *
-      * @return the descarte
-      */
-     List<CartaDTO> getDescarte();
+    List<CartaDTO> getDescarte();
 
-     /**
-      * Gets mano jugador.
-      *
-      * @return the mano jugador
-      */
-     List<CartaDTO> getManoJugador();
+    List<CartaDTO> getManoJugador();
 
+    CartaDTO getCartaCima();
 
-     CartaDTO getCartaCima();
+    String getNombreTurnoActual();
 
-     /**
-      * Gets nombre turno actual.
-      *
-      * @return the nombre turno actual
-      */
-     String getNombreTurnoActual();
+    List<JugadorDTO> getJugadoresRivales();
 
-     /**
-      * Gets jugadores rivales.
-      *
-      * @return the jugadores rivales
-      */
-     List<JugadorDTO> getJugadoresRivales();
+    List<JugadorDTO> getTodosLosJugadores();
 
-     /**
-      * Gets todos los jugadores.
-      *
-      * @return the todos los jugadores
-      */
-     List<JugadorDTO> getTodosLosJugadores();
+    boolean isTurnoActivo();
 
-     /**
-      * Is turno activo boolean.
-      *
-      * @return the boolean
-      */
-     boolean isTurnoActivo();
+    boolean isSpinActivo();
 
-     /**
-      * Is spin activo boolean.
-      *
-      * @return the boolean
-      */
-     boolean isSpinActivo();
+    String getEventoRuletaActual();
 
-     /**
-      * Gets mano jugador especifico.
-      *
-      * @param indiceJugador the indice jugador
-      * @return the mano jugador especifico
-      */
-     List<CartaDTO> getManoJugadorEspecifico(int indiceJugador);
+    boolean isUltimaJugadaValida();
 
-     /**
-      * Is turno activo especifico boolean.
-      *
-      * @param indiceJugador the indice jugador
-      * @return the boolean
-      */
-     boolean isTurnoActivoEspecifico(int indiceJugador);
-
-     /**
-      * Gets evento ruleta actual.
-      *
-      * @return the evento ruleta actual
-      */
-     EventoRuletaDTO getEventoRuletaActual();
-
-     /**
-      * Is ultima jugada valida boolean.
-      *
-      * @return the boolean
-      */
-     boolean isUltimaJugadaValida();
-
-     /**
-      * Is seleccion color pendiente boolean.
-      *
-      * @return the boolean
-      */
-     boolean isSeleccionColorPendiente();
+    boolean isSeleccionColorPendiente();
 }

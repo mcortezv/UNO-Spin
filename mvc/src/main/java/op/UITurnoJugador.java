@@ -195,14 +195,14 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         actualizarRival(rivales, 1, slotLeft, UIJugador.Posicion.LEFT);
         actualizarRival(rivales, 2, slotRight, UIJugador.Posicion.RIGHT);
 
-        EventoRuletaDTO evento = modelo.getEventoRuletaActual();
+        String evento = modelo.getEventoRuletaActual();
         if (evento != null) {
             mostrarDialogoEvento(evento, modelo);
         }
 
     }
 
-    private void mostrarDialogoEvento(EventoRuletaDTO evento, IModeloLectura modelo) {
+    private void mostrarDialogoEvento(String evento, IModeloLectura modelo) {
         boolean esTurnoPropio = modelo.isTurnoActivo();
         DialogoEventoRuleta dialogo = FabricaDialogosEvento.crear(evento, this, modelo);
 
