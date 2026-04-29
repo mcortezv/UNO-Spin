@@ -1,8 +1,11 @@
 package blackboard;
 import blackboard.dominio.IDominio;
+import blackboard.dominio.entidades.ConfiguracionPartida;
+import blackboard.dominio.entidades.Jugador;
 import blackboard.dominio.entidades.enums.EstadoPartida;
 import blackboard.dominio.entidades.enums.TipoEventoRuleta;
 import blackboard.mappers.CartaMapper;
+import blackboard.mappers.ConfiguracionPartidaMapper;
 import blackboard.mappers.JugadorMapper;
 import dto.CartaDTO;
 import dto.JugadorDTO;
@@ -11,13 +14,22 @@ import interfaces.IBlackboard;
 import interfaces.IReceptor;
 import interfaces.ISerializer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Blackboard implements IBlackboard {
+
+    private static final int MIN_JUGADORES = 2;
+    private static final int MAX_JUGADORES = 4;
+
     private static Blackboard instance;
     private final List<IReceptor> suscriptores = new ArrayList<>();
     private final IDominio dominio;
     private final ISerializer serializer;
+    private final List<Jugador> jugadoresInscritos = new ArrayList<>();
+    private final Set<String> confirmaciones = new HashSet<>();
+    private ConfiguracionPartida configuracion;
 
     Blackboard(IDominio dominio, ISerializer serializer) {
         this.dominio = dominio;
@@ -30,20 +42,68 @@ public class Blackboard implements IBlackboard {
     }
 
     @Override
-    public void recibirMensaje(String json) {
+    public synchronized void recibirMensaje(String json) {
         TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
         switch (accion.getTipoAccion()) {
+            case UNIRSE_PARTIDA    -> procesarUnirse(accion);
+            case CONFIRMAR_INICIO  -> procesarConfirmacion(accion);
             case JUGAR_CARTA       -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
             case PEDIR_CARTA       -> dominio.robarCartaJugadorActual();
             case GRITAR_UNO        -> dominio.gritarUno();
             case SELECCIONAR_COLOR -> dominio.aplicarSeleccionColor(accion.getCartaDTO().getColor());
         }
-        notificar();
+        notificar(json);
     }
 
-    private void notificar() {
+    private void procesarUnirse(TipoAccionDTO accion) {
+        if (dominio.getEstadoPartida() != EstadoPartida.NO_INICIADA) return;
+        if (jugadoresInscritos.size() >= MAX_JUGADORES) return;
+
+        Jugador jugador = JugadorMapper.toEntity(accion.getJugadorDTO());
+        jugadoresInscritos.add(jugador);
+
+        if (jugadoresInscritos.size() == 1 && accion.getConfiguracion() != null) {
+            this.configuracion = ConfiguracionPartidaMapper.toEntity(accion.getConfiguracion());
+        }
+
+        if (jugadoresInscritos.size() == MAX_JUGADORES) {
+            arrancarPartida();
+        }
+    }
+
+    private void procesarConfirmacion(TipoAccionDTO accion) {
+        if (dominio.getEstadoPartida() != EstadoPartida.NO_INICIADA) return;
+        if (accion.getJugadorDTO() == null) return;
+
+        confirmaciones.add(accion.getJugadorDTO().getNombre());
+
+        boolean todosConfirmaron = jugadoresInscritos.stream()
+                .allMatch(j -> confirmaciones.contains(j.getNombre()));
+        if (todosConfirmaron && jugadoresInscritos.size() >= MIN_JUGADORES) {
+            arrancarPartida();
+        }
+    }
+
+    private void arrancarPartida() {
+        if (configuracion == null) {
+            configuracion = configuracionDefault();
+        }
+        dominio.iniciarPartida(new ArrayList<>(jugadoresInscritos), configuracion);
+    }
+
+    private ConfiguracionPartida configuracionDefault() {
+        ConfiguracionPartida c = new ConfiguracionPartida();
+        c.setValorMinimo(0);
+        c.setValorMaximo(9);
+        c.setCantidadComodines(8);
+        c.setCantidadCartasAccion(6);
+        c.setTiempoMaximoRuleta(10f);
+        return c;
+    }
+
+    private void notificar(String json) {
         for (IReceptor s : suscriptores) {
-            s.recibirMensaje("");
+            s.recibirMensaje(json);
         }
     }
 

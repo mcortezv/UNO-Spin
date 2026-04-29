@@ -1,10 +1,19 @@
 package blackboard.dominio.entidades;
 import blackboard.dominio.entidades.enums.EstadoPartida;
+import blackboard.dominio.entidades.enums.TipoCarta;
 import blackboard.dominio.entidades.enums.TipoEventoRuleta;
 import blackboard.dominio.IDominio;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Partida implements IDominio {
+
+    private static final int CARTAS_INICIALES = 7;
+    private static final int VALOR_CARTA_ACCION = 20;
+    private static final int VALOR_CARTA_COMODIN = 50;
+    private static final int NUMERO_SPIN_POR_COLOR = 2;
+    private static final String[] COLORES = {"ROJO", "AZUL", "AMARILLO", "VERDE"};
     private List<Jugador> jugadores;
     private EstadoPartida estadoPartida;
     private int indiceJugadorActual;
@@ -24,12 +33,87 @@ public class Partida implements IDominio {
     }
 
     @Override
-    public void iniciarPartida(List<Jugador> jugadoresIniciales, Tablero tableroInicial) {
+    public void iniciarPartida(List<Jugador> jugadoresIniciales, ConfiguracionPartida configuracion) {
         this.jugadores = jugadoresIniciales;
-        this.tablero = tableroInicial;
-        this.estadoPartida = EstadoPartida.EN_PROCESO;
         this.indiceJugadorActual = 0;
         this.sentidoHorario = true;
+
+        Mazo mazo = new Mazo(generarMazo(configuracion));
+        mazo.mezclar();
+
+        for (Jugador j : jugadoresIniciales) {
+            j.setMano(new Mano(new ArrayList<>()));
+            for (int i = 0; i < CARTAS_INICIALES; i++) {
+                try {
+                    j.getMano().getCartas().add(mazo.robarCarta());
+                } catch (Exception ignored) {}
+            }
+        }
+
+        Descarte descarte = new Descarte();
+        Carta inicial = extraerCartaInicial(mazo);
+        if (inicial != null) {
+            descarte.getCartas().add(inicial);
+        }
+
+        this.tablero = new Tablero(descarte, mazo, new Ruleta());
+        this.estadoPartida = EstadoPartida.EN_PROCESO;
+    }
+
+    private List<Carta> generarMazo(ConfiguracionPartida cfg) {
+        List<Carta> cartas = new ArrayList<>();
+
+        for (String color : COLORES) {
+            for (int valor = cfg.getValorMinimo(); valor <= cfg.getValorMaximo(); valor++) {
+                int copias = (valor == 0) ? 1 : 2;
+                for (int i = 0; i < copias; i++) {
+                    cartas.add(new Carta(color, valor, TipoCarta.NUMERICA, valor));
+                }
+            }
+
+            TipoCarta[] tiposAccion = {TipoCarta.BLOQUEO, TipoCarta.REVERSA, TipoCarta.TOMA_DOS};
+            int[] reparto = repartir(cfg.getCantidadCartasAccion(), tiposAccion.length);
+            for (int t = 0; t < tiposAccion.length; t++) {
+                for (int i = 0; i < reparto[t]; i++) {
+                    cartas.add(new Carta(color, null, tiposAccion[t], VALOR_CARTA_ACCION));
+                }
+            }
+
+            for (int i = 0; i < NUMERO_SPIN_POR_COLOR; i++) {
+                int valor = ThreadLocalRandom.current().nextInt(cfg.getValorMinimo(), cfg.getValorMaximo() + 1);
+                cartas.add(new Carta(color, valor, TipoCarta.NUMERO_SPIN, valor));
+            }
+        }
+
+        int[] comodines = repartir(cfg.getCantidadComodines(), 2);
+        for (int i = 0; i < comodines[0]; i++) {
+            cartas.add(new Carta(null, null, TipoCarta.CAMBIO_COLOR, VALOR_CARTA_COMODIN));
+        }
+        for (int i = 0; i < comodines[1]; i++) {
+            cartas.add(new Carta(null, null, TipoCarta.TOMA_CUATRO, VALOR_CARTA_COMODIN));
+        }
+
+        return cartas;
+    }
+
+    private int[] repartir(int total, int n) {
+        int[] r = new int[n];
+        int base = total / n;
+        int resto = total % n;
+        for (int i = 0; i < n; i++) {
+            r[i] = base + (i < resto ? 1 : 0);
+        }
+        return r;
+    }
+
+    private Carta extraerCartaInicial(Mazo mazo) {
+        List<Carta> cartas = mazo.getCartas();
+        for (int i = cartas.size() - 1; i >= 0; i--) {
+            if (cartas.get(i).getTipoCarta() == TipoCarta.NUMERICA) {
+                return cartas.remove(i);
+            }
+        }
+        return cartas.isEmpty() ? null : cartas.removeLast();
     }
 
     @Override

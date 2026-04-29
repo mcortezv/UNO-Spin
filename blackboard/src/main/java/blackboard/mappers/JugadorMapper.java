@@ -1,5 +1,6 @@
 package blackboard.mappers;
 import blackboard.dominio.entidades.Jugador;
+import blackboard.dominio.entidades.Mano;
 import dto.JugadorDTO;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,5 +24,16 @@ public class JugadorMapper {
             }
         }
         return lista;
+    }
+
+    public static Jugador toEntity(JugadorDTO dto) {
+        if (dto == null) return null;
+        return new Jugador(
+                dto.getNombre(),
+                new Mano(new ArrayList<>()),
+                new ArrayList<>(),
+                0,
+                dto.getNumeroAvatar()
+        );
     }
 }
