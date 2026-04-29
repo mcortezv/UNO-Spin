@@ -1,12 +1,13 @@
-package blackboard;
-import blackboard.dominio.IDominio;
-import blackboard.dominio.entidades.ConfiguracionPartida;
-import blackboard.dominio.entidades.Jugador;
-import blackboard.dominio.entidades.enums.EstadoPartida;
-import blackboard.dominio.entidades.enums.TipoEventoRuleta;
-import blackboard.mappers.CartaMapper;
-import blackboard.mappers.ConfiguracionPartidaMapper;
-import blackboard.mappers.JugadorMapper;
+package factory;
+import dominio.IDominio;
+import dominio.entidades.ConfiguracionPartida;
+import dominio.entidades.Jugador;
+import dominio.entidades.enums.EstadoPartida;
+import dominio.entidades.enums.TipoAccion;
+import dominio.entidades.enums.TipoEventoRuleta;
+import mappers.CartaMapper;
+import mappers.ConfiguracionPartidaMapper;
+import mappers.JugadorMapper;
 import dto.CartaDTO;
 import dto.JugadorDTO;
 import dto.TipoAccionDTO;
@@ -17,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static dominio.entidades.enums.TipoAccion.*;
 
 public class Blackboard implements IBlackboard {
 
@@ -44,7 +47,7 @@ public class Blackboard implements IBlackboard {
     @Override
     public synchronized void recibirMensaje(String json) {
         TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
-        switch (accion.getTipoAccion()) {
+        switch (TipoAccion.valueOf(accion.getTipoAccion())) {
             case UNIRSE_PARTIDA    -> procesarUnirse(accion);
             case CONFIRMAR_INICIO  -> procesarConfirmacion(accion);
             case JUGAR_CARTA       -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));

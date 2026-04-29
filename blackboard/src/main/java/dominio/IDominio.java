@@ -1,9 +1,9 @@
-package blackboard.dominio;
-import blackboard.dominio.entidades.Carta;
-import blackboard.dominio.entidades.ConfiguracionPartida;
-import blackboard.dominio.entidades.Jugador;
-import blackboard.dominio.entidades.enums.EstadoPartida;
-import blackboard.dominio.entidades.enums.TipoEventoRuleta;
+package dominio;
+import dominio.entidades.Carta;
+import dominio.entidades.ConfiguracionPartida;
+import dominio.entidades.Jugador;
+import dominio.entidades.enums.EstadoPartida;
+import dominio.entidades.enums.TipoEventoRuleta;
 import java.util.List;
 
 public interface IDominio {

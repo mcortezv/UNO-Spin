@@ -1,5 +1,5 @@
 package assembler;
-import conexion.Conexion;
+import factory.Conexion;
 import factory.FactoryConexion;
 import factory.FactoryMVC;
 import implementacion.JsonSerializer;

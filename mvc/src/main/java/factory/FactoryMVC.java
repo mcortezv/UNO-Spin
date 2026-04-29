@@ -3,7 +3,6 @@ import interfaces.IDispatcher;
 import interfaces.IFactoryMVC;
 import interfaces.IReceptor;
 import interfaces.ISerializer;
-import mvc.MVC;
 import mvc.Modelo;
 
 public class FactoryMVC implements IFactoryMVC {

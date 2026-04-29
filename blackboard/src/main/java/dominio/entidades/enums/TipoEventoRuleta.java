@@ -1,4 +1,4 @@
-package blackboard.dominio.entidades.enums;
+package dominio.entidades.enums;
 
 public enum TipoEventoRuleta {
     CASI_UNO,

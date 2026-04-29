@@ -1,8 +1,8 @@
-package blackboard.dominio.entidades;
-import blackboard.dominio.entidades.enums.EstadoPartida;
-import blackboard.dominio.entidades.enums.TipoCarta;
-import blackboard.dominio.entidades.enums.TipoEventoRuleta;
-import blackboard.dominio.IDominio;
+package dominio.entidades;
+import dominio.entidades.enums.EstadoPartida;
+import dominio.entidades.enums.TipoCarta;
+import dominio.entidades.enums.TipoEventoRuleta;
+import dominio.IDominio;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;

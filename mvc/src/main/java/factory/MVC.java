@@ -1,13 +1,14 @@
-package mvc;
+package factory;
 import dto.EstadoPartidaDTO;
 import interfaces.IReceptor;
 import interfaces.ISerializer;
+import mvc.Modelo;
 
 public class MVC implements IReceptor {
     private final ISerializer serializer;
     private final Modelo modelo;
 
-    public MVC(ISerializer serializer, Modelo modelo) {
+    MVC(ISerializer serializer, Modelo modelo) {
         this.serializer = serializer;
         this.modelo = modelo;
     }

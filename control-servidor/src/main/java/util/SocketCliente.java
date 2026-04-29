@@ -1,4 +1,4 @@
-package servidor;
+package util;
 
 /**
  * The type Socket cliente.

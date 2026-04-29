@@ -1,6 +1,6 @@
-package blackboard.mappers;
-import blackboard.dominio.entidades.Jugador;
-import blackboard.dominio.entidades.Mano;
+package mappers;
+import dominio.entidades.Jugador;
+import dominio.entidades.Mano;
 import dto.JugadorDTO;
 import java.util.ArrayList;
 import java.util.List;

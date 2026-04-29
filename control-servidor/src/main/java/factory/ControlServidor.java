@@ -1,16 +1,17 @@
-package servidor;
+package factory;
 import Interfaces.IControlServidor;
 import dto.CartaDTO;
 import dto.EstadoPartidaDTO;
 import dto.JugadorDTO;
 import dto.TipoAccionDTO;
-import enums.TipoAccion;
 import interfaces.IBlackboard;
 import interfaces.IDispatcher;
 import interfaces.IReceptor;
 import interfaces.ISerializer;
+import util.SocketCliente;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ControlServidor implements IReceptor, IControlServidor {
     private final IBlackboard blackboard;
@@ -18,7 +19,7 @@ public class ControlServidor implements IReceptor, IControlServidor {
     private final ISerializer serializer;
     private final List<SocketCliente> clientes = new ArrayList<>();
 
-    public ControlServidor(IBlackboard blackboard, IDispatcher dispatcher, ISerializer serializer) {
+    ControlServidor(IBlackboard blackboard, IDispatcher dispatcher, ISerializer serializer) {
         this.blackboard = blackboard;
         this.dispatcher = dispatcher;
         this.serializer = serializer;
@@ -38,7 +39,7 @@ public class ControlServidor implements IReceptor, IControlServidor {
     @Override
     public void recibirMensaje(String json) {
         TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
-        if (accion.getTipoAccion() == TipoAccion.UNIRSE_PARTIDA) {
+        if (Objects.equals(accion.getTipoAccion(), "UNIRSE_PARTIDA")) {
             registrarCliente(clientes.size(), accion.getIp(), accion.getPuerto());
         }
         broadcastEstado();

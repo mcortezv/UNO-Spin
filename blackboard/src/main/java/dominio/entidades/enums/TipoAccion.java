@@ -1,4 +1,4 @@
-package enums;
+package dominio.entidades.enums;
 
 public enum TipoAccion {
     JUGAR_CARTA,
