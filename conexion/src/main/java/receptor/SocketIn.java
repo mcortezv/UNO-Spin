@@ -1,4 +1,5 @@
 package receptor;
+import interfaces.IReceptorObserver;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,30 +8,17 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * The type Socket in.
- */
 public class SocketIn {
     private ServerSocket server;
     private ExecutorService pool;
-    private int puertoEscucha;
+    private final int puertoEscucha;
+    private final IReceptorObserver observador;
 
-    private ColaReceptor colaReceptor;
-
-    /**
-     * Instantiates a new Socket in.
-     *
-     * @param puerto the puerto
-     * @param cola   the cola
-     */
-    public SocketIn(int puerto, ColaReceptor cola) {
+    public SocketIn(int puerto, IReceptorObserver observador) {
         this.puertoEscucha = puerto;
-        this.colaReceptor = cola;
+        this.observador = observador;
     }
 
-    /**
-     * Start.
-     */
     public void start() {
         pool = Executors.newCachedThreadPool();
 
@@ -41,7 +29,7 @@ public class SocketIn {
 
                 while (!server.isClosed()) {
                     Socket clienteSocket = server.accept();
-                    pool.submit(new ClienteHandler(clienteSocket, colaReceptor));
+                    pool.submit(new ClienteHandler(clienteSocket, observador));
                 }
             } catch (IOException e) {
                 if (!server.isClosed()) {
@@ -51,9 +39,6 @@ public class SocketIn {
         }).start();
     }
 
-    /**
-     * Close.
-     */
     public void close() {
         try {
             if (pool != null && !pool.isShutdown()) {
@@ -69,18 +54,12 @@ public class SocketIn {
 
     private static class ClienteHandler implements Runnable {
 
-        private Socket socket;
-        private ColaReceptor colaReceptor;
+        private final Socket socket;
+        private final IReceptorObserver observador;
 
-        /**
-         * Instantiates a new Cliente handler.
-         *
-         * @param socket the socket
-         * @param cola   the cola
-         */
-        public ClienteHandler(Socket socket, ColaReceptor cola) {
+        public ClienteHandler(Socket socket, IReceptorObserver observador) {
             this.socket = socket;
-            this.colaReceptor = cola;
+            this.observador = observador;
         }
 
         @Override
@@ -93,7 +72,7 @@ public class SocketIn {
                 String json;
                 while ((json = in.readLine()) != null) {
                     System.out.println("JSON recibido '" + json + "'");
-                    colaReceptor.recibir(json, port, ip);
+                    observador.update(json, port, ip);
                 }
             } catch (IOException e) {
                 System.err.println("Error de lectura - " + e.getMessage());
