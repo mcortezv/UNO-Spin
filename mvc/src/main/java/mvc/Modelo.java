@@ -16,7 +16,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     private final int puertoEscucha;
     private EstadoPartidaDTO estadoPartida;
 
-    /**
+    /**IReceptor
      * Instantiates a new Modelo.
      *
      * @param serializer     the serializer
