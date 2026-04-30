@@ -1,4 +1,5 @@
 package op;
+import dto.CartaDTO;
 import javax.swing.ImageIcon;
 import java.awt.Image;
 import java.net.URL;
@@ -9,6 +10,8 @@ import java.util.Map;
  * The type Cargador assets.
  */
 public final class CargadorAssets {
+
+    private static final String FALLBACK = "carta_reves.png";
 
     private static CargadorAssets instancia;
     private final Map<String, ImageIcon> cache = new HashMap<>();
@@ -28,13 +31,14 @@ public final class CargadorAssets {
     }
 
     /**
-     * Gets carta.
+     * Carga el asset correspondiente a una carta. Information Expert: este es
+     * el único lugar donde vive el mapeo tipoCarta → nombre de archivo.
      *
-     * @param valor the valor
-     * @return the carta
+     * @param carta the carta dto
+     * @return the carta image icon
      */
-    public ImageIcon getCarta(String valor) {
-        return cargar("carta_" + valor.toLowerCase() + ".png");
+    public ImageIcon getCarta(CartaDTO carta) {
+        return cargar("carta_" + resolverClave(carta) + ".png");
     }
 
     /**
@@ -43,7 +47,7 @@ public final class CargadorAssets {
      * @return the reverso
      */
     public ImageIcon getReverso() {
-        return cargar("carta_reves.png");
+        return cargar(FALLBACK);
     }
 
     /**
@@ -59,13 +63,13 @@ public final class CargadorAssets {
     /**
      * Gets carta escalada.
      *
-     * @param valor the valor
+     * @param carta the carta dto
      * @param ancho the ancho
      * @param alto  the alto
-     * @return the carta escalada
+     * @return the scaled image
      */
-    public Image getCartaEscalada(String valor, int ancho, int alto) {
-        return getCarta(valor).getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+    public Image getCartaEscalada(CartaDTO carta, int ancho, int alto) {
+        return getCarta(carta).getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
     }
 
     /**
@@ -79,22 +83,34 @@ public final class CargadorAssets {
         return getAvatar(numero).getImage().getScaledInstance(tam, tam, Image.SCALE_SMOOTH);
     }
 
+    private String resolverClave(CartaDTO carta) {
+        if (carta.getTipoCarta() == null) return "reves";
+        return switch (carta.getTipoCarta()) {
+            case "BLOQUEO"  -> "bloqueo";
+            case "REVERSA"  -> "reves";
+            case "TOMA_DOS" -> "mas_dos";
+            default         -> carta.getNumero() != null ? String.valueOf(carta.getNumero()) : "reves";
+        };
+    }
+
     private ImageIcon cargar(String rutaRelativa) {
-        return cache.computeIfAbsent(rutaRelativa, ruta -> {
-            String rutaLimpia = ruta.startsWith("/") ? ruta : "/" + ruta;
-            URL url = getClass().getResource(rutaLimpia);
-
-            if (url == null) {
-                throw new IllegalArgumentException("Recurso no encontrado en classpath: " + rutaLimpia);
-            }
-
-            ImageIcon icon = new ImageIcon(url);
-
-            if (icon.getImageLoadStatus() == java.awt.MediaTracker.ERRORED) {
-                throw new RuntimeException("Error al leer los bytes de la imagen: " + rutaLimpia);
-            }
-
-            return icon;
-        });
+        if (cache.containsKey(rutaRelativa)) return cache.get(rutaRelativa);
+        String rutaLimpia = "/" + (rutaRelativa.startsWith("/") ? rutaRelativa.substring(1) : rutaRelativa);
+        URL url = getClass().getResource(rutaLimpia);
+        if (url == null) {
+            System.err.println("Asset no encontrado: " + rutaLimpia);
+            ImageIcon fallback = rutaRelativa.equals(FALLBACK) ? null : cargar(FALLBACK);
+            cache.put(rutaRelativa, fallback);
+            return fallback;
+        }
+        ImageIcon icon = new ImageIcon(url);
+        if (icon.getImageLoadStatus() == java.awt.MediaTracker.ERRORED) {
+            System.err.println("Error al leer imagen: " + rutaLimpia);
+            ImageIcon fallback = rutaRelativa.equals(FALLBACK) ? null : cargar(FALLBACK);
+            cache.put(rutaRelativa, fallback);
+            return fallback;
+        }
+        cache.put(rutaRelativa, icon);
+        return icon;
     }
 }

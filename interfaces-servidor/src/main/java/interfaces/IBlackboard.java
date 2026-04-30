@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * The interface Blackboard.
  */
-public interface IBlackboard extends IReceptor {
+public interface IBlackboard {
 
     /**
      * Gets jugadores.

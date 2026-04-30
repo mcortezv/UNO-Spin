@@ -15,8 +15,7 @@ public class Main {
     /**
      * Main.
      */
-    static void main() {
-
+    public static void main(String[] args) {
         int puertoServidor = 5000;
 
         IFactoryBlackboard factoryBlackboard = new FactoryBlackboard();

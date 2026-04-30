@@ -75,7 +75,7 @@ public class Mano {
                 las carta más alta, simplemente va a revisar que es null y va a regresar un null y no estamos manejando
                 los nulos
                  */
-                if (carta.getNumero() > cartaMasAlta.getNumero()) {
+                if (cartaMasAlta == null || carta.getNumero() > cartaMasAlta.getNumero()) {
                     cartaMasAlta = carta;
                 }
             }

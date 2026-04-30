@@ -52,7 +52,7 @@ public class UICarta extends JPanel implements IComponent {
         this.carta = carta;
 
         Image img = null;
-        ImageIcon icon = CargadorAssets.getInstance().getCarta(carta.getValor());
+        ImageIcon icon = CargadorAssets.getInstance().getCarta(carta);
         if (icon != null && icon.getImage() != null) {
             img = icon.getImage().getScaledInstance(ANCHO - 10, ALTO - 10, Image.SCALE_SMOOTH);
             MediaTracker tracker = new MediaTracker(this);
