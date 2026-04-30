@@ -13,18 +13,20 @@ public class Main {
     /**
      * Main.
      */
-    static void main() {
-        int puertoCliente = 6000;
+    public static void main(String[] args) {
+        int puertoCliente = args.length > 0 ? Integer.parseInt(args[0]) : 6000;
+        System.setProperty("puerto.cliente", String.valueOf(puertoCliente));
 
         IFactoryMVC factoryMVC = new FactoryMVC();
         IFactoryConexion factoryConexion = new FactoryConexion();
         ISerializer serializer = new JsonSerializer();
 
         IDispatcher dispatcherConn = factoryConexion.crearConn(puertoCliente);
+
+        Conexion.iniciar();
+
         IReceptor receptorMVC = factoryMVC.crearMVC(serializer, dispatcherConn);
 
         Conexion.suscribir(receptorMVC);
-
-        Conexion.iniciar();
     }
 }

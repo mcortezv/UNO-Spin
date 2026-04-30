@@ -4,6 +4,7 @@ import dominio.entidades.enums.TipoCarta;
 import dominio.entidades.enums.TipoEventoRuleta;
 import dominio.IDominio;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -136,7 +137,10 @@ public class Partida implements IDominio {
 
     @Override
     public boolean aplicarJugada(Carta carta) {
-        if (!tablero.getDescarte().validarCartaEntrante(carta)) return false;
+        if (!tablero.getDescarte().validarCartaEntrante(carta)) {
+            this.ultimaJugadaValida = false;
+            return false;
+        }
 
         this.ultimaJugadaValida = true;
 
@@ -159,13 +163,18 @@ public class Partida implements IDominio {
 
         tablero.getDescarte().getCartas().add(carta);
 
+        if (cartasMano.isEmpty()) {
+            estadoPartida = EstadoPartida.FINALIZADA;
+            return true;
+        }
+
         switch (carta.getTipoCarta()) {
             case NUMERO_SPIN  -> estadoPartida = EstadoPartida.GIRO_PENDIENTE;
             case REVERSA      -> { sentidoHorario = !sentidoHorario; avanzarTurno(); }
             case BLOQUEO      -> { avanzarTurno(); avanzarTurno(); }
-            case TOMA_DOS     -> { aplicarCastigoUno(siguienteIndice()); avanzarTurno(); }
-            case CAMBIO_COLOR,
-                 TOMA_CUATRO  -> estadoPartida = EstadoPartida.SELECCION_COLOR_PENDIENTE;
+            case TOMA_DOS     -> { int next = siguienteIndice(); aplicarCastigoUno(next); aplicarCastigoUno(next); avanzarTurno(); }
+            case TOMA_CUATRO  -> { int next = siguienteIndice(); for (int i = 0; i < 4; i++) aplicarCastigoUno(next); estadoPartida = EstadoPartida.SELECCION_COLOR_PENDIENTE; }
+            case CAMBIO_COLOR -> estadoPartida = EstadoPartida.SELECCION_COLOR_PENDIENTE;
             default           -> avanzarTurno();
         }
         return true;
@@ -173,13 +182,14 @@ public class Partida implements IDominio {
 
     @Override
     public void robarCartaJugadorActual() {
+        reciclarDescarteSiNecesario();
         try {
             Carta cartaRobada = tablero.getMazo().robarCarta();
             jugadores.get(indiceJugadorActual).getMano().getCartas().add(cartaRobada);
-            avanzarTurno();
         } catch (Exception e) {
-            System.out.println("No hay más cartas en el mazo: " + e.getMessage());
+            System.out.println("No hay más cartas disponibles.");
         }
+        avanzarTurno();
     }
 
     @Override
@@ -196,11 +206,12 @@ public class Partida implements IDominio {
 
     @Override
     public void aplicarCastigoUno(int indiceJugador) {
+        reciclarDescarteSiNecesario();
         try {
             Carta castigo = tablero.getMazo().robarCarta();
             jugadores.get(indiceJugador).getMano().getCartas().add(castigo);
         } catch (Exception e) {
-            System.out.println("Mazo vacío al aplicar castigo UNO.");
+            System.out.println("Mazo vacío al aplicar castigo.");
         }
     }
 
@@ -398,11 +409,24 @@ public class Partida implements IDominio {
     }
 
     private void robarHastaColor(Jugador jugador, String colorObjetivo) throws Exception {
-        while (true) {
+        int intentos = 0;
+        while (intentos++ < 60) {
+            reciclarDescarteSiNecesario();
             Carta c = tablero.getMazo().robarCarta();
             jugador.getMano().getCartas().add(c);
             if (colorObjetivo.equalsIgnoreCase(c.getColor())) break;
         }
+    }
+
+    private void reciclarDescarteSiNecesario() {
+        if (!tablero.getMazo().getCartas().isEmpty()) return;
+        List<Carta> descarte = tablero.getDescarte().getCartas();
+        if (descarte.size() <= 1) return;
+        List<Carta> recicladas = new ArrayList<>(descarte.subList(0, descarte.size() - 1));
+        descarte.subList(0, descarte.size() - 1).clear();
+        recicladas.forEach(c -> { if (c.esComodin()) c.setColor(null); });
+        Collections.shuffle(recicladas);
+        tablero.getMazo().getCartas().addAll(recicladas);
     }
 
     private void intercambiarManos() {

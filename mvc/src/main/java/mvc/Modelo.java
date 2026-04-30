@@ -13,6 +13,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     private final ISerializer serializer;
     private final String ipServidor;
     private final int puertoServidor;
+    private final int puertoEscucha;
     private EstadoPartidaDTO estadoPartida;
 
     /**
@@ -23,11 +24,12 @@ public class Modelo implements IModeloControlador, IModeloLectura {
      * @param ipServidor     the ip servidor
      * @param puertoServidor the puerto servidor
      */
-    public Modelo(ISerializer serializer, IDispatcher dispatcher, String ipServidor, int puertoServidor) {
+    public Modelo(ISerializer serializer, IDispatcher dispatcher, String ipServidor, int puertoServidor, int puertoEscucha) {
         this.serializer = serializer;
         this.dispatcher = dispatcher;
         this.ipServidor = ipServidor;
         this.puertoServidor = puertoServidor;
+        this.puertoEscucha = puertoEscucha;
     }
 
     /**
@@ -45,6 +47,8 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         TipoAccionDTO accion = new TipoAccionDTO("UNIRSE_PARTIDA");
         accion.setJugadorDTO(jugador);
         accion.setConfiguracion(configuracion);
+        accion.setIp("127.0.0.1");
+        accion.setPuerto(puertoEscucha);
         enviar(accion);
     }
 
@@ -98,7 +102,12 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public void aplicarEventoRuleta(String evento, Object resultado) {
-        notifyObservers();
+        TipoAccionDTO accion = new TipoAccionDTO("RECONOCER_EVENTO");
+        if (resultado != null) {
+            accion.setResultadoEvento(resultado.toString());
+        }
+        enviar(accion);
+        limpiarEventoRuleta();
     }
 
     @Override

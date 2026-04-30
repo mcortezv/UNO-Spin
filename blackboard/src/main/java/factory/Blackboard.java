@@ -21,8 +21,9 @@ import java.util.Set;
 
 /**
  * The type Blackboard.
+ *
  */
-public class Blackboard implements IBlackboard {
+public class Blackboard implements IBlackboard, IReceptor{
 
     private static final int MIN_JUGADORES = 2;
     private static final int MAX_JUGADORES = 4;
@@ -59,13 +60,22 @@ public class Blackboard implements IBlackboard {
     @Override
     public synchronized void recibirMensaje(String json) {
         TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
-        switch (TipoAccion.valueOf(accion.getTipoAccion())) {
-            case UNIRSE_PARTIDA    -> procesarUnirse(accion);
-            case CONFIRMAR_INICIO  -> procesarConfirmacion(accion);
-            case JUGAR_CARTA       -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
-            case PEDIR_CARTA       -> dominio.robarCartaJugadorActual();
-            case GRITAR_UNO        -> dominio.gritarUno();
-            case SELECCIONAR_COLOR -> dominio.aplicarSeleccionColor(accion.getCartaDTO().getColor());
+        TipoAccion tipo = TipoAccion.valueOf(accion.getTipoAccion());
+        switch (tipo) {
+            case UNIRSE_PARTIDA   -> procesarUnirse(accion);
+            case CONFIRMAR_INICIO -> procesarConfirmacion(accion);
+            default -> {
+                if (dominio.getEstadoPartida() == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA) break;
+                switch (tipo) {
+                    case JUGAR_CARTA       -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
+                    case PEDIR_CARTA       -> dominio.robarCartaJugadorActual();
+                    case GRITAR_UNO        -> dominio.gritarUno();
+                    case SELECCIONAR_COLOR -> dominio.aplicarSeleccionColor(accion.getCartaDTO().getColor());
+                    case GIRAR_RULETA      -> { try { dominio.procesarGiroRuleta(); } catch (Exception e) { System.err.println("Ruleta: " + e.getMessage()); } }
+                    case RECONOCER_EVENTO  -> { TipoEventoRuleta ev = dominio.getEventoRuleta(); dominio.aplicarEfectoRuleta(ev, parsearResultado(ev, accion.getResultadoEvento())); dominio.avanzarTurno(); }
+                    default                -> {}
+                }
+            }
         }
         notificar(json);
     }
@@ -143,6 +153,7 @@ public class Blackboard implements IBlackboard {
     public String getEstadoPartida() {
         EstadoPartida e = dominio.getEstadoPartida();
         return e == null ? null : e.name();
+
     }
 
     @Override
@@ -165,5 +176,13 @@ public class Blackboard implements IBlackboard {
     private boolean partidaIniciada() {
         EstadoPartida e = dominio.getEstadoPartida();
         return e != null && e != EstadoPartida.NO_INICIADA;
+    }
+
+    private Object parsearResultado(TipoEventoRuleta evento, String raw) {
+        if (raw == null || evento == null) return null;
+        if (evento == TipoEventoRuleta.DESCARTAR_POR_NUMERO) {
+            try { return Integer.parseInt(raw); } catch (NumberFormatException e) { return null; }
+        }
+        return raw;
     }
 }

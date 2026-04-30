@@ -39,7 +39,7 @@ public class UIDescarte extends JPanel implements IComponent {
     public void setCartaTope(CartaDTO carta) {
         this.cartaTope = carta;
         this.imagenTope = CargadorAssets.getInstance()
-                .getCartaEscalada(carta.getValor(), ANCHO - MARGEN * 2, ALTO - MARGEN * 2);
+                .getCartaEscalada(carta, ANCHO - MARGEN * 2, ALTO - MARGEN * 2);
         repaint();
         if (carta.getTipoCarta() != null && carta.getTipoCarta().equalsIgnoreCase("NUMERO_SPIN")) {
             if (onCartaSpinJugada != null && !spinNotificado) {

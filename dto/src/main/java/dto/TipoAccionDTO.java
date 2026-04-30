@@ -10,6 +10,7 @@ public class TipoAccionDTO {
     private String ip;
     private int puerto;
     private ConfiguracionPartidaDTO configuracion;
+    private String resultadoEvento;
 
     /**
      * Instantiates a new Tipo accion dto.
@@ -119,4 +120,8 @@ public class TipoAccionDTO {
      * @param configuracion the configuracion
      */
     public void setConfiguracion(ConfiguracionPartidaDTO configuracion) { this.configuracion = configuracion; }
+
+    public String getResultadoEvento() { return resultadoEvento; }
+
+    public void setResultadoEvento(String resultadoEvento) { this.resultadoEvento = resultadoEvento; }
 }
