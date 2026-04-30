@@ -4,6 +4,8 @@ import dto.JugadorDTO;
 import dto.TipoAccionDTO;
 import implementacion.JsonSerializer;
 import interfaces.IBlackboard;
+import interfaces.IDispatcher;
+import interfaces.IReceptor;
 import interfaces.ISerializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +25,8 @@ class BlackboardIntegracionTest {
 
 
     private void enviar(TipoAccionDTO accion) {
-        blackboard.recibirMensaje(serializer.serialize(accion));
+        IReceptor receptor = (IReceptor) blackboard;
+        receptor.recibirMensaje(serializer.serialize(accion));
     }
 
     private void unirJugador(String nombre) {
