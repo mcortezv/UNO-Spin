@@ -23,8 +23,8 @@ public class Main {
         IFactoryConexion factoryConexion = new FactoryConexion();
         ISerializer serializer = new JsonSerializer();
 
-        IBlackboard blackboard = factoryBlackboard.crearBlackboard(serializer);
-        IReceptor receptor = (IReceptor) blackboard;
+        IBlackboard blackboard = factoryBlackboard.crearBlackboardObservable(serializer);
+        IReceptor receptor = factoryBlackboard.crearReceptorBlackboard(serializer);
 
         IDispatcher dispatcherConn = factoryConexion.crearConn(puertoServidor);
         IReceptor receptorControlServidor = factoryControlServidor.crearControlServidor(blackboard, dispatcherConn, serializer);

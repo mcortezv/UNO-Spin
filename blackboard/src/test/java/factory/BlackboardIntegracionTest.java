@@ -3,10 +3,7 @@ import dto.CartaDTO;
 import dto.JugadorDTO;
 import dto.TipoAccionDTO;
 import implementacion.JsonSerializer;
-import interfaces.IBlackboard;
-import interfaces.IDispatcher;
-import interfaces.IReceptor;
-import interfaces.ISerializer;
+import interfaces.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -15,18 +12,20 @@ import static org.junit.jupiter.api.Assertions.*;
 class BlackboardIntegracionTest {
 
     private IBlackboard blackboard;
+    private IReceptor receptorBlackboard;
     private ISerializer serializer;
 
     @BeforeEach
     void setUp() {
+        IFactoryBlackboard factoryBlackboard = new FactoryBlackboard();
         serializer = new JsonSerializer();
-        blackboard = new FactoryBlackboard().crearBlackboard(serializer);
+        blackboard = factoryBlackboard.crearBlackboardObservable(serializer);
+        receptorBlackboard = factoryBlackboard.crearReceptorBlackboard(serializer);
     }
 
 
     private void enviar(TipoAccionDTO accion) {
-        IReceptor receptor = (IReceptor) blackboard;
-        receptor.recibirMensaje(serializer.serialize(accion));
+        receptorBlackboard.recibirMensaje(serializer.serialize(accion));
     }
 
     private void unirJugador(String nombre) {
