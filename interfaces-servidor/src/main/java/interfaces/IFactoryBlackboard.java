@@ -11,5 +11,7 @@ public interface IFactoryBlackboard {
      * @param serializer the serializer
      * @return the blackboard
      */
-    IBlackboard crearBlackboard(ISerializer serializer);
+    IBlackboard crearBlackboardObservable(ISerializer serializer);
+
+    IReceptor crearReceptorBlackboard(ISerializer serializer);
 }
