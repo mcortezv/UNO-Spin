@@ -1,13 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
- */
 package interfaces;
 
 /**
- *
- * @author janethcristinagalvanquinonez
+ * The interface Factory mvc.
  */
 public interface IFactoryMVC {
-    
+
+    /**
+     * Crear mvc receptor.
+     *
+     * @param serializer the serializer
+     * @param dispatcher the dispatcher
+     * @return the receptor
+     */
+    IReceptor crearMVC(ISerializer serializer, IDispatcher dispatcher);
 }
