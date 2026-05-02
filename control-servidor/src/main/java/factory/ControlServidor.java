@@ -1,14 +1,10 @@
 package factory;
-import interfaces.IControlServidor;
+import interfaces.*;
 import dto.CartaDTO;
 import dto.EstadoPartidaDTO;
 import dto.JugadorDTO;
 import dto.TipoAccionDTO;
 import dto.TipoEventoRuletaDTO;
-import interfaces.IBlackboard;
-import interfaces.IDispatcher;
-import interfaces.IReceptor;
-import interfaces.ISerializer;
 import util.SocketCliente;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +13,7 @@ import java.util.Objects;
 /**
  * The type Control servidor.
  */
-public class ControlServidor implements IReceptor, IControlServidor {
+public class ControlServidor implements IBlackboardObservador, IControlServidor {
     private final IBlackboard blackboard;
     private final IDispatcher dispatcher;
     private final ISerializer serializer;
@@ -47,15 +43,6 @@ public class ControlServidor implements IReceptor, IControlServidor {
         clientes.removeIf(c -> c.getIndiceJugador() == indiceJugador);
     }
 
-    @Override
-    public void recibirMensaje(String json) {
-        TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
-        if (Objects.equals(accion.getTipoAccion(), "UNIRSE_PARTIDA")) {
-            registrarCliente(clientes.size(), accion.getIp(), accion.getPuerto());
-        }
-        broadcastEstado();
-    }
-
     private void broadcastEstado() {
         for (SocketCliente cliente : clientes) {
             EstadoPartidaDTO dto = buildEstadoPartida(cliente.getIndiceJugador());
@@ -80,5 +67,14 @@ public class ControlServidor implements IReceptor, IControlServidor {
                 blackboard.getIndiceJugadorActual() == indiceJugador,
                 eventoRuleta,
                 blackboard.isUltimaJugadaValida());
+    }
+
+    @Override
+    public void recibirMensaje(IBlackboard blackboard) {
+        TipoAccionDTO accion = serializer.deserialize(blackboard, TipoAccionDTO.class);
+        if (Objects.equals(accion.getTipoAccion(), "UNIRSE_PARTIDA")) {
+            registrarCliente(clientes.size(), accion.getIp(), accion.getPuerto());
+        }
+        broadcastEstado();
     }
 }

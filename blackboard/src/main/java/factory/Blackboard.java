@@ -5,6 +5,7 @@ import dominio.entidades.Jugador;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoAccion;
 import dto.TipoEventoRuletaDTO;
+import interfaces.IBlackboardObservador;
 import mappers.CartaMapper;
 import mappers.ConfiguracionPartidaMapper;
 import mappers.JugadorMapper;
@@ -29,7 +30,7 @@ public class Blackboard implements IBlackboard, IReceptor{
     private static final int MAX_JUGADORES = 4;
 
     private static Blackboard instance;
-    private final List<IReceptor> suscriptores = new ArrayList<>();
+    private final List<IBlackboardObservador> suscriptores = new ArrayList<>();
     private final IDominio dominio;
     private final ISerializer serializer;
     private final List<Jugador> jugadoresInscritos = new ArrayList<>();
@@ -51,10 +52,10 @@ public class Blackboard implements IBlackboard, IReceptor{
     /**
      * Suscribir.
      *
-     * @param receptor the receptor
+     * @param observador the receptor
      */
-    public static void suscribir(IReceptor receptor) {
-        instance.suscriptores.add(receptor);
+    public static void suscribir(IBlackboardObservador observador) {
+        instance.suscriptores.add(observador);
     }
 
     @Override
@@ -77,7 +78,7 @@ public class Blackboard implements IBlackboard, IReceptor{
                 }
             }
         }
-        notificar(json);
+        notificar(this);
     }
 
     private void procesarUnirse(TipoAccionDTO accion) {
@@ -126,11 +127,13 @@ public class Blackboard implements IBlackboard, IReceptor{
         return c;
     }
 
-    private void notificar(String json) {
-        for (IReceptor s : suscriptores) {
-            s.recibirMensaje(json);
+    private void notificar(IBlackboard blackboard) {
+        for (IBlackboardObservador s : suscriptores) {
+            s.recibirMensaje(blackboard);
         }
     }
+
+
 
     @Override
     public List<JugadorDTO> getJugadores() {
