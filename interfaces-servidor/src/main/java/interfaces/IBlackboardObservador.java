@@ -1,5 +1,14 @@
 package interfaces;
 
+/**
+ * The interface Blackboard observador.
+ */
 public interface IBlackboardObservador {
-    void recibirMensaje(IBlackboard blackboard);
+
+    /**
+     * Recibir mensaje.
+     *
+     * @param blackboard the blackboard
+     */
+    void update(IBlackboard blackboard);
 }

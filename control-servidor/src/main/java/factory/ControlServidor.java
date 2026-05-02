@@ -3,12 +3,10 @@ import interfaces.*;
 import dto.CartaDTO;
 import dto.EstadoPartidaDTO;
 import dto.JugadorDTO;
-import dto.TipoAccionDTO;
 import dto.TipoEventoRuletaDTO;
 import util.SocketCliente;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * The type Control servidor.
@@ -70,11 +68,7 @@ public class ControlServidor implements IBlackboardObservador, IControlServidor 
     }
 
     @Override
-    public void recibirMensaje(IBlackboard blackboard) {
-        TipoAccionDTO accion = serializer.deserialize(blackboard, TipoAccionDTO.class);
-        if (Objects.equals(accion.getTipoAccion(), "UNIRSE_PARTIDA")) {
-            registrarCliente(clientes.size(), accion.getIp(), accion.getPuerto());
-        }
+    public void update(IBlackboard blackboard) {
         broadcastEstado();
     }
 }
