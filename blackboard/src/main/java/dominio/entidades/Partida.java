@@ -1,7 +1,7 @@
 package dominio.entidades;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoCarta;
-import dominio.entidades.enums.TipoEventoRuleta;
+import dto.TipoEventoRuletaDTO;
 import dominio.IDominio;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -216,7 +216,7 @@ public class Partida implements IDominio {
     }
 
     @Override
-    public TipoEventoRuleta procesarGiroRuleta() throws Exception {
+    public TipoEventoRuletaDTO procesarGiroRuleta() throws Exception {
         if (estadoPartida != EstadoPartida.GIRO_PENDIENTE) {
             throw new Exception("No es momento de girar la ruleta.");
         }
@@ -224,7 +224,7 @@ public class Partida implements IDominio {
     }
 
     @Override
-    public void aplicarEfectoRuleta(TipoEventoRuleta evento, Object resultado) {
+    public void aplicarEfectoRuleta(TipoEventoRuletaDTO evento, Object resultado) {
         Jugador jugadorActual = jugadores.get(indiceJugadorActual);
 
         switch (evento) {
@@ -304,7 +304,7 @@ public class Partida implements IDominio {
     }
 
     @Override
-    public TipoEventoRuleta getEventoRuleta() {
+    public TipoEventoRuletaDTO getEventoRuleta() {
         return tablero.getRuleta().getEventoRuleta();
     }
 

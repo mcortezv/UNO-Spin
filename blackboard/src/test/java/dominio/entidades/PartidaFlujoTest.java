@@ -1,7 +1,7 @@
 package dominio.entidades;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoCarta;
-import dominio.entidades.enums.TipoEventoRuleta;
+import dto.TipoEventoRuletaDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
@@ -118,14 +118,14 @@ class PartidaFlujoTest {
         jugador1.getMano().getCartas().add(spin);
         partida.aplicarJugada(spin);
 
-        TipoEventoRuleta evento = partida.procesarGiroRuleta();
+        TipoEventoRuletaDTO evento = partida.procesarGiroRuleta();
 
         assertNotNull(evento);
     }
 
     @Test
     void aplicarEfectoRuletaRestautraEstadoEnProceso() {
-        partida.aplicarEfectoRuleta(TipoEventoRuleta.CASI_UNO, null);
+        partida.aplicarEfectoRuleta(TipoEventoRuletaDTO.CASI_UNO, null);
         assertEquals(EstadoPartida.EN_PROCESO, partida.getEstadoPartida());
     }
 
@@ -204,7 +204,7 @@ class PartidaFlujoTest {
                 new Carta("AMARILLO", 4, TipoCarta.NUMERICA, 4)
         ));
 
-        partida.aplicarEfectoRuleta(TipoEventoRuleta.CASI_UNO, null);
+        partida.aplicarEfectoRuleta(TipoEventoRuletaDTO.CASI_UNO, null);
 
         assertEquals(2, jugador1.getMano().getCartas().size());
     }
@@ -219,7 +219,7 @@ class PartidaFlujoTest {
         jugador2.getMano().getCartas().clear();
         jugador2.getMano().getCartas().add(new Carta(null, null, TipoCarta.TOMA_CUATRO, 50));
 
-        assertDoesNotThrow(() -> partida.aplicarEfectoRuleta(TipoEventoRuleta.GUERRA, null));
+        assertDoesNotThrow(() -> partida.aplicarEfectoRuleta(TipoEventoRuletaDTO.GUERRA, null));
     }
 
 
@@ -232,7 +232,7 @@ class PartidaFlujoTest {
                 new Carta("AZUL", 3, TipoCarta.NUMERICA, 3)
         ));
 
-        partida.aplicarEfectoRuleta(TipoEventoRuleta.DESCARTAR_POR_COLOR, "ROJO");
+        partida.aplicarEfectoRuleta(TipoEventoRuletaDTO.DESCARTAR_POR_COLOR, "ROJO");
 
         assertEquals(1, jugador1.getMano().getCartas().size());
         assertEquals("AZUL", jugador1.getMano().getCartas().get(0).getColor());
@@ -248,7 +248,7 @@ class PartidaFlujoTest {
                 new Carta("VERDE", 3, TipoCarta.NUMERICA, 3)
         ));
 
-        partida.aplicarEfectoRuleta(TipoEventoRuleta.DESCARTAR_POR_NUMERO, 5);
+        partida.aplicarEfectoRuleta(TipoEventoRuletaDTO.DESCARTAR_POR_NUMERO, 5);
 
         assertEquals(1, jugador1.getMano().getCartas().size());
         assertEquals(3, jugador1.getMano().getCartas().get(0).getNumero());
@@ -266,7 +266,7 @@ class PartidaFlujoTest {
                 new Carta("VERDE", 3, TipoCarta.NUMERICA, 3)
         ));
 
-        partida.aplicarEfectoRuleta(TipoEventoRuleta.INTERCAMBIO_DE_MANOS, null);
+        partida.aplicarEfectoRuleta(TipoEventoRuletaDTO.INTERCAMBIO_DE_MANOS, null);
 
         assertEquals(2, jugador1.getMano().getCartas().size());
         assertEquals(1, jugador2.getMano().getCartas().size());

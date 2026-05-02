@@ -1,6 +1,6 @@
 package dialogs;
 
-import dialogs.enums.TipoEventoRuleta;
+import dto.TipoEventoRuletaDTO;
 import dialogs.eventosRuleta.*;
 import interfaces.IModeloLectura;
 import dto.JugadorDTO;
@@ -24,7 +24,7 @@ public class FabricaDialogosEvento {
      * @param modelo the modelo
      * @return the dialogo evento ruleta
      */
-    public static DialogoEventoRuleta crear(TipoEventoRuleta evento, JFrame owner, IModeloLectura modelo) {
+    public static DialogoEventoRuleta crear(TipoEventoRuletaDTO evento, JFrame owner, IModeloLectura modelo) {
         if (evento == null) {
             throw new IllegalArgumentException("El evento es nulo");
         }

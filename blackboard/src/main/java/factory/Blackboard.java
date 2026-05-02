@@ -4,7 +4,7 @@ import dominio.entidades.ConfiguracionPartida;
 import dominio.entidades.Jugador;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoAccion;
-import dominio.entidades.enums.TipoEventoRuleta;
+import dto.TipoEventoRuletaDTO;
 import mappers.CartaMapper;
 import mappers.ConfiguracionPartidaMapper;
 import mappers.JugadorMapper;
@@ -72,7 +72,7 @@ public class Blackboard implements IBlackboard, IReceptor{
                     case GRITAR_UNO        -> dominio.gritarUno();
                     case SELECCIONAR_COLOR -> dominio.aplicarSeleccionColor(accion.getCartaDTO().getColor());
                     case GIRAR_RULETA      -> { try { dominio.procesarGiroRuleta(); } catch (Exception e) { System.err.println("Ruleta: " + e.getMessage()); } }
-                    case RECONOCER_EVENTO  -> { TipoEventoRuleta ev = dominio.getEventoRuleta(); dominio.aplicarEfectoRuleta(ev, parsearResultado(ev, accion.getResultadoEvento())); dominio.avanzarTurno(); }
+                    case RECONOCER_EVENTO  -> { TipoEventoRuletaDTO ev = dominio.getEventoRuleta(); dominio.aplicarEfectoRuleta(ev, parsearResultado(ev, accion.getResultadoEvento())); dominio.avanzarTurno(); }
                     default                -> {}
                 }
             }
@@ -162,10 +162,9 @@ public class Blackboard implements IBlackboard, IReceptor{
     }
 
     @Override
-    public String getEventoRuleta() {
+    public TipoEventoRuletaDTO getEventoRuleta() {
         if (!partidaIniciada()) return null;
-        TipoEventoRuleta e = dominio.getEventoRuleta();
-        return e == null ? null : e.name();
+        return dominio.getEventoRuleta();
     }
 
     @Override
@@ -178,9 +177,9 @@ public class Blackboard implements IBlackboard, IReceptor{
         return e != null && e != EstadoPartida.NO_INICIADA;
     }
 
-    private Object parsearResultado(TipoEventoRuleta evento, String raw) {
+    private Object parsearResultado(TipoEventoRuletaDTO evento, String raw) {
         if (raw == null || evento == null) return null;
-        if (evento == TipoEventoRuleta.DESCARTAR_POR_NUMERO) {
+        if (evento == TipoEventoRuletaDTO.DESCARTAR_POR_NUMERO) {
             try { return Integer.parseInt(raw); } catch (NumberFormatException e) { return null; }
         }
         return raw;
