@@ -78,7 +78,7 @@ public class Blackboard implements IBlackboard, IReceptor{
                 }
             }
         }
-        notificar(this);
+        notificar();
     }
 
     private void procesarUnirse(TipoAccionDTO accion) {
@@ -127,9 +127,9 @@ public class Blackboard implements IBlackboard, IReceptor{
         return c;
     }
 
-    private void notificar(IBlackboard blackboard) {
+    private void notificar() {
         for (IBlackboardObservador s : suscriptores) {
-            s.update(blackboard);
+            s.update(this);
         }
     }
 
