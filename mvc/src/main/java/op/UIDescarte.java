@@ -1,5 +1,4 @@
 package op;
-import interfaces.IComponent;
 import dto.CartaDTO;
 import javax.swing.*;
 import java.awt.*;
@@ -7,7 +6,7 @@ import java.awt.*;
 /**
  * The type Ui descarte.
  */
-public class UIDescarte extends JPanel implements IComponent {
+public class UIDescarte extends JPanel {
 
     private static final int ANCHO = UICarta.ANCHO + 16;
     private static final int ALTO = UICarta.ALTO + 16;
@@ -121,7 +120,5 @@ public class UIDescarte extends JPanel implements IComponent {
 
     }
 
-    @Override
-    public void execute() {
-    }
+
 }

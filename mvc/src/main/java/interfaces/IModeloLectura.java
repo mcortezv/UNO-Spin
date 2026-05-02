@@ -1,4 +1,5 @@
 package interfaces;
+import dialogs.enums.TipoEventoRuleta;
 import dto.CartaDTO;
 import dto.JugadorDTO;
 import java.util.List;
@@ -69,7 +70,7 @@ public interface IModeloLectura {
      *
      * @return the evento ruleta actual
      */
-    String getEventoRuletaActual();
+    TipoEventoRuleta getEventoRuletaActual();
 
     /**
      * Is ultima jugada valida boolean.
