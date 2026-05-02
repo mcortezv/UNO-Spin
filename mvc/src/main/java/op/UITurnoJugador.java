@@ -1,10 +1,10 @@
 package op;
+import dialogs.enums.TipoEventoRuleta;
 import dto.CartaDTO;
 import dto.JugadorDTO;
 import dialogs.DialogoElegirColor;
 import dialogs.DialogoEventoRuleta;
 import dialogs.FabricaDialogosEvento;
-import interfaces.IComponent;
 import interfaces.IModeloLectura;
 import interfaces.ISuscriptor;
 import mvc.Controlador;
@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * The type Ui turno jugador.
  */
-public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
+public class UITurnoJugador extends JFrame implements ISuscriptor {
 
     private static final int ANCHO_VENTANA = 1040;
     private static final int ALTO_VENTANA  = 680;
@@ -195,25 +195,22 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         actualizarRival(rivales, 1, slotLeft, UIJugador.Posicion.LEFT);
         actualizarRival(rivales, 2, slotRight, UIJugador.Posicion.RIGHT);
 
-        String evento = modelo.getEventoRuletaActual();
+        TipoEventoRuleta evento = modelo.getEventoRuletaActual();
         if (evento != null) {
             mostrarDialogoEvento(evento, modelo);
         }
 
     }
 
-    private void mostrarDialogoEvento(String evento, IModeloLectura modelo) {
+    private void mostrarDialogoEvento(TipoEventoRuleta evento, IModeloLectura modelo) {
         boolean esTurnoPropio = modelo.isTurnoActivo();
         DialogoEventoRuleta dialogo = FabricaDialogosEvento.crear(evento, this, modelo);
-
         if (!esTurnoPropio) {
             dialogo.setSoloLectura(true);
         }
-
         dialogo.setVisible(true);
-
         if (esTurnoPropio) {
-            controlador.onResultadoEvento(evento, dialogo.getResultado());
+            controlador.onResultadoEvento(evento.name(), dialogo.getResultado());
         } else {
             controlador.onReconocerEvento();
         }
@@ -290,10 +287,6 @@ public class UITurnoJugador extends JFrame implements IComponent, ISuscriptor {
         if (colorElegido != null) {
             controlador.onSeleccionColor(colorElegido);
         }
-    }
-
-    @Override
-    public void execute() {
     }
 
     private static class PanelFondo extends JPanel {

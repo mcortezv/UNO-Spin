@@ -1,5 +1,4 @@
 package op;
-import interfaces.IComponent;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -10,7 +9,7 @@ import javax.swing.Timer;
 /**
  * The type Ui ruleta.
  */
-public class UIRuleta extends JPanel implements IComponent {
+public class UIRuleta extends JPanel {
 
     private static final int DIAMETRO = 140;
     private static final int SEGMENTOS = 8;
@@ -220,9 +219,7 @@ public class UIRuleta extends JPanel implements IComponent {
         return girando;
     }
 
-    @Override
-    public void execute() {
-    }
+
 
     /**
      * Sets active.

@@ -1,5 +1,4 @@
 package op;
-import interfaces.IComponent;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -8,7 +7,7 @@ import java.awt.event.MouseEvent;
 /**
  * The type Ui mazo.
  */
-public class UIMazo extends JPanel implements IComponent {
+public class UIMazo extends JPanel {
     private static final int CAPAS = 5;
     private static final int OFFSET = 2;
     private static final int ARCO = 14;
@@ -121,9 +120,6 @@ public class UIMazo extends JPanel implements IComponent {
         this.onPedirCarta = callback;
     }
 
-    @Override
-    public void execute() {
-    }
 
     /**
      * Sets active.

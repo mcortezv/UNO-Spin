@@ -1,6 +1,6 @@
 package op;
 import dto.CartaDTO;
-import interfaces.IComponent;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * The type Ui carta.
  */
-public class UICarta extends JPanel implements IComponent {
+public class UICarta extends JPanel {
 
     /**
      * The constant ANCHO.
@@ -187,12 +187,6 @@ public class UICarta extends JPanel implements IComponent {
         repaint();
     }
 
-//    public void setJugable(boolean j) {
-//        this.jugable = j;
-//        setCursor(j ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR) : Cursor.getDefaultCursor());
-//        repaint();
-//    }
-
     /**
      * Add on seleccion listener.
      *
@@ -202,7 +196,4 @@ public class UICarta extends JPanel implements IComponent {
         onSeleccionListeners.add(listener);
     }
 
-    @Override
-    public void execute() {
-    }
 }

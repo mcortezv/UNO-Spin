@@ -1,5 +1,4 @@
 package op;
-import interfaces.IComponent;
 import styles.CustomScrollPane;
 import dto.CartaDTO;
 import javax.swing.*;
@@ -11,8 +10,7 @@ import java.util.function.Consumer;
 /**
  * The type Ui mano.
  */
-public class UIMano extends JPanel implements IComponent {
-
+public class UIMano extends JPanel {
     private static final int GAP_ENTRE_CARTAS = 6;
     private static final int PADDING_V = 8;
     private static final int PADDING_H = 12;
@@ -108,5 +106,4 @@ public class UIMano extends JPanel implements IComponent {
         }
     }
 
-    @Override public void execute() {}
 }

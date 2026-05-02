@@ -1,4 +1,5 @@
 package mvc;
+import dialogs.enums.TipoEventoRuleta;
 import dto.*;
 import interfaces.*;
 import java.util.ArrayList;
@@ -178,8 +179,8 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     }
 
     @Override
-    public String getEventoRuletaActual() {
-        return estadoPartida != null ? estadoPartida.getEventoRuletaActivo() : null;
+    public TipoEventoRuleta getEventoRuletaActual() {
+        return estadoPartida != null ? TipoEventoRuleta.valueOf(estadoPartida.getEventoRuletaActivo()) : null;
     }
 
     /**
