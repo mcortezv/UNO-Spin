@@ -1,16 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package factory;
 
+import interfaces.IDispatcher;
 import interfaces.IFactoryConexion;
 
 /**
- *
- * @author janethcristinagalvanquinonez
+ * The type Factory conexion.
  */
-public class FactoryConexion implements IFactoryConexion{
-    
-    
+public class FactoryConexion implements IFactoryConexion {
+
+    @Override
+    public IDispatcher crearConn(int puerto) {
+        Conexion conexion = new Conexion(puerto);
+        return conexion.getDispatcher();
+    }
 }
