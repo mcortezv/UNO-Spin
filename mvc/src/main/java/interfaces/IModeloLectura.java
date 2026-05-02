@@ -61,28 +61,13 @@ public interface IModeloLectura {
       */
      boolean isSpinActivo();
 
-     /**
-      * Gets mano jugador especifico.
-      *
-      * @param indiceJugador the indice jugador
-      * @return the mano jugador especifico
-      */
-     List<CartaDTO> getManoJugadorEspecifico(int indiceJugador);
-
-     /**
-      * Is turno activo especifico boolean.
-      *
-      * @param indiceJugador the indice jugador
-      * @return the boolean
-      */
-     boolean isTurnoActivoEspecifico(int indiceJugador);
 
      /**
       * Gets evento ruleta actual.
       *
       * @return the evento ruleta actual
       */
-     EventoRuletaDTO getEventoRuletaActual();
+     String getEventoRuletaActual();
 
      /**
       * Is ultima jugada valida boolean.

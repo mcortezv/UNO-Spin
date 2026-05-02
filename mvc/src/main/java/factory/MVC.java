@@ -1,13 +1,30 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package factory;
+import dto.EstadoPartidaDTO;
+import interfaces.IReceptor;
+import interfaces.ISerializer;
+import mvc.Modelo;
 
 /**
- *
- * @author janethcristinagalvanquinonez
+ * The type Mvc.
  */
-public class MVC {
-    
+public class MVC implements IReceptor {
+    private final ISerializer serializer;
+    private final Modelo modelo;
+
+    /**
+     * Instantiates a new Mvc.
+     *
+     * @param serializer the serializer
+     * @param modelo     the modelo
+     */
+    MVC(ISerializer serializer, Modelo modelo) {
+        this.serializer = serializer;
+        this.modelo = modelo;
+    }
+
+    @Override
+    public void recibirMensaje(String json) {
+        EstadoPartidaDTO estado = serializer.deserialize(json, EstadoPartidaDTO.class);
+        modelo.actualizarEstado(estado);
+    }
 }

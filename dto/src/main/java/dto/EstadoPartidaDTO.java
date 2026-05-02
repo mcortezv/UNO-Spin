@@ -11,7 +11,7 @@ public class EstadoPartidaDTO {
     private List<JugadorDTO> jugadores;
     private List<CartaDTO> manoJugador;
     private boolean esTuTurno;
-    private EventoRuletaDTO eventoRuletaActivo;
+    private String eventoRuletaActivo;
     private boolean ultimaJugadaValida;
 
     /**
@@ -29,7 +29,7 @@ public class EstadoPartidaDTO {
      * @param manoJugador         the mano jugador
      * @param esTuTurno           the es tu turno
      */
-    public EstadoPartidaDTO(int indiceJugadorActual, String estadoPartida, CartaDTO cartaCima, List<JugadorDTO> jugadores, List<CartaDTO> manoJugador, boolean esTuTurno, EventoRuletaDTO eventoRuletaActivo, boolean ultimaJugadaValida) {
+    public EstadoPartidaDTO(int indiceJugadorActual, String estadoPartida, CartaDTO cartaCima, List<JugadorDTO> jugadores, List<CartaDTO> manoJugador, boolean esTuTurno, String eventoRuletaActivo, boolean ultimaJugadaValida) {
         this.indiceJugadorActual = indiceJugadorActual;
         this.estadoPartida = estadoPartida;
         this.cartaCima = cartaCima;
@@ -148,11 +148,11 @@ public class EstadoPartidaDTO {
         this.esTuTurno = esTuTurno;
     }
 
-    public EventoRuletaDTO getEventoRuletaActivo() {
+    public String getEventoRuletaActivo() {
         return eventoRuletaActivo;
     }
 
-    public void setEventoRuletaActivo(EventoRuletaDTO eventoRuletaActivo) {
+    public void setEventoRuletaActivo(String eventoRuletaActivo) {
         this.eventoRuletaActivo = eventoRuletaActivo;
     }
 

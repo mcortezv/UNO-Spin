@@ -4,24 +4,27 @@
  */
 package factory;
 
+import dto.JugadorDTO;
 import interfaces.IDispatcher;
-import interfaces.IMVCFactory;
+import interfaces.IFactoryMVC;
 import interfaces.IReceptor;
 import interfaces.ISerializer;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import mvc.Controlador;
 import mvc.Modelo;
+import op.UITurnoJugador;
 
 /**
  *
  * @author janethcristinagalvanquinonez
  */
-public class FactoryMVC implements IMVCFactory{
+public class FactoryMVC implements IFactoryMVC{
     
     private static final String IP_SERVIDOR  = "127.0.0.1";
     private static final int PUERTO_SERVIDOR = 5000;
 
-    @Override
     public IReceptor crearMVC(ISerializer serializer, IDispatcher dispatcher) {
         int puertoCliente = Integer.parseInt(System.getProperty("puerto.cliente", "6000"));
         Modelo modelo = new Modelo(serializer, dispatcher, IP_SERVIDOR, PUERTO_SERVIDOR, puertoCliente);
@@ -53,4 +56,4 @@ public class FactoryMVC implements IMVCFactory{
     }
 }
     
-}
+
