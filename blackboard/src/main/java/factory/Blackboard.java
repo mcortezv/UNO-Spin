@@ -4,8 +4,8 @@ import dominio.entidades.ConfiguracionPartida;
 import dominio.entidades.Jugador;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoAccion;
-import dominio.entidades.enums.TipoEventoRuleta;
 import dto.TipoEventoRuletaDTO;
+import interfaces.IBlackboardObservador;
 import mappers.CartaMapper;
 import mappers.ConfiguracionPartidaMapper;
 import mappers.JugadorMapper;
@@ -20,8 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
-
 /**
  * The type Blackboard.
  *
@@ -32,7 +30,7 @@ public class Blackboard implements IBlackboard, IReceptor{
     private static final int MAX_JUGADORES = 4;
 
     private static Blackboard instance;
-    private final List<IReceptor> suscriptores = new ArrayList<>();
+    private final List<IBlackboardObservador> suscriptores = new ArrayList<>();
     private final IDominio dominio;
     private final ISerializer serializer;
     private final List<Jugador> jugadoresInscritos = new ArrayList<>();
@@ -56,8 +54,8 @@ public class Blackboard implements IBlackboard, IReceptor{
      *
      * @param observador the receptor
      */
-    public static void suscribir(IReceptor receptor) {
-        instance.suscriptores.add(receptor);
+    public static void suscribir(IBlackboardObservador observador) {
+        instance.suscriptores.add(observador);
     }
 
     @Override
@@ -75,12 +73,12 @@ public class Blackboard implements IBlackboard, IReceptor{
                     case GRITAR_UNO        -> dominio.gritarUno();
                     case SELECCIONAR_COLOR -> dominio.aplicarSeleccionColor(accion.getCartaDTO().getColor());
                     case GIRAR_RULETA      -> { try { dominio.procesarGiroRuleta(); } catch (Exception e) { System.err.println("Ruleta: " + e.getMessage()); } }
-                    case RECONOCER_EVENTO  -> { TipoEventoRuleta ev = dominio.getEventoRuleta(); dominio.aplicarEfectoRuleta(ev, parsearResultado(ev, accion.getResultadoEvento())); dominio.avanzarTurno(); }
+                    case RECONOCER_EVENTO  -> { TipoEventoRuletaDTO ev = dominio.getEventoRuleta(); dominio.aplicarEfectoRuleta(ev, parsearResultado(ev, accion.getResultadoEvento())); dominio.avanzarTurno(); }
                     default                -> {}
                 }
             }
         }
-        notificar(json);
+        notificar();
     }
 
     private void procesarUnirse(TipoAccionDTO accion) {
@@ -129,9 +127,9 @@ public class Blackboard implements IBlackboard, IReceptor{
         return c;
     }
 
-    private void notificar(String json) {
-        for (IReceptor s : suscriptores) {
-            s.recibirMensaje(json);
+    private void notificar() {
+        for (IBlackboardObservador s : suscriptores) {
+            s.update(this);
         }
     }
 
@@ -165,10 +163,9 @@ public class Blackboard implements IBlackboard, IReceptor{
     }
 
     @Override
-    public String getEventoRuleta() {
+    public TipoEventoRuletaDTO getEventoRuleta() {
         if (!partidaIniciada()) return null;
-        TipoEventoRuleta e= dominio.getEventoRuleta();
-        return e == null ? null : e.name();
+        return dominio.getEventoRuleta();
     }
 
     @Override
@@ -181,9 +178,9 @@ public class Blackboard implements IBlackboard, IReceptor{
         return e != null && e != EstadoPartida.NO_INICIADA;
     }
 
-    private Object parsearResultado(TipoEventoRuleta evento, String raw) {
+    private Object parsearResultado(TipoEventoRuletaDTO evento, String raw) {
         if (raw == null || evento == null) return null;
-        if (evento == TipoEventoRuleta.DESCARTAR_POR_NUMERO) {
+        if (evento == TipoEventoRuletaDTO.DESCARTAR_POR_NUMERO) {
             try { return Integer.parseInt(raw); } catch (NumberFormatException e) { return null; }
         }
         return raw;
