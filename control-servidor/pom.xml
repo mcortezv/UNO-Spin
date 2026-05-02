@@ -9,39 +9,38 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>cliente-assembler</artifactId>
+    <artifactId>control-servidor</artifactId>
 
     <properties>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
         <dependency>
             <groupId>com.itson</groupId>
-            <artifactId>mvc</artifactId>
+            <artifactId>blackboard</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.itson</groupId>
-            <artifactId>conexion</artifactId>
+            <artifactId>dto</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
-        </dependency>        
+        </dependency>
+        <dependency>
+            <groupId>com.itson</groupId>
+            <artifactId>interfaces-conexion</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.itson</groupId>
+            <artifactId>interfaces-servidor</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
-         <dependency>
-            <groupId>com.itson</groupId>
-            <artifactId>interfaces-cliente</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>  
-         <dependency>
-            <groupId>com.itson</groupId>
-            <artifactId>serializer</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>       
-          
 
 </project>
