@@ -1,6 +1,6 @@
-package dominio;
-import dto.CartaDTO;
-import mappers.CartaMapper;
+package dominio.entidades;
+import dominio.entidades.enums.TipoCarta;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,12 +8,15 @@ import java.util.Objects;
  * The type Descarte.
  */
 public class Descarte {
+
     private List<Carta> cartas;
 
     /**
      * Instantiates a new Descarte.
      */
-    public Descarte() {}
+    public Descarte() {
+        cartas = new ArrayList<>();
+    }
 
     /**
      * Instantiates a new Descarte.
@@ -43,39 +46,41 @@ public class Descarte {
     }
 
     /**
-     * Obtener cartas dto list.
+     * Gets ultima carta.
      *
-     * @return the list
+     * @return the ultima carta
      */
-    public List<CartaDTO> obtenerCartasDTO(){
-        return CartaMapper.toDTO(this.cartas);
+    public Carta getUltimaCarta() {
+        return cartas.getLast();
     }
 
     /**
-     * Validar carta entrante boolean.
+     * Valida la jugada con la carta entrante comparando el color, el numero y
+     * si es comodín o no para hacer valida la carta
      *
-     * @param entrada the entrada
-     * @return the boolean
+     * @param entrada Carta entrante a validar la jugada que se realiza
+     * @return true si la jugada es valida y false si la jugada es invalida
      */
-    public boolean validarCartaEntrante(Carta entrada){
-        Carta ultima = getUltimaCarta();
-        boolean mismoColor = Objects.equals(ultima.getColor(), entrada.getColor());
-        boolean mismoNumero = ultima.getNumero() != null && entrada.getNumero() != null && Objects.equals(ultima.getNumero(), entrada.getNumero());
-        boolean mismoTipoEspecial = entrada.getTipoCarta() != dominio.enums.TipoCarta.NUMERICA && entrada.getTipoCarta() == ultima.getTipoCarta();
-        if (mismoColor || mismoNumero || mismoTipoEspecial || entrada.esComodin()){
+    public boolean validarCartaEntrante(Carta entrada) {
+        if (entrada == null) {
+            return false;
+        }
+        if (entrada.esComodin()) {
             return true;
         }
-        return false;
+        Carta cima = getUltimaCarta();
+
+        if (Objects.equals(cima.getColor(), entrada.getColor())) {
+            return true;
+        }
+
+        boolean cimaConNumero = cima.getNumero() != null;
+        boolean entradaConNumero = entrada.getNumero() != null;
+        if (cimaConNumero && entradaConNumero && Objects.equals(cima.getNumero(), entrada.getNumero())) {
+            return true;
+        }
+
+        boolean entradaEsEspecial = entrada.getTipoCarta() != TipoCarta.NUMERICA && entrada.getTipoCarta() != TipoCarta.NUMERO_SPIN && !entrada.esComodin();
+        return entradaEsEspecial && entrada.getTipoCarta() == cima.getTipoCarta();
     }
-
-
-    /**
-     * Get ultima carta carta.
-     *
-     * @return the carta
-     */
-    public Carta getUltimaCarta(){
-        return getCartas().getLast();
-    }
-
 }
