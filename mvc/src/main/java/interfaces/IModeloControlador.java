@@ -1,12 +1,19 @@
 package interfaces;
 import dto.CartaDTO;
+import dto.ConfiguracionPartidaDTO;
 import dto.EventoRuletaDTO;
+import dto.JugadorDTO;
 
 /**
  * The interface Modelo controlador.
  */
 public interface IModeloControlador {
 
+    
+    
+    void unirsePartida(JugadorDTO jugador, ConfiguracionPartidaDTO configuracion);
+    
+    void confirmarInicio(JugadorDTO jugador);
     /**
      * Jugar carta.
      *
@@ -47,7 +54,7 @@ public interface IModeloControlador {
      * @param evento    the evento
      * @param resultado the resultado
      */
-    void aplicarEventoRuleta(EventoRuletaDTO evento, Object resultado);
+    void aplicarEventoRuleta(String evento, Object resultado);
 
     /**
      * Aplicar seleccion color.

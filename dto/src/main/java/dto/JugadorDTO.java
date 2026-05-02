@@ -75,4 +75,10 @@ public class JugadorDTO {
     public void setCartasMano(List<CartaDTO> cartasMano) {
         this.cartasMano = cartasMano;
     }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+    
+    
 }

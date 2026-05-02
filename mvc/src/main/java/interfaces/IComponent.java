@@ -8,6 +8,8 @@ package interfaces;
  *
  * @author janethcristinagalvanquinonez
  */
-public interface IMVCFactory {
+public interface IComponent {
+    
+    void execute();
     
 }
