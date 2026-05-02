@@ -20,6 +20,7 @@
         <module>servidor-assembler</module>
         <module>mappers</module>
         <module>interfaces-cliente</module>
+        <module>interfaces-servidor</module>
     </modules>
 
     <properties>

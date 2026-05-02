@@ -3,7 +3,6 @@ import dominio.entidades.Carta;
 import dominio.entidades.ConfiguracionPartida;
 import dominio.entidades.Jugador;
 import dominio.entidades.enums.EstadoPartida;
-import dominio.entidades.enums.TipoEventoRuleta;
 import dto.TipoEventoRuletaDTO;
 import java.util.List;
 
@@ -66,7 +65,7 @@ public interface IDominio {
      * @return the tipo evento ruleta
      * @throws Exception the exception
      */
-    TipoEventoRuleta procesarGiroRuleta() throws Exception;
+    TipoEventoRuletaDTO procesarGiroRuleta() throws Exception;
 
     /**
      * Aplicar efecto ruleta.
@@ -74,7 +73,7 @@ public interface IDominio {
      * @param evento    the evento
      * @param resultado the resultado
      */
-    void aplicarEfectoRuleta(TipoEventoRuleta evento, Object resultado);
+    void aplicarEfectoRuleta(TipoEventoRuletaDTO evento, Object resultado);
 
     /**
      * Avanzar turno.
@@ -144,5 +143,5 @@ public interface IDominio {
      *
      * @return the evento ruleta
      */
-    TipoEventoRuleta getEventoRuleta();
+    TipoEventoRuletaDTO getEventoRuleta();
 }
