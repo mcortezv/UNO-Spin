@@ -129,11 +129,9 @@ public class Blackboard implements IBlackboard, IReceptor{
 
     private void notificar(IBlackboard blackboard) {
         for (IBlackboardObservador s : suscriptores) {
-            s.recibirMensaje(blackboard);
+            s.update(blackboard);
         }
     }
-
-
 
     @Override
     public List<JugadorDTO> getJugadores() {
