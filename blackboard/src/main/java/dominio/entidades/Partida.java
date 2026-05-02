@@ -1,29 +1,34 @@
-package dominio;
-
-import dominio.enums.EstadoPartida;
-import dominio.enums.TipoEventoRuleta;
-import dominio.interfaces.IDominio;
-import dto.JugadorDTO;
-import mappers.JugadorMapper;
-
+package dominio.entidades;
+import dominio.entidades.enums.EstadoPartida;
+import dominio.entidades.enums.TipoCarta;
+import dto.TipoEventoRuletaDTO;
+import dominio.IDominio;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The type Partida.
  */
 public class Partida implements IDominio {
+    private static final int CARTAS_INICIALES = 7;
+    private static final int VALOR_CARTA_ACCION = 20;
+    private static final int VALOR_CARTA_COMODIN = 50;
+    private static final int NUMERO_SPIN_POR_COLOR = 2;
+    private static final String[] COLORES = {"ROJO", "AZUL", "AMARILLO", "VERDE"};
     private List<Jugador> jugadores;
     private EstadoPartida estadoPartida;
     private int indiceJugadorActual;
     private boolean sentidoHorario;
     private Tablero tablero;
     private boolean unoGritado = false;
+    private boolean ultimaJugadaValida = true;
 
     /**
      * Instantiates a new Partida.
      */
-    public Partida() {
-    }
+    public Partida() {}
 
     /**
      * Instantiates a new Partida.
@@ -33,66 +38,328 @@ public class Partida implements IDominio {
      * @param jugadores           the jugadores
      * @param sentidoHorario      the sentido horario
      */
-    public Partida(EstadoPartida estadoPartida, int indiceJugadorActual, List<Jugador> jugadores,
-                   boolean sentidoHorario) {
+    public Partida(EstadoPartida estadoPartida, int indiceJugadorActual,
+                   List<Jugador> jugadores, boolean sentidoHorario) {
         this.estadoPartida = estadoPartida;
         this.indiceJugadorActual = indiceJugadorActual;
         this.jugadores = jugadores;
         this.sentidoHorario = sentidoHorario;
     }
 
+    @Override
+    public void iniciarPartida(List<Jugador> jugadoresIniciales, ConfiguracionPartida configuracion) {
+        this.jugadores = jugadoresIniciales;
+        this.indiceJugadorActual = 0;
+        this.sentidoHorario = true;
+
+        Mazo mazo = new Mazo(generarMazo(configuracion));
+        mazo.mezclar();
+
+        for (Jugador j : jugadoresIniciales) {
+            j.setMano(new Mano(new ArrayList<>()));
+            for (int i = 0; i < CARTAS_INICIALES; i++) {
+                try {
+                    j.getMano().getCartas().add(mazo.robarCarta());
+                } catch (Exception ignored) {}
+            }
+        }
+
+        Descarte descarte = new Descarte();
+        Carta inicial = extraerCartaInicial(mazo);
+        if (inicial != null) {
+            descarte.getCartas().add(inicial);
+        }
+
+        this.tablero = new Tablero(descarte, mazo, new Ruleta());
+        this.estadoPartida = EstadoPartida.EN_PROCESO;
+    }
+
+    private List<Carta> generarMazo(ConfiguracionPartida cfg) {
+        List<Carta> cartas = new ArrayList<>();
+
+        for (String color : COLORES) {
+            for (int valor = cfg.getValorMinimo(); valor <= cfg.getValorMaximo(); valor++) {
+                int copias = (valor == 0) ? 1 : 2;
+                for (int i = 0; i < copias; i++) {
+                    cartas.add(new Carta(color, valor, TipoCarta.NUMERICA, valor));
+                }
+            }
+
+            TipoCarta[] tiposAccion = {TipoCarta.BLOQUEO, TipoCarta.REVERSA, TipoCarta.TOMA_DOS};
+            int[] reparto = repartir(cfg.getCantidadCartasAccion(), tiposAccion.length);
+            for (int t = 0; t < tiposAccion.length; t++) {
+                for (int i = 0; i < reparto[t]; i++) {
+                    cartas.add(new Carta(color, null, tiposAccion[t], VALOR_CARTA_ACCION));
+                }
+            }
+
+            for (int i = 0; i < NUMERO_SPIN_POR_COLOR; i++) {
+                int valor = ThreadLocalRandom.current().nextInt(cfg.getValorMinimo(), cfg.getValorMaximo() + 1);
+                cartas.add(new Carta(color, valor, TipoCarta.NUMERO_SPIN, valor));
+            }
+        }
+
+        int[] comodines = repartir(cfg.getCantidadComodines(), 2);
+        for (int i = 0; i < comodines[0]; i++) {
+            cartas.add(new Carta(null, null, TipoCarta.CAMBIO_COLOR, VALOR_CARTA_COMODIN));
+        }
+        for (int i = 0; i < comodines[1]; i++) {
+            cartas.add(new Carta(null, null, TipoCarta.TOMA_CUATRO, VALOR_CARTA_COMODIN));
+        }
+
+        return cartas;
+    }
+
+    private int[] repartir(int total, int n) {
+        int[] r = new int[n];
+        int base = total / n;
+        int resto = total % n;
+        for (int i = 0; i < n; i++) {
+            r[i] = base + (i < resto ? 1 : 0);
+        }
+        return r;
+    }
+
+    private Carta extraerCartaInicial(Mazo mazo) {
+        List<Carta> cartas = mazo.getCartas();
+        for (int i = cartas.size() - 1; i >= 0; i--) {
+            if (cartas.get(i).getTipoCarta() == TipoCarta.NUMERICA) {
+                return cartas.remove(i);
+            }
+        }
+        return cartas.isEmpty() ? null : cartas.removeLast();
+    }
+
+    @Override
+    public boolean validarJugada(Carta carta) {
+        return tablero.getDescarte().validarCartaEntrante(carta);
+    }
+
+    @Override
+    public boolean aplicarJugada(Carta carta) {
+        if (!tablero.getDescarte().validarCartaEntrante(carta)) {
+            this.ultimaJugadaValida = false;
+            return false;
+        }
+
+        this.ultimaJugadaValida = true;
+
+        Jugador jugadorActual = jugadores.get(indiceJugadorActual);
+        List<Carta> cartasMano = jugadorActual.getMano().getCartas();
+
+        boolean removida = false;
+        for (int i = 0; i < cartasMano.size(); i++) {
+            Carta enMano = cartasMano.get(i);
+            if (enMano.getTipoCarta() == carta.getTipoCarta()
+                    && enMano.getValor() == carta.getValor()
+                    && matchColor(enMano.getColor(), carta.getColor())) {
+                cartasMano.remove(i);
+                removida = true;
+                break;
+            }
+        }
+
+        if (!removida) return false;
+
+        tablero.getDescarte().getCartas().add(carta);
+
+        if (cartasMano.isEmpty()) {
+            estadoPartida = EstadoPartida.FINALIZADA;
+            return true;
+        }
+
+        switch (carta.getTipoCarta()) {
+            case NUMERO_SPIN  -> estadoPartida = EstadoPartida.GIRO_PENDIENTE;
+            case REVERSA      -> { sentidoHorario = !sentidoHorario; avanzarTurno(); }
+            case BLOQUEO      -> { avanzarTurno(); avanzarTurno(); }
+            case TOMA_DOS     -> { int next = siguienteIndice(); aplicarCastigoUno(next); aplicarCastigoUno(next); avanzarTurno(); }
+            case TOMA_CUATRO  -> { int next = siguienteIndice(); for (int i = 0; i < 4; i++) aplicarCastigoUno(next); estadoPartida = EstadoPartida.SELECCION_COLOR_PENDIENTE; }
+            case CAMBIO_COLOR -> estadoPartida = EstadoPartida.SELECCION_COLOR_PENDIENTE;
+            default           -> avanzarTurno();
+        }
+        return true;
+    }
+
+    @Override
+    public void robarCartaJugadorActual() {
+        reciclarDescarteSiNecesario();
+        try {
+            Carta cartaRobada = tablero.getMazo().robarCarta();
+            jugadores.get(indiceJugadorActual).getMano().getCartas().add(cartaRobada);
+        } catch (Exception e) {
+            System.out.println("No hay más cartas disponibles.");
+        }
+        avanzarTurno();
+    }
+
+    @Override
+    public void aplicarSeleccionColor(String color) {
+        tablero.getDescarte().getUltimaCarta().setColor(color);
+        estadoPartida = EstadoPartida.EN_PROCESO;
+        avanzarTurno();
+    }
+
+    @Override
+    public void gritarUno() {
+        this.unoGritado = true;
+    }
+
+    @Override
+    public void aplicarCastigoUno(int indiceJugador) {
+        reciclarDescarteSiNecesario();
+        try {
+            Carta castigo = tablero.getMazo().robarCarta();
+            jugadores.get(indiceJugador).getMano().getCartas().add(castigo);
+        } catch (Exception e) {
+            System.out.println("Mazo vacío al aplicar castigo.");
+        }
+    }
+
+    @Override
+    public TipoEventoRuletaDTO procesarGiroRuleta() throws Exception {
+        if (estadoPartida != EstadoPartida.GIRO_PENDIENTE) {
+            throw new Exception("No es momento de girar la ruleta.");
+        }
+        return tablero.getRuleta().girar();
+    }
+
+    @Override
+    public void aplicarEfectoRuleta(TipoEventoRuletaDTO evento, Object resultado) {
+        Jugador jugadorActual = jugadores.get(indiceJugadorActual);
+
+        switch (evento) {
+            case DESCARTAR_POR_COLOR -> {
+                if (resultado instanceof String color) {
+                    aplicarDescartarPorColor(jugadorActual, color);
+                }
+            }
+            case DESCARTAR_POR_NUMERO -> {
+                if (resultado instanceof Integer num) {
+                    tablero.getDescarte().getCartas()
+                            .addAll(jugadorActual.getMano().descartarCartasPorNumero(num));
+                }
+            }
+            case ROBAR_HASTA_AZUL -> {
+                try { robarHastaColor(jugadorActual, "AZUL"); } catch (Exception ignored) {}
+            }
+            case ROBAR_HASTA_ROJO -> {
+                try { robarHastaColor(jugadorActual, "ROJO"); } catch (Exception ignored) {}
+            }
+            case INTERCAMBIO_DE_MANOS -> intercambiarManos();
+            case PUNTUACION_MAS_BAJA -> {
+                if (resultado instanceof String nombre) {
+                    aplicarCastigoPuntuacionBaja(nombre);
+                }
+            }
+            case GUERRA    -> aplicarGuerra();
+            case CASI_UNO  -> aplicarCasiUno(jugadorActual);
+            case MOSTRAR_LA_MANO -> { }
+        }
+        estadoPartida = EstadoPartida.EN_PROCESO;
+    }
+
+    @Override
+    public void avanzarTurno() {
+        if (jugadores == null || jugadores.isEmpty()) return;
+        int n = jugadores.size();
+        indiceJugadorActual = sentidoHorario
+                ? (indiceJugadorActual + 1) % n
+                : (indiceJugadorActual - 1 + n) % n;
+    }
+
+    @Override
+    public EstadoPartida getEstadoPartida() { return estadoPartida; }
+
+    @Override
+    public int getIndiceJugadorActual() { return indiceJugadorActual; }
+
+    @Override
+    public int getCantidadCartasJugador(int indiceJugador) {
+        return jugadores.get(indiceJugador).getMano().getCartas().size();
+    }
+
+    @Override
+    public List<Jugador> getJugadores() {
+        return jugadores;
+    }
+
+    @Override
+    public List<Carta> getManoJugador(int indiceJugador) {
+        return jugadores.get(indiceJugador).getMano().getCartas();
+    }
+
+    @Override
+    public Carta getCartaCima() {
+        return tablero.getDescarte().getUltimaCarta();
+    }
+
+    @Override
+    public List<Carta> getCartasDescarte() {
+        return tablero.getDescarte().getCartas();
+    }
+
+    @Override
+    public boolean isUltimaJugadaValida() {
+        return this.ultimaJugadaValida;
+    }
+
+    @Override
+    public TipoEventoRuletaDTO getEventoRuleta() {
+        return tablero.getRuleta().getEventoRuleta();
+    }
+
     /**
-     * Gets estado partida.
+     * Gets tablero.
      *
-     * @return the estado partida
+     * @return the tablero
      */
-    public EstadoPartida getEstadoPartida() {
-        return estadoPartida;
+    public Tablero getTablero() {
+        return tablero;
+    }
+
+    /**
+     * Sets tablero.
+     *
+     * @param t the t
+     */
+    public void setTablero(Tablero t) {
+        this.tablero = t;
     }
 
     /**
      * Sets estado partida.
      *
-     * @param estadoPartida the estado partida
+     * @param e the e
      */
-    public void setEstadoPartida(EstadoPartida estadoPartida) {
-        this.estadoPartida = estadoPartida;
-    }
-
-    /**
-     * Gets indice jugador actual.
-     *
-     * @return the indice jugador actual
-     */
-    public int getIndiceJugadorActual() {
-        return indiceJugadorActual;
+    public void setEstadoPartida(EstadoPartida e) {
+        this.estadoPartida = e;
     }
 
     /**
      * Sets indice jugador actual.
      *
-     * @param indiceJugadorActual the indice jugador actual
+     * @param i the
      */
-    public void setIndiceJugadorActual(int indiceJugadorActual) {
-        this.indiceJugadorActual = indiceJugadorActual;
-    }
-
-    /**
-     * Gets jugadores.
-     *
-     * @return the jugadores
-     */
-    public List<JugadorDTO> getJugadores() {
-        return JugadorMapper.toDTO(jugadores);
+    public void setIndiceJugadorActual(int i) {
+        this.indiceJugadorActual = i;
     }
 
     /**
      * Sets jugadores.
      *
-     * @param jugadores the jugadores
+     * @param j the j
      */
-    public void setJugadores(List<Jugador> jugadores) {
-        this.jugadores = jugadores;
+    public void setJugadores(List<Jugador> j) {
+        this.jugadores = j;
+    }
+
+    /**
+     * Sets sentido horario.
+     *
+     * @param s the s
+     */
+    public void setSentidoHorario(boolean s) {
+        this.sentidoHorario = s;
     }
 
     /**
@@ -105,283 +372,113 @@ public class Partida implements IDominio {
     }
 
     /**
-     * Sets sentido horario.
+     * Is uno gritado boolean.
      *
-     * @param sentidoHorario the sentido horario
+     * @return the boolean
      */
-    public void setSentidoHorario(boolean sentidoHorario) {
-        this.sentidoHorario = sentidoHorario;
+    public boolean isUnoGritado() {
+        return unoGritado;
     }
 
     /**
-     * recicla los metodos de validarCartaEntrante(c) del tablero y elimina esa carta de la mano del jugador, añade esa
-     * misma carta a la lista de descarte y valida la carta si es especial o de ruleta, deja el estado en GIRO_PENDIENTE
-     * y finalmente avanzarTurno()
+     * Sets uno gritado.
      *
-     * @param c carta a jugar
-     * @return true si jugada fue valida y false si falla
+     * @param u the u
      */
-    public boolean aplicarJugada(Carta c) {
-        if (tablero.getDescarte().validarCartaEntrante(c)) {
-            Jugador jugadorActual = jugadores.get(indiceJugadorActual);
-            List<Carta> cartasMano = jugadorActual.getMano().getCartas();
-
-            for (int i = 0; i < cartasMano.size(); i++) {
-                Carta cartaEnMano = cartasMano.get(i);
-                if (cartaEnMano.getColor().equals(c.getColor()) && cartaEnMano.getValor() == c.getValor()) {
-                    cartasMano.remove(i);
-                    break;
-                }
-            }
-            tablero.getDescarte().getCartas().add(c);
-
-            if (c.getTipoCarta() == dominio.enums.TipoCarta.NUMERO_SPIN) {
-                this.estadoPartida = EstadoPartida.GIRO_PENDIENTE;
-            } else if (c.getTipoCarta() == dominio.enums.TipoCarta.REVERSA) {
-                this.sentidoHorario = !this.sentidoHorario;
-                avanzarTurno();
-            } else if (c.getTipoCarta() == dominio.enums.TipoCarta.BLOQUEO) {
-                avanzarTurno();
-                avanzarTurno();
-            } else {
-                avanzarTurno();
-            }
-            return true;
-        }
-        return false;
+    public void setUnoGritado(boolean u) {
+        this.unoGritado = u;
     }
 
-    /**
-     * Se activa true en unoGritado
-     */
-    @Override
-    public void gritarUno() {
-        this.unoGritado = true;
+    private int siguienteIndice() {
+        int n = jugadores.size();
+        return sentidoHorario
+                ? (indiceJugadorActual + 1) % n
+                : (indiceJugadorActual - 1 + n) % n;
     }
 
-    /**
-     * Usa el metodo de validarCartaEntrante(c) del tablero
-     *
-     * @param carta
-     * @return true si la jugada es valida y false si no es valida la carta
-     */
-    @Override
-    public boolean validarJugada(Carta carta) {
-        return tablero.getDescarte().validarCartaEntrante(carta);
+    private boolean matchColor(String colorMano, String colorJugada) {
+        if (colorMano == null || colorJugada == null) return true;
+        return colorMano.equals(colorJugada);
     }
 
-    /**
-     * Procesa los tipo de eventos que hay en el juego (CASI UNO, ROBA HASTA AZUL, ROBA HASTA ROJO, INTERCAMBIO DE MANOS
-     * GUERRA, MOSTRAR LA MANO, PUNTUACIÓN MÁS BAJA, DESCARTAR POR COLOR, DESCARTAR POR NUMERO, DESCARTAR CARTA, ELEGIR COLOR)
-     *
-     * Si el evento es GUERRA o DESCARTAR POR COLOR queda el EstadoPartida en EN_PROCESO
-     *
-     * @return the tipo evento ruleta
-     * @throws Exception the exception: tira excepción si el estado de la partida es GIRO_PENDIENTE
-     */
-    public TipoEventoRuleta procesarGiroRuleta() throws Exception {
-        if (this.estadoPartida != EstadoPartida.GIRO_PENDIENTE) {
-            throw new Exception("No es momento de girar la ruleta.");
-        }
-
-        TipoEventoRuleta evento = tablero.getRuleta().girar();
-        Jugador jugador = jugadores.get(indiceJugadorActual);
-
-        switch (evento) {
-            case CASI_UNO:
-                aplicarCasiUno(jugador);
-                break;
-            case ROBAR_HASTA_AZUL:
-                robarHastaColor(jugador, "AZUL");
-                break;
-            case ROBAR_HASTA_ROJO:
-                robarHastaColor(jugador, "ROJO");
-                break;
-            case INTERCAMBIO_DE_MANOS:
-                intercambiarManos();
-                break;
-            case GUERRA:
-                aplicarGuerra();
-                break;
-            case MOSTRAR_LA_MANO:
-                break;
-            case PUNTUACION_MAS_BAJA:
-                aplicarPuntuacionMasBaja();
-                break;
-            case DESCARTAR_POR_COLOR:
-                aplicarDescartarPorColor(jugador);
-                break;
-            case ELEGIR_COLOR:
-            case DESCARTAR_POR_NUMERO:
-            case DESCARTAR_CARTA:
-                break;
-        }
-        if (evento != TipoEventoRuleta.GUERRA && evento != TipoEventoRuleta.DESCARTAR_POR_COLOR) {
-            this.estadoPartida = EstadoPartida.EN_PROCESO;
-            avanzarTurno();
-        }
-
-        return evento;
-    }
-
-    /**
-     * Puedes descartar todas tus cartas excepto dos.
-     * @param jugador
-     */
     private void aplicarCasiUno(Jugador jugador) {
-        while (jugador.getMano().getCartas().size() > 2) {
-            Carta cartaEliminada = jugador.getMano().getCartas().remove(0); // Quita la primera
-            tablero.getDescarte().getCartas().add(cartaEliminada); // La pone en el descarte
-        }
-    }
-
-    /**
-     * Robar cartas del mazo hasta que te salga una de color.
-     * @param jugador
-     * @param colorObjetivo
-     * @throws Exception
-     */
-    private void robarHastaColor(Jugador jugador, String colorObjetivo) throws Exception {
-        boolean encontroColor = false;
-        while (!encontroColor) {
-            Carta cartaRobada = tablero.getMazo().robarCarta();
-            jugador.getMano().getCartas().add(cartaRobada);
-            if (cartaRobada.getColor() != null && cartaRobada.getColor().equalsIgnoreCase(colorObjetivo)) {
-                encontroColor = true;
-            }
-        }
-    }
-
-    /**
-     * Todos los jugadores pasan sus cartas al jugador de la izquierda.
-     */
-    private void intercambiarManos() {
-        int cantidadJugadores = jugadores.size();
-
-        if (this.sentidoHorario) {
-            Mano manoTemporal = jugadores.get(cantidadJugadores - 1).getMano();
-            for (int i = cantidadJugadores - 1; i > 0; i--) {
-                jugadores.get(i).setMano(jugadores.get(i - 1).getMano());
-            }
-            jugadores.getFirst().setMano(manoTemporal);
-        } else {
-            Mano manoTemporal = jugadores.getFirst().getMano();
-            for (int i = 0; i < cantidadJugadores - 1; i++) {
-                jugadores.get(i).setMano(jugadores.get(i + 1).getMano());
-            }
-            jugadores.get(cantidadJugadores - 1).setMano(manoTemporal);
-        }
-    }
-
-    /**
-     * Cada jugador elige su carta más alta y la muestra. Quien tenga el número más alto puede descartar todas sus
-     * cartas de ese número.
-     */
-    private void aplicarGuerra() {
-        int numeroGanador = -1;
-
-        for (Jugador jugador : jugadores) {
-            Carta cartaMasAlta = jugador.getMano().getHighest();
-            if (cartaMasAlta != null && cartaMasAlta.getNumero() > numeroGanador) {
-                numeroGanador = cartaMasAlta.getNumero();
-            }
-        }
-
-        if (numeroGanador != -1) {
-            for (Jugador jugador : jugadores) {
-                Carta carta = jugador.getMano().getHighest();
-                if (carta != null && carta.getNumero() == numeroGanador) {
-                    List<Carta> cartasDescartadas = jugador.getMano().descartarCartasPorNumero(numeroGanador);
-                    tablero.getDescarte().getCartas().addAll(cartasDescartadas);
-                }
-            }
-        }
-    }
-
-    public Tablero getTablero() {
-        return tablero;
-    }
-
-    public void setTablero(Tablero tablero) {
-        this.tablero = tablero;
-    }
-
-    /**
-     * Avanzar turno correspondiente al sentido de rotación del momento.
-     */
-    public void avanzarTurno() {
-        if (!jugadores.isEmpty()) {
-            int n = jugadores.size();
-            if (sentidoHorario) {
-                indiceJugadorActual = (indiceJugadorActual + 1) % n;
-            } else {
-                indiceJugadorActual = (indiceJugadorActual - 1 + n) % n;
-            }
-        }
-    }
-
-    /**
-     * Robar cartas del mazo hasta que te salga una de color azul o rojo (según indique el icono).
-     * @param jugador Jugador a quien aplicar la jugada
-     */
-    private void aplicarDescartarPorColor(Jugador jugador) {
-        Carta cartaTope = tablero.getDescarte().getUltimaCarta();
-        if (cartaTope == null)
-            return;
-        String colorTope = cartaTope.getColor();
-        if (colorTope == null || colorTope.equalsIgnoreCase("NEGRO")) {
-            return;
-        }
         List<Carta> mano = jugador.getMano().getCartas();
-        List<Carta> cartasADescartar = new java.util.ArrayList<>();
-        for (Carta c : mano) {
-            if (c.getColor() != null && c.getColor().equalsIgnoreCase(colorTope)) {
-                cartasADescartar.add(c);
-            }
+        while (mano.size() > 2) {
+            tablero.getDescarte().getCartas().add(mano.removeFirst());
         }
-        mano.removeAll(cartasADescartar);
-        tablero.getDescarte().getCartas().addAll(cartasADescartar);
     }
 
-    /**
-     * checa quien tiene la menor cantidad de cartas y le dan una
-     */
-    private void aplicarPuntuacionMasBaja() {
-        if (jugadores.isEmpty())
-            return;
-        Jugador jugadorMenosCartas = jugadores.get(0);
+    private void robarHastaColor(Jugador jugador, String colorObjetivo) throws Exception {
+        int intentos = 0;
+        while (intentos++ < 60) {
+            reciclarDescarteSiNecesario();
+            Carta c = tablero.getMazo().robarCarta();
+            jugador.getMano().getCartas().add(c);
+            if (colorObjetivo.equalsIgnoreCase(c.getColor())) break;
+        }
+    }
+
+    private void reciclarDescarteSiNecesario() {
+        if (!tablero.getMazo().getCartas().isEmpty()) return;
+        List<Carta> descarte = tablero.getDescarte().getCartas();
+        if (descarte.size() <= 1) return;
+        List<Carta> recicladas = new ArrayList<>(descarte.subList(0, descarte.size() - 1));
+        descarte.subList(0, descarte.size() - 1).clear();
+        recicladas.forEach(c -> { if (c.esComodin()) c.setColor(null); });
+        Collections.shuffle(recicladas);
+        tablero.getMazo().getCartas().addAll(recicladas);
+    }
+
+    private void intercambiarManos() {
+        int n = jugadores.size();
+        if (sentidoHorario) {
+            Mano tmp = jugadores.get(n - 1).getMano();
+            for (int i = n - 1; i > 0; i--)
+                jugadores.get(i).setMano(jugadores.get(i - 1).getMano());
+            jugadores.get(0).setMano(tmp);
+        } else {
+            Mano tmp = jugadores.get(0).getMano();
+            for (int i = 0; i < n - 1; i++)
+                jugadores.get(i).setMano(jugadores.get(i + 1).getMano());
+            jugadores.get(n - 1).setMano(tmp);
+        }
+    }
+
+    private void aplicarGuerra() {
+        int numGanador = -1;
         for (Jugador j : jugadores) {
-            if (j.getMano().getCartas().size() < jugadorMenosCartas.getMano().getCartas().size()) {
-                jugadorMenosCartas = j;
+            Carta alta = j.getMano().getMasAlta();
+            if (alta != null && alta.getNumero() != null && alta.getNumero() > numGanador)
+                numGanador = alta.getNumero();
+        }
+        if (numGanador != -1) {
+            final int num = numGanador;
+            for (Jugador j : jugadores) {
+                Carta alta = j.getMano().getMasAlta();
+                if (alta != null && alta.getNumero() != null && alta.getNumero() == num)
+                    tablero.getDescarte().getCartas()
+                            .addAll(j.getMano().descartarCartasPorNumero(num));
             }
         }
-        try {
-            Carta cartaCastigo = tablero.getMazo().robarCarta();
-            jugadorMenosCartas.getMano().getCartas().add(cartaCastigo);
-        } catch (Exception e) {
-            System.out.println("El mazo se quedó sin cartas durante el evento Puntuación Más Baja.");
-        }
     }
 
-    /**
-     * El jugador actual roba una carta del tablero
-     */
-    public void robarCartaJugadorActual() {
-        try {
-            Carta cartaRobada = tablero.getMazo().robarCarta();
-            Jugador jugadorActual = jugadores.get(indiceJugadorActual);
-            jugadorActual.getMano().getCartas().add(cartaRobada);
-            avanzarTurno();
-        } catch (Exception e) {
-            System.out.println("No hay más cartas en el mazo: " + e.getMessage());
-        }
+    private void aplicarDescartarPorColor(Jugador jugador, String color) {
+        if (color == null || color.isBlank()) return;
+        List<Carta> mano = jugador.getMano().getCartas();
+        List<Carta> aDescartar = mano.stream()
+                .filter(c -> color.equalsIgnoreCase(c.getColor()))
+                .toList();
+        mano.removeAll(aDescartar);
+        tablero.getDescarte().getCartas().addAll(aDescartar);
     }
 
-    public void iniciarPartida(List<Jugador> jugadoresIniciales, Tablero tableroInicial) {
-        this.jugadores = jugadoresIniciales;
-        this.tablero = tableroInicial;
-        this.estadoPartida = EstadoPartida.EN_PROCESO;
-        this.indiceJugadorActual = 0;
-        this.sentidoHorario = true;
+    private void aplicarCastigoPuntuacionBaja(String nombre) {
+        jugadores.stream()
+                .filter(j -> j.getNombre().equals(nombre))
+                .findFirst()
+                .ifPresent(j -> {
+                    try { j.getMano().getCartas().add(tablero.getMazo().robarCarta()); }
+                    catch (Exception e) { System.out.println("Mazo vacío."); }
+                });
     }
 }
