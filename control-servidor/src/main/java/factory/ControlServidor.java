@@ -12,7 +12,7 @@ import java.util.List;
  * The type Control servidor.
  */
 public class ControlServidor implements IBlackboardObservador, IControlServidor {
-    private final IBlackboard blackboard;
+    private IBlackboard blackboard;
     private final IDispatcher dispatcher;
     private final ISerializer serializer;
     private final List<SocketCliente> clientes = new ArrayList<>();
@@ -69,6 +69,7 @@ public class ControlServidor implements IBlackboardObservador, IControlServidor 
 
     @Override
     public void update(IBlackboard blackboard) {
+        this.blackboard = blackboard;
         broadcastEstado();
     }
 }
