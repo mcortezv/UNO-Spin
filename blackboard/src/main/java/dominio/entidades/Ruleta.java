@@ -1,4 +1,5 @@
 package dominio.entidades;
+import dominio.entidades.enums.TipoEventoRuleta;
 import dto.TipoEventoRuletaDTO;
 import java.util.Random;
 
@@ -6,7 +7,7 @@ import java.util.Random;
  * The type Ruleta.
  */
 public class Ruleta {
-    private TipoEventoRuletaDTO eventoRuleta;
+    private TipoEventoRuleta eventoRuleta;
 
     /**
      * Instantiates a new Ruleta.
@@ -18,7 +19,7 @@ public class Ruleta {
      *
      * @param eventoRuleta the evento ruleta
      */
-    public Ruleta(TipoEventoRuletaDTO eventoRuleta) {
+    public Ruleta(TipoEventoRuleta eventoRuleta) {
         this.eventoRuleta = eventoRuleta;
     }
 
@@ -27,7 +28,7 @@ public class Ruleta {
      *
      * @return the evento ruleta
      */
-    public TipoEventoRuletaDTO getEventoRuleta() {
+    public TipoEventoRuleta getEventoRuleta() {
         return eventoRuleta;
     }
 
@@ -36,7 +37,7 @@ public class Ruleta {
      *
      * @param eventoRuleta the evento ruleta
      */
-    public void setEventoRuleta(TipoEventoRuletaDTO eventoRuleta) {
+    public void setEventoRuleta(TipoEventoRuleta eventoRuleta) {
         this.eventoRuleta = eventoRuleta;
     }
 
@@ -45,8 +46,8 @@ public class Ruleta {
      *
      * @return the tipo evento ruleta
      */
-    public TipoEventoRuletaDTO girar(){
-        TipoEventoRuletaDTO[] eventos = TipoEventoRuletaDTO.values();
+    public TipoEventoRuleta girar(){
+        TipoEventoRuleta[] eventos = TipoEventoRuleta.values();
         int indice = new Random().nextInt(eventos.length);
         return this.eventoRuleta = eventos[indice];
     }

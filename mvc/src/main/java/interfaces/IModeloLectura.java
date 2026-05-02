@@ -1,6 +1,5 @@
 package interfaces;
 import dto.CartaDTO;
-import dto.EventoRuletaDTO;
 import dto.JugadorDTO;
 import java.util.List;
 

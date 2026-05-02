@@ -10,7 +10,6 @@ public class JugadorDTO {
     private int numeroAvatar;
     private int cantidadCartas;
     private boolean esTurnoActual;
-    private List<CartaDTO> cartasMano;
 
     /**
      * Instantiates a new Jugador dto.
@@ -25,12 +24,11 @@ public class JugadorDTO {
      * @param cantidadCartas the cantidad cartas
      * @param esTurnoActual  the es turno actual
      */
-    public JugadorDTO(String nombre, int numeroAvatar, int cantidadCartas, boolean esTurnoActual, List<CartaDTO> cartasMano) {
+    public JugadorDTO(String nombre, int numeroAvatar, int cantidadCartas, boolean esTurnoActual) {
         this.nombre = nombre;
         this.numeroAvatar = numeroAvatar;
         this.cantidadCartas = cantidadCartas;
         this.esTurnoActual = esTurnoActual;
-        this.cartasMano = cartasMano;
     }
 
     /**
@@ -68,13 +66,6 @@ public class JugadorDTO {
        return esTurnoActual;
    }
 
-    public List<CartaDTO> getCartasMano() {
-        return cartasMano;
-    }
-
-    public void setCartasMano(List<CartaDTO> cartasMano) {
-        this.cartasMano = cartasMano;
-    }
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
