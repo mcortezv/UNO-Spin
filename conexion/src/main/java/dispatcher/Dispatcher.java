@@ -1,15 +1,20 @@
 package dispatcher;
 import interfaces.IDispatcher;
+import interfaces.IDispatcherObserver;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Dispatcher implements IDispatcher {
-    private final ColaDispatcher cola;
+    private final List<IDispatcherObserver> observadores= new ArrayList<>();
 
-    public Dispatcher(ColaDispatcher cola) {
-        this.cola = cola;
-    }
+   public void attach(IDispatcherObserver observador){
+       observadores.add(observador);
+   }
 
     @Override
     public void enviar(String json, int port, String ip) {
-        cola.encolar(json, port, ip);
+        for(IDispatcherObserver obs: observadores){
+            obs.update(json, port, ip);
+        }
     }
 }
