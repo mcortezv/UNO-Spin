@@ -12,11 +12,23 @@
     <artifactId>cliente-assembler</artifactId>
 
     <properties>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>com.itson</groupId>
+            <artifactId>conexion</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.itson</groupId>
+            <artifactId>interfaces-cliente</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>com.itson</groupId>
             <artifactId>mvc</artifactId>
@@ -25,23 +37,34 @@
         </dependency>
         <dependency>
             <groupId>com.itson</groupId>
-            <artifactId>conexion</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>        
-    </dependencies>
-         <dependency>
-            <groupId>com.itson</groupId>
-            <artifactId>interfaces-cliente</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>  
-         <dependency>
-            <groupId>com.itson</groupId>
             <artifactId>serializer</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
-        </dependency>       
-          
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>shade</goal></goals>
+                        <configuration>
+                            <outputFile>${project.build.directory}/cliente.jar</outputFile>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>assembler.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
