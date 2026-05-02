@@ -1,35 +1,40 @@
 package dto;
+
 import java.util.List;
 
 /**
  * The type Estado partida dto.
  */
 public class EstadoPartidaDTO {
+
     private int indiceJugadorActual;
     private String estadoPartida;
     private CartaDTO cartaCima;
     private List<JugadorDTO> jugadores;
     private List<CartaDTO> manoJugador;
     private boolean esTuTurno;
-    private String eventoRuletaActivo;
+    private TipoEventoRuletaDTO eventoRuletaActivo;
     private boolean ultimaJugadaValida;
 
     /**
      * Instantiates a new Estado partida dto.
      */
-    public EstadoPartidaDTO() {}
+    public EstadoPartidaDTO() {
+    }
 
     /**
      * Instantiates a new Estado partida dto.
      *
      * @param indiceJugadorActual the indice jugador actual
-     * @param estadoPartida       the estado partida
-     * @param cartaCima           the carta cima
-     * @param jugadores           the jugadores
-     * @param manoJugador         the mano jugador
-     * @param esTuTurno           the es tu turno
+     * @param estadoPartida the estado partida
+     * @param cartaCima the carta cima
+     * @param jugadores the jugadores
+     * @param manoJugador the mano jugador
+     * @param esTuTurno the es tu turno
+     * @param eventoRuletaActivo the evento ruleta activo
+     * @param ultimaJugadaValida the ultima jugada valida
      */
-    public EstadoPartidaDTO(int indiceJugadorActual, String estadoPartida, CartaDTO cartaCima, List<JugadorDTO> jugadores, List<CartaDTO> manoJugador, boolean esTuTurno, String eventoRuletaActivo, boolean ultimaJugadaValida) {
+    public EstadoPartidaDTO(int indiceJugadorActual, String estadoPartida, CartaDTO cartaCima, List<JugadorDTO> jugadores, List<CartaDTO> manoJugador, boolean esTuTurno, TipoEventoRuletaDTO eventoRuletaActivo, boolean ultimaJugadaValida) {
         this.indiceJugadorActual = indiceJugadorActual;
         this.estadoPartida = estadoPartida;
         this.cartaCima = cartaCima;
@@ -148,18 +153,38 @@ public class EstadoPartidaDTO {
         this.esTuTurno = esTuTurno;
     }
 
-    public String getEventoRuletaActivo() {
+    /**
+     * Gets evento ruleta activo.
+     *
+     * @return the evento ruleta activo
+     */
+    public TipoEventoRuletaDTO getEventoRuletaActivo() {
         return eventoRuletaActivo;
     }
 
-    public void setEventoRuletaActivo(String eventoRuletaActivo) {
+    /**
+     * Sets evento ruleta activo.
+     *
+     * @param eventoRuletaActivo the evento ruleta activo
+     */
+    public void setEventoRuletaActivo(TipoEventoRuletaDTO eventoRuletaActivo) {
         this.eventoRuletaActivo = eventoRuletaActivo;
     }
 
+    /**
+     * Is ultima jugada valida boolean.
+     *
+     * @return the boolean
+     */
     public boolean isUltimaJugadaValida() {
         return ultimaJugadaValida;
     }
 
+    /**
+     * Sets ultima jugada valida.
+     *
+     * @param ultimaJugadaValida the ultima jugada valida
+     */
     public void setUltimaJugadaValida(boolean ultimaJugadaValida) {
         this.ultimaJugadaValida = ultimaJugadaValida;
     }
