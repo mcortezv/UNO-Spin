@@ -1,7 +1,6 @@
 package interfaces;
 import dto.CartaDTO;
 import dto.ConfiguracionPartidaDTO;
-import dto.EventoRuletaDTO;
 import dto.JugadorDTO;
 
 /**

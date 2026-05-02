@@ -1,34 +1,37 @@
-package servidor;
+package factory;
 
+import util.SocketCliente;
 import Interfaces.IControlServidor;
+import dominio.IDominio;
 import dominio.entidades.enums.EstadoPartida;
-import dominio.interfaces.IDominio;
+import static dominio.entidades.enums.TipoAccion.GRITAR_UNO;
+import static dominio.entidades.enums.TipoAccion.JUGAR_CARTA;
+import static dominio.entidades.enums.TipoAccion.PEDIR_CARTA;
 import dto.CartaDTO;
 import dto.EstadoPartidaDTO;
-import dto.EventoRuletaDTO;
 import dto.JugadorDTO;
 import dto.TipoAccionDTO;
+import interfaces.IBlackboard;
 import interfaces.IDispatcher;
-import interfaces.IReceptorComponente;
+import interfaces.IReceptor;
 import interfaces.ISerializer;
 import mappers.CartaMapper;
-import mappers.EventoRuletaMapper;
 import mappers.JugadorMapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class ControlServidor implements IReceptorComponente, IControlServidor {
-    private final IDominio dominio;
+public class ControlServidor implements IReceptor, IControlServidor {
+    private final IBlackboard blackboard;
     private final IDispatcher dispatcher;
     private final ISerializer serializer;
-    private final List<SocketCliente> clientes;
+    private final List<SocketCliente> clientes= new ArrayList<>();
 
-    public ControlServidor(IDominio dominio, IDispatcher dispatcher, ISerializer serializer) {
-        this.dominio = dominio;
+    public ControlServidor(IBlackboard blackboard, IDispatcher dispatcher, ISerializer serializer) {
+        this.blackboard = blackboard;
         this.dispatcher = dispatcher;
         this.serializer = serializer;
-        this.clientes = new ArrayList<>();
     }
 
     public void registrarCliente(int indiceJugador, String ip, int puerto) {
@@ -43,10 +46,8 @@ public class ControlServidor implements IReceptorComponente, IControlServidor {
     @Override
     public void recibirMensaje(String json) {
         TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
-        switch (accion.getTipoAccion()) {
-            case JUGAR_CARTA -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
-            case PEDIR_CARTA -> dominio.robarCartaJugadorActual();
-            case GRITAR_UNO -> dominio.gritarUno();
+        if(Objects.equals(accion.getTipoAccion(), "UNIRSE_PARTIDA")){
+            registrarCliente(clientes.size(), accion.getIp(), accion.getPuerto());
         }
         broadcastEstado();
     }
@@ -60,21 +61,20 @@ public class ControlServidor implements IReceptorComponente, IControlServidor {
     }
 
     private EstadoPartidaDTO buildEstadoPartida(int indiceJugador) {
-        List<JugadorDTO> jugadores = JugadorMapper.toDTO(dominio.getJugadores());
-        CartaDTO cartaCima = CartaMapper.toDTO(dominio.getCartaCima());
-        List<CartaDTO> mano = CartaMapper.toDTO(dominio.getManoJugador(indiceJugador));
-        EventoRuletaDTO eventoRuleta = null;
-        if (dominio.getEstadoPartida() == EstadoPartida.GIRO_PENDIENTE) {
-            eventoRuleta = EventoRuletaMapper.toDTO(dominio.getEventoRuleta());
-        }
+        List<JugadorDTO> jugadores = blackboard.getJugadores();
+        CartaDTO cartaCima = blackboard.getCartaCima();
+        List<CartaDTO> mano = blackboard.getManoJugador(indiceJugador);
+        String eventoRuleta = "GIRO_PENDIENTE".equals(blackboard.getEstadoPartida())
+                ? blackboard.getEventoRuleta()
+                : null;
         return new EstadoPartidaDTO(
-                dominio.getIndiceJugadorActual(),
-                dominio.getEstadoPartida().name(),
+                blackboard.getIndiceJugadorActual(),
+                blackboard.getEstadoPartida(),
                 cartaCima,
                 jugadores,
                 mano,
-                (dominio.getIndiceJugadorActual() == indiceJugador),
+                blackboard.getIndiceJugadorActual() == indiceJugador,
                 eventoRuleta,
-                dominio.isUltimaJugadaValida());
+                blackboard.isUltimaJugadaValida());
     }
 }
