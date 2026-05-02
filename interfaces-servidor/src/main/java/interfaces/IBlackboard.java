@@ -1,6 +1,7 @@
 package interfaces;
 import dto.CartaDTO;
 import dto.JugadorDTO;
+import dto.TipoEventoRuletaDTO;
 import java.util.List;
 
 /**
@@ -49,7 +50,7 @@ public interface IBlackboard {
      *
      * @return the evento ruleta
      */
-    String getEventoRuleta();
+    TipoEventoRuletaDTO getEventoRuleta();
 
     /**
      * Is ultima jugada valida boolean.

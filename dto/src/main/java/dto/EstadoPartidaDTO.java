@@ -11,7 +11,7 @@ public class EstadoPartidaDTO {
     private List<JugadorDTO> jugadores;
     private List<CartaDTO> manoJugador;
     private boolean esTuTurno;
-    private String eventoRuletaActivo;
+    private TipoEventoRuletaDTO eventoRuletaActivo;
     private boolean ultimaJugadaValida;
 
     /**
@@ -31,7 +31,7 @@ public class EstadoPartidaDTO {
      * @param eventoRuletaActivo  the evento ruleta activo
      * @param ultimaJugadaValida  the ultima jugada valida
      */
-    public EstadoPartidaDTO(int indiceJugadorActual, String estadoPartida, CartaDTO cartaCima, List<JugadorDTO> jugadores, List<CartaDTO> manoJugador, boolean esTuTurno, String eventoRuletaActivo, boolean ultimaJugadaValida) {
+    public EstadoPartidaDTO(int indiceJugadorActual, String estadoPartida, CartaDTO cartaCima, List<JugadorDTO> jugadores, List<CartaDTO> manoJugador, boolean esTuTurno, TipoEventoRuletaDTO eventoRuletaActivo, boolean ultimaJugadaValida) {
         this.indiceJugadorActual = indiceJugadorActual;
         this.estadoPartida = estadoPartida;
         this.cartaCima = cartaCima;
@@ -155,7 +155,7 @@ public class EstadoPartidaDTO {
      *
      * @return the evento ruleta activo
      */
-    public String getEventoRuletaActivo() {
+    public TipoEventoRuletaDTO getEventoRuletaActivo() {
         return eventoRuletaActivo;
     }
 
@@ -164,7 +164,7 @@ public class EstadoPartidaDTO {
      *
      * @param eventoRuletaActivo the evento ruleta activo
      */
-    public void setEventoRuletaActivo(String eventoRuletaActivo) {
+    public void setEventoRuletaActivo(TipoEventoRuletaDTO eventoRuletaActivo) {
         this.eventoRuletaActivo = eventoRuletaActivo;
     }
 

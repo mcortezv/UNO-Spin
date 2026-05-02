@@ -1,7 +1,7 @@
 package dominio.entidades;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoCarta;
-import dominio.entidades.enums.TipoEventoRuleta;
+import dto.TipoEventoRuletaDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -203,7 +203,7 @@ class PartidaTest {
                 new Carta("AMARILLO", 4, TipoCarta.NUMERICA, 4)
         ));
 
-        partida.aplicarEfectoRuleta(TipoEventoRuleta.CASI_UNO, null);
+        partida.aplicarEfectoRuleta(TipoEventoRuletaDTO.CASI_UNO, null);
 
         assertEquals(2, jugador1.getMano().getCartas().size());
     }
@@ -221,7 +221,7 @@ class PartidaTest {
         ));
 
         int descarteAntes = partida.getTablero().getDescarte().getCartas().size();
-        partida.aplicarEfectoRuleta(TipoEventoRuleta.DESCARTAR_POR_COLOR, "ROJO");
+        partida.aplicarEfectoRuleta(TipoEventoRuletaDTO.DESCARTAR_POR_COLOR, "ROJO");
 
         assertEquals(1, jugador1.getMano().getCartas().size());
         assertTrue(partida.getTablero().getDescarte().getCartas().size() >= descarteAntes + 2);

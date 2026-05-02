@@ -4,6 +4,7 @@ import dto.CartaDTO;
 import dto.EstadoPartidaDTO;
 import dto.JugadorDTO;
 import dto.TipoAccionDTO;
+import dto.TipoEventoRuletaDTO;
 import interfaces.IBlackboard;
 import interfaces.IDispatcher;
 import interfaces.IReceptor;
@@ -67,7 +68,7 @@ public class ControlServidor implements IReceptor, IControlServidor {
         List<JugadorDTO> jugadores = blackboard.getJugadores();
         CartaDTO cartaCima = blackboard.getCartaCima();
         List<CartaDTO> mano = blackboard.getManoJugador(indiceJugador);
-        String eventoRuleta = "GIRO_PENDIENTE".equals(blackboard.getEstadoPartida())
+        TipoEventoRuletaDTO eventoRuleta = "GIRO_PENDIENTE".equals(blackboard.getEstadoPartida())
                 ? blackboard.getEventoRuleta()
                 : null;
         return new EstadoPartidaDTO(

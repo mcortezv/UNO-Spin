@@ -1,5 +1,5 @@
 package op;
-import dialogs.enums.TipoEventoRuleta;
+import dto.TipoEventoRuletaDTO;
 import dto.CartaDTO;
 import dto.JugadorDTO;
 import dialogs.DialogoElegirColor;
@@ -195,14 +195,14 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         actualizarRival(rivales, 1, slotLeft, UIJugador.Posicion.LEFT);
         actualizarRival(rivales, 2, slotRight, UIJugador.Posicion.RIGHT);
 
-        TipoEventoRuleta evento = modelo.getEventoRuletaActual();
+        TipoEventoRuletaDTO evento = modelo.getEventoRuletaActual();
         if (evento != null) {
             mostrarDialogoEvento(evento, modelo);
         }
 
     }
 
-    private void mostrarDialogoEvento(TipoEventoRuleta evento, IModeloLectura modelo) {
+    private void mostrarDialogoEvento(TipoEventoRuletaDTO evento, IModeloLectura modelo) {
         boolean esTurnoPropio = modelo.isTurnoActivo();
         DialogoEventoRuleta dialogo = FabricaDialogosEvento.crear(evento, this, modelo);
         if (!esTurnoPropio) {
