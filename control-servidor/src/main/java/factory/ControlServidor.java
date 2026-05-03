@@ -4,18 +4,20 @@ import dto.CartaDTO;
 import dto.EstadoPartidaDTO;
 import dto.JugadorDTO;
 import dto.TipoEventoRuletaDTO;
+import dto.TipoAccionDTO;
 import util.SocketCliente;
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The type Control servidor.
  */
-public class ControlServidor implements IBlackboardObservador {
+public class ControlServidor implements IBlackboardObservador, IReceptor {
     private IBlackboard blackboard;
     private final IDispatcher dispatcher;
     private final ISerializer serializer;
-    private final List<SocketCliente> clientes = new ArrayList<>();
+    private final Map<String, SocketCliente> clientesPorNombre = new LinkedHashMap<>();
 
     /**
      * Instantiates a new Control servidor.
@@ -31,8 +33,15 @@ public class ControlServidor implements IBlackboardObservador {
     }
 
     private void broadcastEstado() {
-        for (SocketCliente cliente : clientes) {
-            EstadoPartidaDTO dto = buildEstadoPartida(cliente.getIndiceJugador());
+        List<JugadorDTO> jugadores = blackboard.getJugadores();
+        for (int i = 0; i < jugadores.size(); i++) {
+            JugadorDTO jugador = jugadores.get(i);
+            SocketCliente cliente = clientesPorNombre.get(jugador.getNombre());
+            if (cliente == null) {
+                continue;
+            }
+
+            EstadoPartidaDTO dto = buildEstadoPartida(i);
             String json = serializer.serialize(dto);
             dispatcher.enviar(json, cliente.getPuerto(), cliente.getIp());
         }
@@ -54,6 +63,25 @@ public class ControlServidor implements IBlackboardObservador {
                 blackboard.getIndiceJugadorActual() == indiceJugador,
                 eventoRuleta,
                 blackboard.isUltimaJugadaValida());
+    }
+
+    @Override
+    public void recibirMensaje(String json) {
+        TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
+        if (!"UNIRSE_PARTIDA".equals(accion.getTipoAccion())) {
+            return;
+        }
+        if (accion.getJugadorDTO() == null) {
+            return;
+        }
+
+        String nombre = accion.getJugadorDTO().getNombre();
+        if (nombre == null || nombre.isBlank() || clientesPorNombre.containsKey(nombre)) {
+            return;
+        }
+
+        int indiceJugador = clientesPorNombre.size();
+        clientesPorNombre.put(nombre, new SocketCliente(indiceJugador, accion.getIp(), accion.getPuerto()));
     }
 
     @Override
