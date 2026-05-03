@@ -1,15 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
- */
 package interfaces;
 
 /**
- *
- * @author janethcristinagalvanquinonez
+ * The interface Factory conexion.
  */
 public interface IFactoryConexion {
-    
+
+    /**
+     * Crear conn dispatcher.
+     *
+     * @param puerto the puerto
+     * @return the dispatcher
+     */
     IDispatcher crearConn(int puerto);
-    
 }

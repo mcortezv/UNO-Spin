@@ -13,5 +13,5 @@ public interface IFactoryControlServidor {
      * @param serializer     the serializer
      * @return the receptor
      */
-    IReceptor crearControlServidor(IBlackboard blackboard, IDispatcher dispatcherConn, ISerializer serializer);
+    IBlackboardObservador crearControlServidor(IBlackboard blackboard, IDispatcher dispatcherConn, ISerializer serializer);
 }
