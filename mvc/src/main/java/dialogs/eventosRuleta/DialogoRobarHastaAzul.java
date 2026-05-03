@@ -11,7 +11,7 @@ public class DialogoRobarHastaAzul extends DialogoColorInformativo {
      * @param owner the owner
      */
     public DialogoRobarHastaAzul(Frame owner) {
-        super(owner, "¡ROBAR CARTAS HASTA AZUL!", new Color(0, 170, 255));
+        super(owner, "¡ROBAR CARTAS HASTA AZUL!", new Color(0, 170, 255),"Azul");
         construirDialogo("¡ROBAR CARTAS HASTA AZUL!");
     }
 

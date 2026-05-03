@@ -12,7 +12,7 @@ public class DialogoRobarHastaRojo extends DialogoColorInformativo {
      * @param owner the owner
      */
     public DialogoRobarHastaRojo(Frame owner) {
-        super(owner, "¡ROBAR CARTAS HASTA ROJO!", Color.RED);
+        super(owner, "¡ROBAR CARTAS HASTA ROJO!", Color.RED,"Rojo");
         construirDialogo("¡ROBAR CARTAS HASTA ROJO!");
     }
 

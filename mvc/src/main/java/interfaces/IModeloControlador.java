@@ -8,11 +8,21 @@ import dto.JugadorDTO;
  */
 public interface IModeloControlador {
 
-    
-    
+    /**
+     * Unirse partida.
+     *
+     * @param jugador       the jugador
+     * @param configuracion the configuracion
+     */
     void unirsePartida(JugadorDTO jugador, ConfiguracionPartidaDTO configuracion);
-    
+
+    /**
+     * Confirmar inicio.
+     *
+     * @param jugador the jugador
+     */
     void confirmarInicio(JugadorDTO jugador);
+
     /**
      * Jugar carta.
      *

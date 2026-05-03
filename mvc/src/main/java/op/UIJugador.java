@@ -1,6 +1,6 @@
 package op;
 import dto.JugadorDTO;
-import interfaces.IComponent;
+
 import javax.swing.Icon;
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +8,7 @@ import java.awt.*;
 /**
  * The type Ui jugador.
  */
-public class UIJugador extends JPanel implements IComponent {
+public class UIJugador extends JPanel {
     /**
      * The enum Posicion.
      */
@@ -168,5 +168,4 @@ public class UIJugador extends JPanel implements IComponent {
         repaint();
     }
 
-    @Override public void execute() {}
 }
