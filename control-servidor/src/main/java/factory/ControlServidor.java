@@ -1,23 +1,18 @@
 package factory;
-import interfaces.IControlServidor;
+import interfaces.*;
 import dto.CartaDTO;
 import dto.EstadoPartidaDTO;
 import dto.JugadorDTO;
-import dto.TipoAccionDTO;
-import interfaces.IBlackboard;
-import interfaces.IDispatcher;
-import interfaces.IReceptor;
-import interfaces.ISerializer;
+import dto.TipoEventoRuletaDTO;
 import util.SocketCliente;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * The type Control servidor.
  */
-public class ControlServidor implements IReceptor, IControlServidor {
-    private final IBlackboard blackboard;
+public class ControlServidor implements IBlackboardObservador, IControlServidor {
+    private IBlackboard blackboard;
     private final IDispatcher dispatcher;
     private final ISerializer serializer;
     private final List<SocketCliente> clientes = new ArrayList<>();
@@ -46,15 +41,6 @@ public class ControlServidor implements IReceptor, IControlServidor {
         clientes.removeIf(c -> c.getIndiceJugador() == indiceJugador);
     }
 
-    @Override
-    public void recibirMensaje(String json) {
-        TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
-        if (Objects.equals(accion.getTipoAccion(), "UNIRSE_PARTIDA")) {
-            registrarCliente(clientes.size(), accion.getIp(), accion.getPuerto());
-        }
-        broadcastEstado();
-    }
-
     private void broadcastEstado() {
         for (SocketCliente cliente : clientes) {
             EstadoPartidaDTO dto = buildEstadoPartida(cliente.getIndiceJugador());
@@ -67,7 +53,7 @@ public class ControlServidor implements IReceptor, IControlServidor {
         List<JugadorDTO> jugadores = blackboard.getJugadores();
         CartaDTO cartaCima = blackboard.getCartaCima();
         List<CartaDTO> mano = blackboard.getManoJugador(indiceJugador);
-        String eventoRuleta = "GIRO_PENDIENTE".equals(blackboard.getEstadoPartida())
+        TipoEventoRuletaDTO eventoRuleta = "GIRO_PENDIENTE".equals(blackboard.getEstadoPartida())
                 ? blackboard.getEventoRuleta()
                 : null;
         return new EstadoPartidaDTO(
@@ -79,5 +65,11 @@ public class ControlServidor implements IReceptor, IControlServidor {
                 blackboard.getIndiceJugadorActual() == indiceJugador,
                 eventoRuleta,
                 blackboard.isUltimaJugadaValida());
+    }
+
+    @Override
+    public void update(IBlackboard blackboard) {
+        this.blackboard = blackboard;
+        broadcastEstado();
     }
 }
