@@ -1,5 +1,5 @@
 package dispatcher;
-import interfaces.IDispatcherObserver;
+import interfaces.IDispatcher;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 /**
  * The type Socket out.
  */
-public class SocketOut implements IDispatcherObserver {
+public class SocketOut implements IDispatcher {
     private ExecutorService worker;
 
     /**
@@ -28,7 +28,7 @@ public class SocketOut implements IDispatcherObserver {
     }
 
     @Override
-    public void update(String json, int port, String ip) {
+    public void enviar(String json, int port, String ip) {
         System.out.println("Recibido. Enviando a " + ip + ":" + port);
         worker.submit(() -> {
             try (Socket socket = new Socket(ip, port); PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
