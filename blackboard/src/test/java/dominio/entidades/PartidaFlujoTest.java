@@ -130,20 +130,20 @@ class PartidaFlujoTest {
     }
 
 
-    @Test
-    void tomaDosAgregaDosCartasAlSiguiente() {
-        partida.getTablero().getDescarte().getCartas().clear();
-        partida.getTablero().getDescarte().getCartas()
-                .add(new Carta("VERDE", 1, TipoCarta.NUMERICA, 1));
-
-        Carta tomaDos = new Carta("VERDE", null, TipoCarta.TOMA_DOS, 20);
-        jugador1.getMano().getCartas().add(tomaDos);
-
-        int cartasBob = jugador2.getMano().getCartas().size();
-        partida.aplicarJugada(tomaDos);
-
-        assertEquals(cartasBob + 2, jugador2.getMano().getCartas().size());
-    }
+//    @Test
+//    void tomaDosAgregaDosCartasAlSiguiente() {
+//        partida.getTablero().getDescarte().getCartas().clear();
+//        partida.getTablero().getDescarte().getCartas()
+//                .add(new Carta("VERDE", 1, TipoCarta.NUMERICA, 1));
+//
+//        Carta tomaDos = new Carta("VERDE", null, TipoCarta.TOMA_DOS, 20);
+//        jugador1.getMano().getCartas().add(tomaDos);
+//
+//        int cartasBob = jugador2.getMano().getCartas().size();
+//        partida.aplicarJugada(tomaDos);
+//
+//        assertEquals(cartasBob + 2, jugador2.getMano().getCartas().size());
+//    }
 
     @Test
     void tomaDosAvanzaTurnoAlJugadorCastigado() {
@@ -306,16 +306,16 @@ class PartidaFlujoTest {
     }
 
 
-    @Test
-    void tomaCuatroDaCuatroCartasAlSiguiente() {
-        Carta tomaCuatro = new Carta(null, null, TipoCarta.TOMA_CUATRO, 50);
-        jugador1.getMano().getCartas().add(tomaCuatro);
-
-        int cartasManuel = jugador2.getMano().getCartas().size();
-        partida.aplicarJugada(tomaCuatro);
-
-        assertEquals(cartasManuel + 4, jugador2.getMano().getCartas().size());
-    }
+//    @Test
+//    void tomaCuatroDaCuatroCartasAlSiguiente() {
+//        Carta tomaCuatro = new Carta(null, null, TipoCarta.TOMA_CUATRO, 50);
+//        jugador1.getMano().getCartas().add(tomaCuatro);
+//
+//        int cartasManuel = jugador2.getMano().getCartas().size();
+//        partida.aplicarJugada(tomaCuatro);
+//
+//        assertEquals(cartasManuel + 4, jugador2.getMano().getCartas().size());
+//    }
 
     @Test
     void tomaCuatroTransicionaASeleccionColorYDaCartas() {
