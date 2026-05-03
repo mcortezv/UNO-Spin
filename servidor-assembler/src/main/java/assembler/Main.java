@@ -28,6 +28,9 @@ public class Main {
         IReceptor receptor = factoryBlackboard.crearReceptorBlackboard(serializer);
         IBlackboardObservador controlServidor = factoryControlServidor.crearControlServidor(blackboard, dispatcherConn, serializer);
 
+        if (controlServidor instanceof IReceptor receptorControlServidor) {
+            Conexion.suscribir(receptorControlServidor);
+        }
         Conexion.suscribir(receptor);
         Blackboard.suscribir(controlServidor);
 
