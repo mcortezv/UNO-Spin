@@ -27,10 +27,10 @@ public class Main {
         IReceptor receptor = factoryBlackboard.crearReceptorBlackboard(serializer);
 
         IDispatcher dispatcherConn = factoryConexion.crearConn(puertoServidor);
-        IReceptor receptorControlServidor = factoryControlServidor.crearControlServidor(blackboard, dispatcherConn, serializer);
+        IBlackboardObservador controlServidor = factoryControlServidor.crearControlServidor(blackboard, dispatcherConn, serializer);
 
         Conexion.suscribir(receptor);
-        Blackboard.suscribir(receptorControlServidor);
+        Blackboard.suscribir(controlServidor);
 
         Conexion.iniciar();
     }
