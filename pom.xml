@@ -25,6 +25,7 @@
         <module>control</module>
         <module>servidor</module>
         <module>agent</module>
+        <module>control-servidor</module>
     </modules>
 
     <properties>
