@@ -1,4 +1,5 @@
 package factory;
+import dispatcher.Dispatcher;
 import dispatcher.SocketOut;
 import interfaces.IDispatcher;
 import interfaces.IReceptor;
@@ -15,6 +16,7 @@ public class Conexion implements IReceptorObserver {
     private final List<IReceptor> suscriptores = new ArrayList<>();
     private final SocketIn socketIn;
     private final SocketOut socketOut;
+    private final IDispatcher dispatcher;
 
     /**
      * Instantiates a new Conexion.
@@ -23,7 +25,12 @@ public class Conexion implements IReceptorObserver {
      */
     Conexion(int puerto) {
         this.socketIn = new SocketIn(puerto, this);
+
+        Dispatcher dispatcher = new Dispatcher();
         this.socketOut = new SocketOut();
+        dispatcher.attach(socketOut);
+        this.dispatcher = dispatcher;
+
         instance = this;
     }
 
@@ -50,7 +57,7 @@ public class Conexion implements IReceptorObserver {
      * @return the dispatcher
      */
     public IDispatcher getDispatcher() {
-        return socketOut;
+        return dispatcher;
     }
 
     @Override
