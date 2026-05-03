@@ -23,10 +23,9 @@ public class Main {
 
         IDispatcher dispatcherConn = factoryConexion.crearConn(puertoCliente);
 
-        Conexion.iniciar();
-
         IReceptor receptorMVC = factoryMVC.crearMVC(serializer, dispatcherConn);
 
         Conexion.suscribir(receptorMVC);
+        Conexion.iniciar();
     }
 }
