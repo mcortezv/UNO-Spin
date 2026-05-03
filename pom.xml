@@ -21,6 +21,10 @@
         <module>mappers</module>
         <module>interfaces-cliente</module>
         <module>interfaces-servidor</module>
+        <module>agent</module>
+        <module>control</module>
+        <module>servidor</module>
+        <module>agent</module>
     </modules>
 
     <properties>
