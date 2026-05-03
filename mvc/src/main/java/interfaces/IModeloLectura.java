@@ -85,4 +85,10 @@ public interface IModeloLectura {
      * @return the boolean
      */
     boolean isSeleccionColorPendiente();
+    boolean cartaCimaEsCastigo();
+    boolean tieneCastigoPendienteLocal();
+    int getCartasPendientesCastigoLocal();
+    boolean puedeUsarMazo();
+    boolean puedeIntentarJugarCarta();
+    boolean puedeJugarCarta(CartaDTO carta);
 }

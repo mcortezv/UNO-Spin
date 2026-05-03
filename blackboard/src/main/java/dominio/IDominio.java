@@ -41,6 +41,11 @@ public interface IDominio {
     void robarCartaJugadorActual();
 
     /**
+     * Robar carta jugador actual sin avanzar turno.
+     */
+    void robarCartaSinAvanzarTurno();
+
+    /**
      * Aplicar seleccion color.
      *
      * @param color the color

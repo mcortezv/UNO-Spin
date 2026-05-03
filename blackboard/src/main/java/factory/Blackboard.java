@@ -70,6 +70,7 @@ public class Blackboard implements IBlackboard, IReceptor{
                 switch (tipo) {
                     case JUGAR_CARTA       -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
                     case PEDIR_CARTA       -> dominio.robarCartaJugadorActual();
+                    case PEDIR_CARTA_CASTIGO -> dominio.robarCartaSinAvanzarTurno();
                     case GRITAR_UNO        -> dominio.gritarUno();
                     case SELECCIONAR_COLOR -> dominio.aplicarSeleccionColor(accion.getCartaDTO().getColor());
                     case GIRAR_RULETA      -> { try { dominio.procesarGiroRuleta(); } catch (Exception e) { System.err.println("Ruleta: " + e.getMessage()); } }

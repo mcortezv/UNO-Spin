@@ -13,6 +13,10 @@ public enum TipoAccion {
      */
     PEDIR_CARTA,
     /**
+     * Pedir carta por castigo sin avanzar turno tipo accion.
+     */
+    PEDIR_CARTA_CASTIGO,
+    /**
      * Girar ruleta tipo accion.
      */
     GIRAR_RULETA,
