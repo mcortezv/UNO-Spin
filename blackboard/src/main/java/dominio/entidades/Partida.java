@@ -187,7 +187,6 @@ public class Partida implements IDominio {
             Carta cartaRobada = tablero.getMazo().robarCarta();
             jugadores.get(indiceJugadorActual).getMano().getCartas().add(cartaRobada);
         } catch (Exception e) {
-            System.out.println("No hay más cartas disponibles.");
         }
         avanzarTurno();
     }
@@ -195,7 +194,6 @@ public class Partida implements IDominio {
     @Override
     public void robarCartaSinAvanzarTurno() {
         reciclarDescarteSiNecesario();
-
         try {
             Carta cartaRobada = tablero.getMazo().robarCarta();
             jugadores.get(indiceJugadorActual).getMano().getCartas().add(cartaRobada);
@@ -223,7 +221,6 @@ public class Partida implements IDominio {
             Carta castigo = tablero.getMazo().robarCarta();
             jugadores.get(indiceJugador).getMano().getCartas().add(castigo);
         } catch (Exception e) {
-            System.out.println("Mazo vacío al aplicar castigo.");
         }
     }
 
@@ -408,6 +405,20 @@ public class Partida implements IDominio {
                 : (indiceJugadorActual - 1 + n) % n;
     }
 
+    private void darCartasAlSiguiente(int cantidad) {
+        int idxSiguiente = siguienteIndice();
+        Jugador siguiente = jugadores.get(idxSiguiente);
+        for (int i = 0; i < cantidad; i++) {
+            reciclarDescarteSiNecesario();
+            try {
+                Carta c = tablero.getMazo().robarCarta();
+                siguiente.getMano().getCartas().add(c);
+            } catch (Exception e) {
+                break;
+            }
+        }
+    }
+
     private boolean matchColor(String colorMano, String colorJugada) {
         if (colorMano == null || colorJugada == null) return true;
         return colorMano.equals(colorJugada);
@@ -490,7 +501,7 @@ public class Partida implements IDominio {
                 .findFirst()
                 .ifPresent(j -> {
                     try { j.getMano().getCartas().add(tablero.getMazo().robarCarta()); }
-                    catch (Exception e) { System.out.println("Mazo vacío."); }
+                    catch (Exception e) { System.out.println("Mazo vacio."); }
                 });
     }
 }
