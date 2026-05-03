@@ -1,5 +1,4 @@
 package factory;
-
 import interfaces.IDispatcher;
 import interfaces.IFactoryConexion;
 

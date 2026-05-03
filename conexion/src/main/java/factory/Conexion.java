@@ -1,5 +1,4 @@
 package factory;
-
 import dispatcher.Dispatcher;
 import dispatcher.SocketOut;
 import interfaces.IDispatcher;
@@ -10,10 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Dana Rios
+ * The type Conexion.
  */
 public class Conexion implements IReceptorObserver {
-
     private static Conexion instance;
     private final List<IReceptor> suscriptores = new ArrayList<>();
     private final SocketIn socketIn;
