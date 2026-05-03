@@ -1,13 +1,13 @@
 package op;
 import dto.CartaDTO;
-import interfaces.IComponent;
+
 import javax.swing.*;
 import java.awt.*;
 
 /**
  * The type Ui tablero.
  */
-public class UITablero extends JPanel implements IComponent {
+public class UITablero extends JPanel {
 
     private final UIRuleta   ruleta;
     private final UIDescarte descarte;
@@ -123,5 +123,4 @@ public class UITablero extends JPanel implements IComponent {
     public void setOnGiroCompleto(Runnable accion) {
         this.ruleta.setOnGiroCompleto(accion);
     }
-    @Override public void execute() {}
 }

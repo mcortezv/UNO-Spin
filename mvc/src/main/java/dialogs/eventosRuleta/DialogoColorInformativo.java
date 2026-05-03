@@ -1,4 +1,5 @@
 package dialogs.eventosRuleta;
+
 import dialogs.DialogoEventoRuleta;
 import javax.swing.*;
 import java.awt.*;
@@ -6,19 +7,28 @@ import java.awt.*;
 /**
  * The type Dialogo color informativo.
  */
-public abstract class DialogoColorInformativo extends DialogoEventoRuleta {
+public class DialogoColorInformativo extends DialogoEventoRuleta {
     private final Color colorMostrar;
+    private final String nombreColor;
 
     /**
      * Instantiates a new Dialogo color informativo.
      *
-     * @param owner  the owner
-     * @param titulo the titulo
-     * @param color  the color
+     * @param owner       the owner
+     * @param titulo      the titulo
+     * @param color       the color
+     * @param nombreColor el nombre del color para el resultado
      */
-    public DialogoColorInformativo(Frame owner, String titulo, Color color) {
+    public DialogoColorInformativo(Frame owner, String titulo, Color color, String nombreColor) {
         super(owner, titulo);
         this.colorMostrar = color;
+        this.nombreColor = nombreColor;
+        construirDialogo(titulo);
+    }
+
+    @Override
+    protected String obtenerDescripcion() {
+        return "TENDRAS QUE ROBAR CARTAS DEL MAZO HASTA OBTENER UNA CARTA CON EL COLOR:";
     }
 
     @Override
@@ -41,5 +51,10 @@ public abstract class DialogoColorInformativo extends DialogoEventoRuleta {
         circulo.setOpaque(false);
         panel.add(circulo);
         return panel;
+    }
+
+    @Override
+    protected void alAceptar() {
+        resultado = nombreColor;
     }
 }

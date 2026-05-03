@@ -1,4 +1,5 @@
 package mvc;
+import dto.TipoEventoRuletaDTO;
 import dto.*;
 import interfaces.*;
 import java.util.ArrayList;
@@ -177,9 +178,8 @@ public class Modelo implements IModeloControlador, IModeloLectura {
                 && "SELECCION_COLOR_PENDIENTE".equals(estadoPartida.getEstadoPartida());
     }
 
-   
     @Override
-    public String getEventoRuletaActual() {
+    public TipoEventoRuletaDTO getEventoRuletaActual() {
         return estadoPartida != null ? estadoPartida.getEventoRuletaActivo() : null;
     }
 

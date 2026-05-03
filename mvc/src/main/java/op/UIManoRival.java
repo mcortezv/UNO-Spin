@@ -1,12 +1,11 @@
 package op;
-import interfaces.IComponent;
 import javax.swing.*;
 import java.awt.*;
 
 /**
  * The type Ui mano rival.
  */
-public class UIManoRival extends JPanel implements IComponent {
+public class UIManoRival extends JPanel {
     /**
      * The enum Orientacion.
      */
@@ -130,5 +129,4 @@ public class UIManoRival extends JPanel implements IComponent {
         repaint();
     }
 
-    @Override public void execute() {}
 }
