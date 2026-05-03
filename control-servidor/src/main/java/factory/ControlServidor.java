@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * The type Control servidor.
  */
-public class ControlServidor implements IBlackboardObservador, IControlServidor {
+public class ControlServidor implements IBlackboardObservador {
     private IBlackboard blackboard;
     private final IDispatcher dispatcher;
     private final ISerializer serializer;
@@ -28,17 +28,6 @@ public class ControlServidor implements IBlackboardObservador, IControlServidor 
         this.blackboard = blackboard;
         this.dispatcher = dispatcher;
         this.serializer = serializer;
-    }
-
-    @Override
-    public void registrarCliente(int indiceJugador, String ip, int puerto) {
-        clientes.removeIf(c -> c.getIndiceJugador() == indiceJugador);
-        clientes.add(new SocketCliente(indiceJugador, ip, puerto));
-    }
-
-    @Override
-    public void desconectarCliente(int indiceJugador) {
-        clientes.removeIf(c -> c.getIndiceJugador() == indiceJugador);
     }
 
     private void broadcastEstado() {
