@@ -15,17 +15,11 @@
         <module>dto</module>
         <module>conexion</module>
         <module>interfaces-conexion</module>
-        <module>servidor</module>
+        <module>interfaces-cliente</module>
+        <module>control-servidor</module>
         <module>cliente-assembler</module>
         <module>servidor-assembler</module>
-        <module>mappers</module>
-        <module>interfaces-cliente</module>
         <module>interfaces-servidor</module>
-        <module>agent</module>
-        <module>control</module>
-        <module>servidor</module>
-        <module>agent</module>
-        <module>control-servidor</module>
     </modules>
 
     <properties>
@@ -34,6 +28,5 @@
     </properties>
     <dependencies>
     </dependencies>
-
 
 </project>
