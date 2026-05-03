@@ -16,6 +16,8 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     private final int puertoServidor;
     private final int puertoEscucha;
     private EstadoPartidaDTO estadoPartida;
+    private int cartasPendientesCastigoLocal;
+    private String ultimaCartaCimaProcesada;
 
     /**IReceptor
      * Instantiates a new Modelo.
@@ -40,6 +42,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
      */
     public void actualizarEstado(EstadoPartidaDTO estado) {
         this.estadoPartida = estado;
+        procesarCastigoCartaCima();
         notifyObservers();
     }
 
@@ -62,11 +65,27 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public void jugarCarta(CartaDTO cartaDTO) {
-        enviar(new TipoAccionDTO("JUGAR_CARTA", cartaDTO));
+        if (puedeJugarCarta(cartaDTO)) {
+            if (estadoPartida != null) {
+                estadoPartida.setUltimaJugadaValida(true);
+            }
+            enviar(new TipoAccionDTO("JUGAR_CARTA", cartaDTO));
+        } else {
+            if (estadoPartida != null) {
+                estadoPartida.setUltimaJugadaValida(false);
+            }
+            notifyObservers();
+        }
     }
 
     @Override
     public void pedirCarta() {
+        if (tieneCastigoPendienteLocal()) {
+            cartasPendientesCastigoLocal--;
+            enviar(new TipoAccionDTO("PEDIR_CARTA_CASTIGO"));
+            notifyObservers();
+            return;
+        }
         enviar(new TipoAccionDTO("PEDIR_CARTA"));
     }
 
@@ -210,5 +229,80 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     private void enviar(TipoAccionDTO accion) {
         String json = serializer.serialize(accion);
         dispatcher.enviar(json, puertoServidor, ipServidor);
+    }
+    @Override
+    public boolean cartaCimaEsCastigo() {
+        CartaDTO cima = getCartaCima();
+        if (cima == null) return false;
+
+        String tipo = cima.getTipoCarta();
+        return "TOMA_DOS".equals(tipo) || "TOMA_CUATRO".equals(tipo);
+    }
+
+    @Override
+    public boolean tieneCastigoPendienteLocal() {
+        return cartasPendientesCastigoLocal > 0;
+    }
+
+    @Override
+    public int getCartasPendientesCastigoLocal() {
+        return cartasPendientesCastigoLocal;
+    }
+
+    @Override
+    public boolean puedeUsarMazo() {
+        return isTurnoActivo();
+    }
+
+    @Override
+    public boolean puedeIntentarJugarCarta() {
+        return isTurnoActivo() && !tieneCastigoPendienteLocal();
+    }
+
+    @Override
+    public boolean puedeJugarCarta(CartaDTO carta) {
+        if (carta == null || !puedeIntentarJugarCarta()) {
+            return false;
+        }
+
+        CartaDTO cima = getCartaCima();
+        if (cima == null) return true; // Caso borde de inicio de juego
+
+        String tipoSel = carta.getTipoCarta();
+        if ("COMODIN".equals(tipoSel) || "TOMA_CUATRO".equals(tipoSel)) {
+            return true;
+        }
+        if (cima.getColor() != null && cima.getColor().equals(carta.getColor())) return true;
+        if (cima.getValor() != null && cima.getValor().equals(carta.getValor())) return true;
+        if (cima.getNumero() != null && cima.getNumero().equals(carta.getNumero())) return true;
+
+        return false;
+    }
+
+    private void procesarCastigoCartaCima() {
+        if (!isTurnoActivo() || !cartaCimaEsCastigo()) {
+            return;
+        }
+
+        String claveCartaCima = claveCartaCimaActual();
+        if (claveCartaCima == null || claveCartaCima.equals(ultimaCartaCimaProcesada)) {
+            return;
+        }
+
+        String tipo = getCartaCima().getTipoCarta();
+        cartasPendientesCastigoLocal = "TOMA_DOS".equals(tipo) ? 2 : 4;
+        ultimaCartaCimaProcesada = claveCartaCima;
+    }
+
+    private String claveCartaCimaActual() {
+        CartaDTO cima = getCartaCima();
+        if (cima == null || estadoPartida == null) {
+            return null;
+        }
+        return estadoPartida.getIndiceJugadorActual() + "|"
+                + cima.getTipoCarta() + "|"
+                + cima.getColor() + "|"
+                + cima.getNumero() + "|"
+                + cima.getValor();
     }
 }

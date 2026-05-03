@@ -30,6 +30,7 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
     private UIJugador uiJugadorDer;
 
     private final JLabel lblTurno;
+    private final JLabel lblCastigo;
     private final JButton btnTirarCarta;
     private final JButton btnUno;
 
@@ -57,6 +58,7 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         this.tablero     = new UITablero();
         this.mano        = new UIMano();
         this.lblTurno    = crearLabelTurno();
+        this.lblCastigo  = crearLabelCastigo();
         this.btnTirarCarta = new Button("Tirar Carta", new Color(45, 45, 45));
         this.btnUno      = new Button("UNO", new Color(185, 25, 25));
         this.btnUno.setFont(new Font("Arial", Font.BOLD, 16));
@@ -128,6 +130,7 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         zona.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
 
         zona.add(lblTurno, BorderLayout.WEST);
+        zona.add(lblCastigo, BorderLayout.NORTH);
 
         int altoMano = UICarta.ALTO + UICarta.ELEVACION + 22;
         mano.setPreferredSize(new Dimension(0, altoMano));
@@ -166,11 +169,12 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         boolean miTurno = modelo.isTurnoActivo();
         boolean spinActivo = modelo.isSpinActivo();
         boolean hayEvento = modelo.getEventoRuletaActual() != null;
-        boolean puedeJugar = miTurno && !spinActivo && !hayEvento;
+        boolean puedeIntentar = modelo.puedeIntentarJugarCarta() && !spinActivo && !hayEvento;
+        boolean puedeUsarMazo = modelo.puedeUsarMazo() && !spinActivo && !hayEvento;
 
-        btnTirarCarta.setEnabled(puedeJugar);
-        btnUno.setEnabled(true);
-        tablero.getMazo().setActive(puedeJugar);
+        btnTirarCarta.setEnabled(puedeIntentar);
+        btnUno.setEnabled(puedeIntentar);
+        tablero.getMazo().setActive(puedeUsarMazo);
         tablero.getRuleta().setActive(false);
 
         boolean jugadaValidaAhora = modelo.isUltimaJugadaValida();
@@ -180,6 +184,7 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         ultimaJugadaValidaAnterior = jugadaValidaAhora;
 
         lblTurno.setText("Turno: " + modelo.getNombreTurnoActual());
+        actualizarCastigo(modelo);
         mano.setCartas(modelo.getManoJugador());
 
         if (modelo.getCartaCima() != null) {
@@ -272,6 +277,25 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
                 BorderFactory.createEmptyBorder(5, 12, 5, 12)
         ));
         return lbl;
+    }
+
+    private JLabel crearLabelCastigo() {
+        JLabel lbl = new JLabel("");
+        lbl.setFont(new Font("Arial", Font.BOLD, 13));
+        lbl.setForeground(Color.WHITE);
+        lbl.setOpaque(false);
+        lbl.setHorizontalAlignment(SwingConstants.CENTER);
+        return lbl;
+    }
+
+    private void actualizarCastigo(IModeloLectura modelo) {
+        if (modelo.tieneCastigoPendienteLocal()) {
+            lblCastigo.setText("Cartas por robar: " + modelo.getCartasPendientesCastigoLocal());
+            lblCastigo.setVisible(true);
+            return;
+        }
+        lblCastigo.setText("");
+        lblCastigo.setVisible(false);
     }
 
     private void configurarVentana() {

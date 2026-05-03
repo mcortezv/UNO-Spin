@@ -172,8 +172,8 @@ public class Partida implements IDominio {
             case NUMERO_SPIN  -> estadoPartida = EstadoPartida.GIRO_PENDIENTE;
             case REVERSA      -> { sentidoHorario = !sentidoHorario; avanzarTurno(); }
             case BLOQUEO      -> { avanzarTurno(); avanzarTurno(); }
-            case TOMA_DOS     -> { int next = siguienteIndice(); aplicarCastigoUno(next); aplicarCastigoUno(next); avanzarTurno(); }
-            case TOMA_CUATRO  -> { int next = siguienteIndice(); for (int i = 0; i < 4; i++) aplicarCastigoUno(next); estadoPartida = EstadoPartida.SELECCION_COLOR_PENDIENTE; }
+            case TOMA_DOS     -> avanzarTurno();
+            case TOMA_CUATRO  -> estadoPartida = EstadoPartida.SELECCION_COLOR_PENDIENTE;
             case CAMBIO_COLOR -> estadoPartida = EstadoPartida.SELECCION_COLOR_PENDIENTE;
             default           -> avanzarTurno();
         }
@@ -193,8 +193,20 @@ public class Partida implements IDominio {
     }
 
     @Override
+    public void robarCartaSinAvanzarTurno() {
+        reciclarDescarteSiNecesario();
+
+        try {
+            Carta cartaRobada = tablero.getMazo().robarCarta();
+            jugadores.get(indiceJugadorActual).getMano().getCartas().add(cartaRobada);
+        } catch (Exception e) {
+            System.out.println("No hay más cartas disponibles.");
+        }
+    }
+    @Override
     public void aplicarSeleccionColor(String color) {
-        tablero.getDescarte().getUltimaCarta().setColor(color);
+        Carta cima = tablero.getDescarte().getUltimaCarta();
+        cima.setColor(color);
         estadoPartida = EstadoPartida.EN_PROCESO;
         avanzarTurno();
     }
