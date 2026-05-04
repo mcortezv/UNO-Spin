@@ -131,11 +131,6 @@ public class Partida implements IDominio {
     }
 
     @Override
-    public boolean validarJugada(Carta carta) {
-        return tablero.getDescarte().validarCartaEntrante(carta);
-    }
-
-    @Override
     public boolean aplicarJugada(Carta carta) {
         if (!tablero.getDescarte().validarCartaEntrante(carta)) {
             this.ultimaJugadaValida = false;
@@ -188,7 +183,6 @@ public class Partida implements IDominio {
             jugadores.get(indiceJugadorActual).getMano().getCartas().add(cartaRobada);
         } catch (Exception e) {
         }
-        avanzarTurno();
     }
 
     @Override

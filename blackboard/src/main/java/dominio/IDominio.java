@@ -20,14 +20,6 @@ public interface IDominio {
     void iniciarPartida(List<Jugador> jugadoresIniciales, ConfiguracionPartida configuracion);
 
     /**
-     * Validar jugada boolean.
-     *
-     * @param carta the carta
-     * @return the boolean
-     */
-    boolean validarJugada(Carta carta);
-
-    /**
      * Aplicar jugada boolean.
      *
      * @param carta the carta
