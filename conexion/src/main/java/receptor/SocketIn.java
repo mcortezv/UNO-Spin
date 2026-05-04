@@ -5,15 +5,21 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * The type Socket in.
  */
 public class SocketIn {
+    private record MensajeEntrada(String json, String ip, int port) {}
+    private static final MensajeEntrada POISON = new MensajeEntrada(null, null, 0);
+    private final BlockingQueue<MensajeEntrada> colaEntrada = new LinkedBlockingQueue<>();
     private ServerSocket server;
     private ExecutorService pool;
+    private Thread procesador;
     private final int puertoEscucha;
     private final IReceptorObserver observador;
 
@@ -33,6 +39,9 @@ public class SocketIn {
      */
     public void start() {
         pool = Executors.newCachedThreadPool();
+        procesador = new Thread(this::drenar, "SocketIn-Procesador");
+        procesador.setDaemon(true);
+        procesador.start();
 
         new Thread(() -> {
             try {
@@ -43,7 +52,7 @@ public class SocketIn {
 
                 while (!server.isClosed()) {
                     Socket clienteSocket = server.accept();
-                    pool.submit(new ClienteHandler(clienteSocket, observador));
+                    pool.submit(new ClienteHandler(clienteSocket, colaEntrada));
                 }
             } catch (IOException e) {
                 if (server == null || !server.isClosed()) {
@@ -58,6 +67,10 @@ public class SocketIn {
      */
     public void close() {
         try {
+            colaEntrada.offer(POISON);
+            if (procesador != null) {
+                procesador.interrupt();
+            }
             if (pool != null && !pool.isShutdown()) {
                 pool.shutdown();
             }
@@ -69,20 +82,33 @@ public class SocketIn {
         }
     }
 
+    private void drenar() {
+        while (true) {
+            try {
+                MensajeEntrada m = colaEntrada.take();
+                if (m == POISON) break;
+                observador.update(m.json(), m.port(), m.ip());
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+    }
+
     private static class ClienteHandler implements Runnable {
 
         private final Socket socket;
-        private final IReceptorObserver observador;
+        private final BlockingQueue<MensajeEntrada> colaEntrada;
 
         /**
          * Instantiates a new Cliente handler.
          *
-         * @param socket     the socket
-         * @param observador the observador
+         * @param socket       the socket
+         * @param colaEntrada  the cola entrada
          */
-        public ClienteHandler(Socket socket, IReceptorObserver observador) {
+        public ClienteHandler(Socket socket, BlockingQueue<MensajeEntrada> colaEntrada) {
             this.socket = socket;
-            this.observador = observador;
+            this.colaEntrada = colaEntrada;
         }
 
         @Override
@@ -95,7 +121,7 @@ public class SocketIn {
                 String json;
                 while ((json = in.readLine()) != null) {
                     System.out.println("JSON recibido '" + json + "'");
-                    observador.update(json, port, ip);
+                    colaEntrada.offer(new MensajeEntrada(json, ip, port));
                 }
             } catch (IOException e) {
                 System.err.println("Error de lectura - " + e.getMessage());
