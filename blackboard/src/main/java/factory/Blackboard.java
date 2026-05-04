@@ -17,7 +17,9 @@ import interfaces.IReceptor;
 import interfaces.ISerializer;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -35,6 +37,8 @@ public class Blackboard implements IBlackboard, IReceptor{
     private final ISerializer serializer;
     private final List<Jugador> jugadoresInscritos = new ArrayList<>();
     private final Set<String> confirmaciones = new HashSet<>();
+    private final Map<String, String> ipsPorNombre = new LinkedHashMap<>();
+    private final Map<String, Integer> puertosPorNombre = new LinkedHashMap<>();
     private ConfiguracionPartida configuracion;
 
     /**
@@ -88,6 +92,8 @@ public class Blackboard implements IBlackboard, IReceptor{
 
         Jugador jugador = JugadorMapper.toEntity(accion.getJugadorDTO());
         jugadoresInscritos.add(jugador);
+        ipsPorNombre.put(jugador.getNombre(), accion.getIp());
+        puertosPorNombre.put(jugador.getNombre(), accion.getPuerto());
 
         if (jugadoresInscritos.size() == 1 && accion.getConfiguracion() != null) {
             this.configuracion = ConfiguracionPartidaMapper.toEntity(accion.getConfiguracion());
@@ -172,6 +178,16 @@ public class Blackboard implements IBlackboard, IReceptor{
     @Override
     public boolean isUltimaJugadaValida() {
         return dominio.isUltimaJugadaValida();
+    }
+
+    @Override
+    public String getIpJugador(String nombre) {
+        return ipsPorNombre.get(nombre);
+    }
+
+    @Override
+    public int getPuertoJugador(String nombre) {
+        return puertosPorNombre.getOrDefault(nombre, 0);
     }
 
     private boolean partidaIniciada() {
