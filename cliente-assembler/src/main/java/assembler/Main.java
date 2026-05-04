@@ -2,7 +2,7 @@ package assembler;
 import factory.Conexion;
 import factory.FactoryConexion;
 import factory.FactoryMVC;
-import implementacion.JsonSerializer;
+import implementacion.Serializer;
 import interfaces.*;
 
 /**
@@ -24,7 +24,7 @@ public class Main {
 
         IFactoryMVC factoryMVC = new FactoryMVC();
         IFactoryConexion factoryConexion = new FactoryConexion();
-        ISerializer serializer = new JsonSerializer();
+        ISerializer serializer = new Serializer();
 
         IDispatcher dispatcherConn = factoryConexion.crearConn(puertoCliente);
 

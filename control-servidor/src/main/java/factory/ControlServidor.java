@@ -4,20 +4,15 @@ import dto.CartaDTO;
 import dto.EstadoPartidaDTO;
 import dto.JugadorDTO;
 import dto.TipoEventoRuletaDTO;
-import dto.TipoAccionDTO;
-import util.SocketCliente;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The type Control servidor.
  */
-public class ControlServidor implements IBlackboardObservador, IReceptor {
+public class ControlServidor implements IBlackboardObservador {
     private IBlackboard blackboard;
     private final IDispatcher dispatcher;
     private final ISerializer serializer;
-    private final Map<String, SocketCliente> clientesPorNombre = new LinkedHashMap<>();
 
     /**
      * Instantiates a new Control servidor.
@@ -34,19 +29,20 @@ public class ControlServidor implements IBlackboardObservador, IReceptor {
 
     private void broadcastEstado() {
         List<JugadorDTO> jugadores = blackboard.getJugadores();
-        System.out.println("[CS] broadcastEstado jugadores=" + jugadores.size() + " registrados=" + clientesPorNombre.keySet());
+        System.out.println("[CS] broadcastEstado jugadores=" + jugadores.size());
         for (int i = 0; i < jugadores.size(); i++) {
             JugadorDTO jugador = jugadores.get(i);
-            SocketCliente cliente = clientesPorNombre.get(jugador.getNombre());
-            if (cliente == null) {
+            String ip = blackboard.getIpJugador(jugador.getNombre());
+            int puerto = blackboard.getPuertoJugador(jugador.getNombre());
+            if (ip == null) {
                 System.out.println("[CS] SIN SOCKET para jugador=" + jugador.getNombre());
                 continue;
             }
 
-            System.out.println("[CS] Enviando estado[" + i + "] a " + jugador.getNombre() + " -> " + cliente.getIp() + ":" + cliente.getPuerto());
+            System.out.println("[CS] Enviando estado[" + i + "] a " + jugador.getNombre() + " -> " + ip + ":" + puerto);
             EstadoPartidaDTO dto = buildEstadoPartida(i);
             String json = serializer.serialize(dto);
-            dispatcher.enviar(json, cliente.getPuerto(), cliente.getIp());
+            dispatcher.enviar(json, puerto, ip);
         }
     }
 
@@ -66,26 +62,6 @@ public class ControlServidor implements IBlackboardObservador, IReceptor {
                 blackboard.getIndiceJugadorActual() == indiceJugador,
                 eventoRuleta,
                 blackboard.isUltimaJugadaValida());
-    }
-
-    @Override
-    public void recibirMensaje(String json) {
-        TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
-        if (!"UNIRSE_PARTIDA".equals(accion.getTipoAccion())) {
-            return;
-        }
-        if (accion.getJugadorDTO() == null) {
-            return;
-        }
-
-        String nombre = accion.getJugadorDTO().getNombre();
-        if (nombre == null || nombre.isBlank() || clientesPorNombre.containsKey(nombre)) {
-            return;
-        }
-
-        int indiceJugador = clientesPorNombre.size();
-        clientesPorNombre.put(nombre, new SocketCliente(indiceJugador, accion.getIp(), accion.getPuerto()));
-        System.out.println("[CS] Registrado: " + nombre + " -> " + accion.getIp() + ":" + accion.getPuerto());
     }
 
     @Override

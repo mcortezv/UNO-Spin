@@ -58,4 +58,20 @@ public interface IBlackboard {
      * @return the boolean
      */
     boolean isUltimaJugadaValida();
+
+    /**
+     * Gets ip of a registered player.
+     *
+     * @param nombre the player name
+     * @return the ip, or null if not registered
+     */
+    String getIpJugador(String nombre);
+
+    /**
+     * Gets port of a registered player.
+     *
+     * @param nombre the player name
+     * @return the port, or 0 if not registered
+     */
+    int getPuertoJugador(String nombre);
 }

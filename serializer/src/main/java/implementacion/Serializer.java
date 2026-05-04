@@ -8,14 +8,14 @@ import java.io.IOException;
 /**
  * The type Json serializer.
  */
-public class JsonSerializer implements ISerializer {
+public class Serializer implements ISerializer {
 
     private final ObjectMapper objectMapper;
 
     /**
-     * Instantiates a new Json serializer.
+     * Instantiates a new Serializer.
      */
-    public JsonSerializer() {
+    public Serializer() {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
