@@ -81,16 +81,18 @@ public class UIManoRival extends JPanel {
         g2.setColor(new Color(0, 0, 0, 50));
         g2.fillRoundRect(x + 3, y + 3, UICarta.ANCHO - 2, UICarta.ALTO - 2, ARCO, ARCO);
 
-        g2.setColor(COLOR_CARTA_REVERSO);
-        g2.fillRoundRect(x, y, UICarta.ANCHO - 2, UICarta.ALTO - 2, ARCO, ARCO);
-
-        g2.setColor(esFrente ? new Color(220, 220, 220) : COLOR_BORDE_REVERSO);
-        g2.setStroke(new BasicStroke(esFrente ? 1.8f : 1.0f));
-        g2.drawRoundRect(x, y, UICarta.ANCHO - 2, UICarta.ALTO - 2, ARCO, ARCO);
-
         if (esFrente) {
-            int mg = 7;
-            g2.drawImage(logoUno, x + mg, y + mg, UICarta.ANCHO - mg * 2 - 2, UICarta.ALTO - mg * 2 - 2, null);
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            Shape oldClip = g2.getClip();
+            g2.setClip(new java.awt.geom.RoundRectangle2D.Float(x, y, UICarta.ANCHO - 2, UICarta.ALTO - 2, ARCO, ARCO));
+            g2.drawImage(logoUno, x, y, x + UICarta.ANCHO - 2, y + UICarta.ALTO - 2, 269, 93, 930, 1106, null);
+            g2.setClip(oldClip);
+        } else {
+            g2.setColor(COLOR_CARTA_REVERSO);
+            g2.fillRoundRect(x, y, UICarta.ANCHO - 2, UICarta.ALTO - 2, ARCO, ARCO);
+            g2.setColor(COLOR_BORDE_REVERSO);
+            g2.setStroke(new BasicStroke(1.0f));
+            g2.drawRoundRect(x, y, UICarta.ANCHO - 2, UICarta.ALTO - 2, ARCO, ARCO);
         }
     }
 

@@ -92,15 +92,11 @@ public class UIMazo extends JPanel {
     }
 
     private void pintarCartaFrontal(Graphics2D g2) {
-        g2.setColor(COLOR_CARTA);
-        g2.fillRoundRect(0, 0, UICarta.ANCHO, UICarta.ALTO, ARCO, ARCO);
-
-        g2.setColor(new Color(210, 210, 210));
-        g2.setStroke(new BasicStroke(1.8f));
-        g2.drawRoundRect(0, 0, UICarta.ANCHO, UICarta.ALTO, ARCO, ARCO);
-
-        int mg = 8;
-        g2.drawImage(logoUno, mg, mg, UICarta.ANCHO - mg * 2, UICarta.ALTO - mg * 2, null);
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        Shape oldClip = g2.getClip();
+        g2.setClip(new java.awt.geom.RoundRectangle2D.Float(0, 0, UICarta.ANCHO, UICarta.ALTO, ARCO, ARCO));
+        g2.drawImage(logoUno, 0, 0, UICarta.ANCHO, UICarta.ALTO, 269, 93, 930, 1106, null);
+        g2.setClip(oldClip);
 
         if (hover) {
             g2.setColor(COLOR_HOVER);
