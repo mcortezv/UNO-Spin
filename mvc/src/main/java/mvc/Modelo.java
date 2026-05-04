@@ -4,6 +4,7 @@ import dto.*;
 import interfaces.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The type Modelo.
@@ -15,6 +16,8 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     private final String ipServidor;
     private final int puertoServidor;
     private final int puertoEscucha;
+    private final String ipLocal;
+    private String miNombre;
     private EstadoPartidaDTO estadoPartida;
     private int cartasPendientesCastigoLocal;
     private String ultimaCartaCimaProcesada;
@@ -27,12 +30,13 @@ public class Modelo implements IModeloControlador, IModeloLectura {
      * @param ipServidor     the ip servidor
      * @param puertoServidor the puerto servidor
      */
-    public Modelo(ISerializer serializer, IDispatcher dispatcher, String ipServidor, int puertoServidor, int puertoEscucha) {
+    public Modelo(ISerializer serializer, IDispatcher dispatcher, String ipServidor, int puertoServidor, int puertoEscucha, String ipLocal) {
         this.serializer = serializer;
         this.dispatcher = dispatcher;
         this.ipServidor = ipServidor;
         this.puertoServidor = puertoServidor;
         this.puertoEscucha = puertoEscucha;
+        this.ipLocal = ipLocal;
     }
 
     /**
@@ -48,10 +52,11 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public void unirsePartida(JugadorDTO jugador, ConfiguracionPartidaDTO configuracion) {
+        this.miNombre = jugador != null ? jugador.getNombre() : null;
         TipoAccionDTO accion = new TipoAccionDTO("UNIRSE_PARTIDA");
         accion.setJugadorDTO(jugador);
         accion.setConfiguracion(configuracion);
-        accion.setIp("127.0.0.1");
+        accion.setIp(ipLocal);
         accion.setPuerto(puertoEscucha);
         enviar(accion);
     }
@@ -91,7 +96,9 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public void girarRuleta() {
-        enviar(new TipoAccionDTO("GIRAR_RULETA"));
+        if (estadoPartida != null && estadoPartida.isEsTuTurno()) {
+            enviar(new TipoAccionDTO("GIRAR_RULETA"));
+        }
     }
 
     @Override
@@ -127,7 +134,6 @@ public class Modelo implements IModeloControlador, IModeloLectura {
             accion.setResultadoEvento(resultado.toString());
         }
         enviar(accion);
-        limpiarEventoRuleta();
     }
 
     @Override
@@ -169,7 +175,10 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public List<JugadorDTO> getJugadoresRivales() {
-        return getTodosLosJugadores();
+        if (miNombre == null) return getTodosLosJugadores();
+        return getTodosLosJugadores().stream()
+                .filter(j -> !miNombre.equals(j.getNombre()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -195,6 +204,16 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     public boolean isSeleccionColorPendiente() {
         return estadoPartida != null
                 && "SELECCION_COLOR_PENDIENTE".equals(estadoPartida.getEstadoPartida());
+    }
+
+    @Override
+    public boolean isSeleccionColorPropia() {
+        return isSeleccionColorPendiente() && estadoPartida != null && estadoPartida.isEsTuTurno();
+    }
+
+    @Override
+    public boolean isEventoRuletaPropio() {
+        return getEventoRuletaActual() != null && estadoPartida != null && estadoPartida.isEsTuTurno();
     }
 
     @Override
@@ -269,7 +288,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         if (cima == null) return true; // Caso borde de inicio de juego
 
         String tipoSel = carta.getTipoCarta();
-        if ("COMODIN".equals(tipoSel) || "TOMA_CUATRO".equals(tipoSel)) {
+        if ("COMODIN".equals(tipoSel) || "TOMA_CUATRO".equals(tipoSel) || "CAMBIO_COLOR".equals(tipoSel)) {
             return true;
         }
         if (cima.getColor() != null && cima.getColor().equals(carta.getColor())) return true;

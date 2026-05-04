@@ -85,6 +85,8 @@ public interface IModeloLectura {
      * @return the boolean
      */
     boolean isSeleccionColorPendiente();
+    boolean isSeleccionColorPropia();
+    boolean isEventoRuletaPropio();
     boolean cartaCimaEsCastigo();
     boolean tieneCastigoPendienteLocal();
     int getCartasPendientesCastigoLocal();

@@ -38,7 +38,9 @@ public final class CargadorAssets {
      * @return the carta image icon
      */
     public ImageIcon getCarta(CartaDTO carta) {
-        return cargar("carta_" + resolverClave(carta) + ".png");
+        String clave = resolverClave(carta);
+        if (clave == null) return null;
+        return cargar("carta_" + clave + ".png");
     }
 
     /**
@@ -69,7 +71,9 @@ public final class CargadorAssets {
      * @return the scaled image
      */
     public Image getCartaEscalada(CartaDTO carta, int ancho, int alto) {
-        return getCarta(carta).getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+        ImageIcon icon = getCarta(carta);
+        if (icon == null) return null;
+        return icon.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
     }
 
     /**
@@ -84,12 +88,12 @@ public final class CargadorAssets {
     }
 
     private String resolverClave(CartaDTO carta) {
-        if (carta.getTipoCarta() == null) return "reves";
+        if (carta.getTipoCarta() == null) return null;
         return switch (carta.getTipoCarta()) {
             case "BLOQUEO"  -> "bloqueo";
-            case "REVERSA"  -> "reves";
             case "TOMA_DOS" -> "mas_dos";
-            default         -> carta.getNumero() != null ? String.valueOf(carta.getNumero()) : "reves";
+            case "NUMERICA", "NUMERO_SPIN" -> carta.getNumero() != null ? String.valueOf(carta.getNumero()) : null;
+            default         -> null;
         };
     }
 

@@ -14,8 +14,13 @@ public class Main {
      * Main.
      */
     public static void main(String[] args) {
-        int puertoCliente = args.length > 0 ? Integer.parseInt(args[0]) : 6000;
-        System.setProperty("puerto.cliente", String.valueOf(puertoCliente));
+        int puertoCliente;
+        if (args.length > 0) {
+            puertoCliente = Integer.parseInt(args[0]);
+            System.setProperty("puerto.cliente", String.valueOf(puertoCliente));
+        } else {
+            puertoCliente = Integer.parseInt(System.getProperty("puerto.cliente", "6000"));
+        }
 
         IFactoryMVC factoryMVC = new FactoryMVC();
         IFactoryConexion factoryConexion = new FactoryConexion();
