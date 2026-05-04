@@ -41,6 +41,9 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
     private final JPanel slotRight;
 
     private boolean ultimaJugadaValidaAnterior = true;
+    private boolean mostrandoDialogoColor = false;
+    private boolean mostrandoDialogoEvento = false;
+    private TipoEventoRuletaDTO ultimoEventoMostrado = null;
 
     /**
      * Instantiates a new Ui turno jugador.
@@ -200,15 +203,27 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         actualizarRival(rivales, 1, slotLeft, UIJugador.Posicion.LEFT);
         actualizarRival(rivales, 2, slotRight, UIJugador.Posicion.RIGHT);
 
+        if (modelo.isSeleccionColorPropia() && !mostrandoDialogoColor) {
+            mostrandoDialogoColor = true;
+            mostrarDialogoSeleccionColor();
+            mostrandoDialogoColor = false;
+        }
+
         TipoEventoRuletaDTO evento = modelo.getEventoRuletaActual();
-        if (evento != null) {
+        if (evento == null) {
+            ultimoEventoMostrado = null;
+        }
+        if (evento != null && evento != ultimoEventoMostrado && !mostrandoDialogoEvento) {
+            ultimoEventoMostrado = evento;
+            mostrandoDialogoEvento = true;
             mostrarDialogoEvento(evento, modelo);
+            mostrandoDialogoEvento = false;
         }
 
     }
 
     private void mostrarDialogoEvento(TipoEventoRuletaDTO evento, IModeloLectura modelo) {
-        boolean esTurnoPropio = modelo.isTurnoActivo();
+        boolean esTurnoPropio = modelo.isEventoRuletaPropio();
         DialogoEventoRuleta dialogo = FabricaDialogosEvento.crear(evento, this, modelo);
         if (!esTurnoPropio) {
             dialogo.setSoloLectura(true);
@@ -216,8 +231,6 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         dialogo.setVisible(true);
         if (esTurnoPropio) {
             controlador.onResultadoEvento(evento.name(), dialogo.getResultado());
-        } else {
-            controlador.onReconocerEvento();
         }
     }
 

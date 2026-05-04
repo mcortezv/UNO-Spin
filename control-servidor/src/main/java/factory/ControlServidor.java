@@ -34,13 +34,16 @@ public class ControlServidor implements IBlackboardObservador, IReceptor {
 
     private void broadcastEstado() {
         List<JugadorDTO> jugadores = blackboard.getJugadores();
+        System.out.println("[CS] broadcastEstado jugadores=" + jugadores.size() + " registrados=" + clientesPorNombre.keySet());
         for (int i = 0; i < jugadores.size(); i++) {
             JugadorDTO jugador = jugadores.get(i);
             SocketCliente cliente = clientesPorNombre.get(jugador.getNombre());
             if (cliente == null) {
+                System.out.println("[CS] SIN SOCKET para jugador=" + jugador.getNombre());
                 continue;
             }
 
+            System.out.println("[CS] Enviando estado[" + i + "] a " + jugador.getNombre() + " -> " + cliente.getIp() + ":" + cliente.getPuerto());
             EstadoPartidaDTO dto = buildEstadoPartida(i);
             String json = serializer.serialize(dto);
             dispatcher.enviar(json, cliente.getPuerto(), cliente.getIp());
@@ -82,6 +85,7 @@ public class ControlServidor implements IBlackboardObservador, IReceptor {
 
         int indiceJugador = clientesPorNombre.size();
         clientesPorNombre.put(nombre, new SocketCliente(indiceJugador, accion.getIp(), accion.getPuerto()));
+        System.out.println("[CS] Registrado: " + nombre + " -> " + accion.getIp() + ":" + accion.getPuerto());
     }
 
     @Override

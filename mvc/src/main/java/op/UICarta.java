@@ -80,8 +80,9 @@ public class UICarta extends JPanel {
         int offsetY = (hover || seleccionada) ? 0 : ELEVACION;
 
         pintarSombra(g2, offsetY);
-       // pintarFondoColor(g2, offsetY);
+        pintarFondoColor(g2, offsetY);
         pintarImagen(g2, offsetY);
+        pintarTextoSinImagen(g2, offsetY);
         pintarBordeBlanco(g2, offsetY);
 
         if (hover || seleccionada) {
@@ -94,19 +95,53 @@ public class UICarta extends JPanel {
         g2.dispose();
     }
 
+    private static Color resolverColorCarta(String color) {
+        if (color == null) return new Color(30, 30, 30);
+        return switch (color.toUpperCase()) {
+            case "ROJO"     -> new Color(200, 40, 40);
+            case "AZUL"     -> new Color(30, 90, 200);
+            case "AMARILLO" -> new Color(210, 170, 0);
+            case "VERDE"    -> new Color(30, 150, 60);
+            default         -> new Color(30, 30, 30);
+        };
+    }
+
     private void pintarSombra(Graphics2D g2, int y) {
         g2.setColor(COLOR_SOMBRA);
         g2.fillRoundRect(4, y + 4, ANCHO - 2, ALTO - 2, ARCO, ARCO);
     }
-//
-//    private void pintarFondoColor(Graphics2D g2, int y) {
-//        g2.setColor(ColorCarta.toAWT(carta.getColor()));
-//        g2.fillRoundRect(1, y + 1, ANCHO - 2, ALTO - 2, ARCO, ARCO);
-//    }
+
+    private void pintarFondoColor(Graphics2D g2, int y) {
+        g2.setColor(resolverColorCarta(carta.getColor()));
+        g2.fillRoundRect(1, y + 1, ANCHO - 2, ALTO - 2, ARCO, ARCO);
+    }
 
     private void pintarImagen(Graphics2D g2, int y) {
+        if (imagenArte == null) return;
         int margen = 5;
         g2.drawImage(imagenArte, margen, y + margen, this);
+    }
+
+    private void pintarTextoSinImagen(Graphics2D g2, int y) {
+        if (imagenArte != null) return;
+        String texto = resolverTextoTipo(carta.getTipoCarta());
+        if (texto == null) return;
+        g2.setColor(Color.WHITE);
+        g2.setFont(new Font("Arial", Font.BOLD, 20));
+        FontMetrics fm = g2.getFontMetrics();
+        int tx = (ANCHO - fm.stringWidth(texto)) / 2;
+        int ty = y + (ALTO + fm.getAscent() - fm.getDescent()) / 2;
+        g2.drawString(texto, tx, ty);
+    }
+
+    private static String resolverTextoTipo(String tipo) {
+        if (tipo == null) return null;
+        return switch (tipo) {
+            case "REVERSA"      -> "↺";
+            case "CAMBIO_COLOR" -> "★";
+            case "TOMA_CUATRO"  -> "+4";
+            default             -> null;
+        };
     }
 
     private void pintarBordeBlanco(Graphics2D g2, int y) {

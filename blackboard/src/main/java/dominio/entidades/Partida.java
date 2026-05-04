@@ -405,19 +405,6 @@ public class Partida implements IDominio {
                 : (indiceJugadorActual - 1 + n) % n;
     }
 
-    private void darCartasAlSiguiente(int cantidad) {
-        int idxSiguiente = siguienteIndice();
-        Jugador siguiente = jugadores.get(idxSiguiente);
-        for (int i = 0; i < cantidad; i++) {
-            reciclarDescarteSiNecesario();
-            try {
-                Carta c = tablero.getMazo().robarCarta();
-                siguiente.getMano().getCartas().add(c);
-            } catch (Exception e) {
-                break;
-            }
-        }
-    }
 
     private boolean matchColor(String colorMano, String colorJugada) {
         if (colorMano == null || colorJugada == null) return true;

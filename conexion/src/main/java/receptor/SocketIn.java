@@ -36,7 +36,9 @@ public class SocketIn {
 
         new Thread(() -> {
             try {
-                server = new ServerSocket(puertoEscucha);
+                server = new ServerSocket();
+                server.setReuseAddress(true);
+                server.bind(new java.net.InetSocketAddress(puertoEscucha));
                 System.out.println("Servidor escuchando en puerto " + puertoEscucha);
 
                 while (!server.isClosed()) {
@@ -44,7 +46,7 @@ public class SocketIn {
                     pool.submit(new ClienteHandler(clienteSocket, observador));
                 }
             } catch (IOException e) {
-                if (!server.isClosed()) {
+                if (server == null || !server.isClosed()) {
                     System.err.println("Error en el ServerSocket - " + e.getMessage());
                 }
             }
