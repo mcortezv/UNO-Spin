@@ -2,6 +2,7 @@ package factory;
 import dominio.IDominio;
 import dominio.entidades.ConfiguracionPartida;
 import dominio.entidades.Jugador;
+import dominio.entidades.Partida;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoAccion;
 import dto.TipoEventoRuletaDTO;
@@ -33,7 +34,7 @@ public class Blackboard implements IBlackboard, IReceptor{
 
     private static Blackboard instance;
     private final List<IBlackboardObservador> suscriptores = new ArrayList<>();
-    private final IDominio dominio;
+    private IDominio dominio;
     private final ISerializer serializer;
     private final List<Jugador> jugadoresInscritos = new ArrayList<>();
     private final Set<String> confirmaciones = new HashSet<>();
@@ -44,13 +45,15 @@ public class Blackboard implements IBlackboard, IReceptor{
     /**
      * Instantiates a new Blackboard.
      *
-     * @param dominio    the dominio
      * @param serializer the serializer
      */
-    Blackboard(IDominio dominio, ISerializer serializer) {
-        this.dominio = dominio;
+    Blackboard(ISerializer serializer) {
         this.serializer = serializer;
         instance = this;
+    }
+
+    public void setDominio(IDominio dominio) {
+        this.dominio = dominio;
     }
 
     /**
@@ -67,27 +70,37 @@ public class Blackboard implements IBlackboard, IReceptor{
         TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
         TipoAccion tipo = TipoAccion.valueOf(accion.getTipoAccion());
         switch (tipo) {
+            case CREAR_PARTIDA    -> procesarCrearPartida(accion);
             case UNIRSE_PARTIDA   -> procesarUnirse(accion);
             case CONFIRMAR_INICIO -> procesarConfirmacion(accion);
             default -> {
-                if (dominio.getEstadoPartida() == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA) break;
+                if (dominio == null || dominio.getEstadoPartida() == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA) break;
                 switch (tipo) {
-                    case JUGAR_CARTA       -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
-                    case PEDIR_CARTA       -> dominio.robarCartaJugadorActual();
+                    case JUGAR_CARTA         -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
+                    case PEDIR_CARTA         -> dominio.robarCartaJugadorActual();
                     case PEDIR_CARTA_CASTIGO -> dominio.robarCartaSinAvanzarTurno();
-                    case GRITAR_UNO        -> dominio.gritarUno();
-                    case SELECCIONAR_COLOR -> dominio.aplicarSeleccionColor(accion.getCartaDTO().getColor().toUpperCase());
-                    case GIRAR_RULETA      -> { try { dominio.procesarGiroRuleta(); } catch (Exception e) { System.err.println("Ruleta: " + e.getMessage()); } }
-                    case RECONOCER_EVENTO  -> { TipoEventoRuletaDTO ev = dominio.getEventoRuleta(); dominio.aplicarEfectoRuleta(ev, parsearResultado(ev, accion.getResultadoEvento())); dominio.avanzarTurno(); }
-                    default                -> {}
+                    case GRITAR_UNO          -> dominio.gritarUno();
+                    case SELECCIONAR_COLOR   -> dominio.aplicarSeleccionColor(accion.getCartaDTO().getColor().toUpperCase());
+                    case GIRAR_RULETA        -> { try { dominio.procesarGiroRuleta(); } catch (Exception e) { System.err.println("Ruleta: " + e.getMessage()); } }
+                    case RECONOCER_EVENTO    -> { TipoEventoRuletaDTO ev = dominio.getEventoRuleta(); dominio.aplicarEfectoRuleta(ev, parsearResultado(ev, accion.getResultadoEvento())); dominio.avanzarTurno(); }
+                    default                  -> {}
                 }
             }
         }
         notificar();
     }
 
+    private void procesarCrearPartida(TipoAccionDTO dto) {
+        if (dominio != null) return;
+        setDominio(new Partida(EstadoPartida.NO_INICIADA, 0, new ArrayList<>(), true));
+        this.configuracion = dto.getConfiguracion() != null
+            ? ConfiguracionPartidaMapper.toEntity(dto.getConfiguracion())
+            : configuracionDefault();
+    }
+
+
     private void procesarUnirse(TipoAccionDTO accion) {
-        if (dominio.getEstadoPartida() != EstadoPartida.NO_INICIADA) return;
+        if (dominio == null || dominio.getEstadoPartida() != EstadoPartida.NO_INICIADA) return;
         if (jugadoresInscritos.size() >= MAX_JUGADORES) return;
 
         Jugador jugador = JugadorMapper.toEntity(accion.getJugadorDTO());
@@ -105,7 +118,7 @@ public class Blackboard implements IBlackboard, IReceptor{
     }
 
     private void procesarConfirmacion(TipoAccionDTO accion) {
-        if (dominio.getEstadoPartida() != EstadoPartida.NO_INICIADA) return;
+        if (dominio == null || dominio.getEstadoPartida() != EstadoPartida.NO_INICIADA) return;
         if (accion.getJugadorDTO() == null) return;
 
         confirmaciones.add(accion.getJugadorDTO().getNombre());
@@ -159,14 +172,14 @@ public class Blackboard implements IBlackboard, IReceptor{
 
     @Override
     public String getEstadoPartida() {
+        if (dominio == null) return null;
         EstadoPartida e = dominio.getEstadoPartida();
         return e == null ? null : e.name();
-
     }
 
     @Override
     public int getIndiceJugadorActual() {
-        return dominio.getIndiceJugadorActual();
+        return dominio == null ? 0 : dominio.getIndiceJugadorActual();
     }
 
     @Override
@@ -177,7 +190,7 @@ public class Blackboard implements IBlackboard, IReceptor{
 
     @Override
     public boolean isUltimaJugadaValida() {
-        return dominio.isUltimaJugadaValida();
+        return dominio != null && dominio.isUltimaJugadaValida();
     }
 
     @Override
@@ -191,6 +204,7 @@ public class Blackboard implements IBlackboard, IReceptor{
     }
 
     private boolean partidaIniciada() {
+        if (dominio == null) return false;
         EstadoPartida e = dominio.getEstadoPartida();
         return e != null && e != EstadoPartida.NO_INICIADA;
     }
