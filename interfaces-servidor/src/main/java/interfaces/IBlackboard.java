@@ -1,6 +1,7 @@
 package interfaces;
 import dto.CartaDTO;
 import dto.JugadorDTO;
+import dto.SolicitudUnionDTO;
 import dto.TipoEventoRuletaDTO;
 import java.util.List;
 
@@ -74,4 +75,9 @@ public interface IBlackboard {
      * @return the port, or 0 if not registered
      */
     int getPuertoJugador(String nombre);
+
+    List<SolicitudUnionDTO> getSolicitudesPendientes();
+    String getUltimaAccionLobby();
+    String getNombreSolicitudResuelta();
+    String getHostNombre();
 }

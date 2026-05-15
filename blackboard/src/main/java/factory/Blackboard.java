@@ -12,6 +12,7 @@ import mappers.ConfiguracionPartidaMapper;
 import mappers.JugadorMapper;
 import dto.CartaDTO;
 import dto.JugadorDTO;
+import dto.SolicitudUnionDTO;
 import dto.TipoAccionDTO;
 import interfaces.IBlackboard;
 import interfaces.IReceptor;
@@ -22,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * The type Blackboard.
@@ -40,6 +42,10 @@ public class Blackboard implements IBlackboard, IReceptor{
     private final Set<String> confirmaciones = new HashSet<>();
     private final Map<String, String> ipsPorNombre = new LinkedHashMap<>();
     private final Map<String, Integer> puertosPorNombre = new LinkedHashMap<>();
+    private final Map<String, SolicitudUnionDTO> solicitudes = new LinkedHashMap<>();
+    private String ultimaAccionLobby = null;
+    private String nombreSolicitudResuelta = null;
+    private String hostNombre = null;
     private ConfiguracionPartida configuracion;
 
     /**
@@ -70,9 +76,11 @@ public class Blackboard implements IBlackboard, IReceptor{
         TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
         TipoAccion tipo = TipoAccion.valueOf(accion.getTipoAccion());
         switch (tipo) {
-            case CREAR_PARTIDA    -> procesarCrearPartida(accion);
-            case UNIRSE_PARTIDA   -> procesarUnirse(accion);
-            case CONFIRMAR_INICIO -> procesarConfirmacion(accion);
+            case CREAR_PARTIDA      -> procesarCrearPartida(accion);
+            case UNIRSE_PARTIDA     -> procesarUnirse(accion);
+            case CONFIRMAR_INICIO   -> procesarConfirmacion(accion);
+            case ACEPTAR_SOLICITUD  -> procesarAceptarSolicitud(accion);
+            case RECHAZAR_SOLICITUD -> procesarRechazarSolicitud(accion);
             default -> {
                 if (dominio == null || dominio.getEstadoPartida() == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA) break;
                 switch (tipo) {
@@ -100,21 +108,59 @@ public class Blackboard implements IBlackboard, IReceptor{
 
 
     private void procesarUnirse(TipoAccionDTO accion) {
-        if (dominio == null || dominio.getEstadoPartida() != EstadoPartida.NO_INICIADA) return;
+        if (dominio == null) {
+            setDominio(new Partida(EstadoPartida.NO_INICIADA, 0, new ArrayList<>(), true));
+        }
+        if (dominio.getEstadoPartida() != EstadoPartida.NO_INICIADA) return;
         if (jugadoresInscritos.size() >= MAX_JUGADORES) return;
 
         Jugador jugador = JugadorMapper.toEntity(accion.getJugadorDTO());
-        jugadoresInscritos.add(jugador);
         ipsPorNombre.put(jugador.getNombre(), accion.getIp());
         puertosPorNombre.put(jugador.getNombre(), accion.getPuerto());
 
-        if (jugadoresInscritos.size() == 1 && accion.getConfiguracion() != null) {
-            this.configuracion = ConfiguracionPartidaMapper.toEntity(accion.getConfiguracion());
+        if (jugadoresInscritos.isEmpty()) {
+            jugadoresInscritos.add(jugador);
+            hostNombre = jugador.getNombre();
+            ultimaAccionLobby = "HOST_UNIDO";
+            nombreSolicitudResuelta = null;
+            if (accion.getConfiguracion() != null) {
+                this.configuracion = ConfiguracionPartidaMapper.toEntity(accion.getConfiguracion());
+            }
+        } else {
+            SolicitudUnionDTO solicitud = new SolicitudUnionDTO(
+                    accion.getJugadorDTO(), accion.getIp(), accion.getPuerto(), "PENDIENTE");
+            solicitudes.put(jugador.getNombre(), solicitud);
+            ultimaAccionLobby = "SOLICITUD_NUEVA";
+            nombreSolicitudResuelta = jugador.getNombre();
         }
+    }
 
-        if (jugadoresInscritos.size() == MAX_JUGADORES) {
+    private void procesarAceptarSolicitud(TipoAccionDTO accion) {
+        if (accion.getJugadorDTO() == null) return;
+        String nombre = accion.getJugadorDTO().getNombre();
+        SolicitudUnionDTO solicitud = solicitudes.get(nombre);
+        if (solicitud == null) return;
+
+        solicitud.setEstado("ACEPTADA");
+        Jugador jugador = JugadorMapper.toEntity(solicitud.getJugadorDTO());
+        jugadoresInscritos.add(jugador);
+        ultimaAccionLobby = "SOLICITUD_ACEPTADA";
+        nombreSolicitudResuelta = nombre;
+
+        if (jugadoresInscritos.size() >= MAX_JUGADORES) {
             arrancarPartida();
         }
+    }
+
+    private void procesarRechazarSolicitud(TipoAccionDTO accion) {
+        if (accion.getJugadorDTO() == null) return;
+        String nombre = accion.getJugadorDTO().getNombre();
+        SolicitudUnionDTO solicitud = solicitudes.get(nombre);
+        if (solicitud == null) return;
+
+        solicitud.setEstado("RECHAZADA");
+        ultimaAccionLobby = "SOLICITUD_RECHAZADA";
+        nombreSolicitudResuelta = nombre;
     }
 
     private void procesarConfirmacion(TipoAccionDTO accion) {
@@ -127,6 +173,8 @@ public class Blackboard implements IBlackboard, IReceptor{
                 .allMatch(j -> confirmaciones.contains(j.getNombre()));
         if (todosConfirmaron && jugadoresInscritos.size() >= MIN_JUGADORES) {
             arrancarPartida();
+        } else {
+            ultimaAccionLobby = null;
         }
     }
 
@@ -155,8 +203,27 @@ public class Blackboard implements IBlackboard, IReceptor{
 
     @Override
     public List<JugadorDTO> getJugadores() {
-        return JugadorMapper.toDTO(dominio.getJugadores(), dominio.getIndiceJugadorActual());
+        if (partidaIniciada()) {
+            return JugadorMapper.toDTO(dominio.getJugadores(), dominio.getIndiceJugadorActual());
+        }
+        return JugadorMapper.toDTO(jugadoresInscritos, -1);
     }
+
+    @Override
+    public List<SolicitudUnionDTO> getSolicitudesPendientes() {
+        return solicitudes.values().stream()
+                .filter(s -> "PENDIENTE".equals(s.getEstado()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String getUltimaAccionLobby() { return ultimaAccionLobby; }
+
+    @Override
+    public String getNombreSolicitudResuelta() { return nombreSolicitudResuelta; }
+
+    @Override
+    public String getHostNombre() { return hostNombre; }
 
     @Override
     public CartaDTO getCartaCima() {

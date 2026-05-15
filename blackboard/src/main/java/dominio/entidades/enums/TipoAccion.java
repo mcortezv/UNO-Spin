@@ -45,5 +45,9 @@ public enum TipoAccion {
      */
     CONFIRMAR_INICIO,
 
-    CREAR_PARTIDA
+    CREAR_PARTIDA,
+
+    ACEPTAR_SOLICITUD,
+
+    RECHAZAR_SOLICITUD
 }
