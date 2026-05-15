@@ -1,11 +1,14 @@
 package factory;
-import dto.JugadorDTO;
 import interfaces.IDispatcher;
 import interfaces.IFactoryMVC;
 import interfaces.IReceptor;
 import interfaces.ISerializer;
+import lobby.LobbyControlador;
+import lobby.LobbyModelo;
 import mvc.Controlador;
 import mvc.Modelo;
+import lobby.UICrearJugador;
+import lobby.UIPantallaCarga;
 import op.UITurnoJugador;
 import javax.swing.*;
 import java.net.DatagramSocket;
@@ -23,41 +26,32 @@ public class FactoryMVC implements IFactoryMVC {
     @Override
     public IReceptor crearMVC(ISerializer serializer, IDispatcher dispatcher) {
         int puertoCliente = Integer.parseInt(System.getProperty("puerto.cliente", "6000"));
-        String ipLocal = detectarIpLocal(IP_SERVIDOR);
-        Modelo modelo = new Modelo(serializer, dispatcher, IP_SERVIDOR, PUERTO_SERVIDOR, puertoCliente, ipLocal);
-        Controlador controlador = new Controlador(modelo);
-        UITurnoJugador ventana = new UITurnoJugador(controlador, modelo, List.of(100, 100));
-        modelo.subscribe(ventana);
+        String ipLocal = detectarIpLocal();
 
-        SwingUtilities.invokeLater(() -> mostrarLobby(ventana, controlador));
+        Modelo gameModelo = new Modelo(serializer, dispatcher, IP_SERVIDOR, PUERTO_SERVIDOR, puertoCliente, ipLocal);
+        Controlador gameControlador = new Controlador(gameModelo);
+        UITurnoJugador gameUI = new UITurnoJugador(gameControlador, gameModelo, List.of(100, 100));
+        gameModelo.subscribe(gameUI);
 
-        return new MVC(serializer, modelo);
+        LobbyModelo lobbyModelo = new LobbyModelo(dispatcher, serializer, IP_SERVIDOR, PUERTO_SERVIDOR, puertoCliente, ipLocal);
+        LobbyControlador lobbyControlador = new LobbyControlador(lobbyModelo);
+        UICrearJugador lobbyUI = new UICrearJugador(lobbyControlador);
+        UIPantallaCarga pantallaCarga = new UIPantallaCarga(lobbyControlador);
+        lobbyModelo.suscribir(lobbyUI);
+        lobbyModelo.suscribir(pantallaCarga);
+        lobbyModelo.setOnPartidaIniciada(() -> gameUI.setVisible(true));
+
+        SwingUtilities.invokeLater(() -> lobbyUI.setVisible(true));
+
+        return new LobbyMVC(serializer, lobbyModelo, gameModelo);
     }
 
-    private static String detectarIpLocal(String ipServidor) {
+    private static String detectarIpLocal() {
         try (DatagramSocket socket = new DatagramSocket()) {
-            socket.connect(InetAddress.getByName(ipServidor), 1);
+            socket.connect(InetAddress.getByName(FactoryMVC.IP_SERVIDOR), 1);
             return socket.getLocalAddress().getHostAddress();
         } catch (Exception e) {
             return "127.0.0.1";
         }
-    }
-
-    private void mostrarLobby(UITurnoJugador ventana, Controlador controlador) {
-        String nombre = JOptionPane.showInputDialog(null,
-                "Nombre del jugador:", "UNO-Spin — Unirse", JOptionPane.PLAIN_MESSAGE);
-        if (nombre == null || nombre.isBlank()) nombre = "Jugador";
-
-        JugadorDTO jugador = new JugadorDTO();
-        jugador.setNombre(nombre.trim());
-
-        controlador.unirsePartida(jugador, null);
-        ventana.setVisible(true);
-
-        JOptionPane.showMessageDialog(ventana,
-                "Esperando jugadores...\nPresiona OK cuando todos estén listos.",
-                "Sala de espera", JOptionPane.INFORMATION_MESSAGE);
-
-        controlador.confirmarInicio(jugador);
     }
 }

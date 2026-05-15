@@ -13,6 +13,8 @@ public class EstadoPartidaDTO {
     private boolean esTuTurno;
     private TipoEventoRuletaDTO eventoRuletaActivo;
     private boolean ultimaJugadaValida;
+    private List<SolicitudUnionDTO> solicitudesPendientes;
+    private String resultadoSolicitud;
 
     /**
      * Instantiates a new Estado partida dto.
@@ -184,5 +186,15 @@ public class EstadoPartidaDTO {
      */
     public void setUltimaJugadaValida(boolean ultimaJugadaValida) {
         this.ultimaJugadaValida = ultimaJugadaValida;
+    }
+
+    public List<SolicitudUnionDTO> getSolicitudesPendientes() { return solicitudesPendientes; }
+    public void setSolicitudesPendientes(List<SolicitudUnionDTO> solicitudesPendientes) {
+        this.solicitudesPendientes = solicitudesPendientes;
+    }
+
+    public String getResultadoSolicitud() { return resultadoSolicitud; }
+    public void setResultadoSolicitud(String resultadoSolicitud) {
+        this.resultadoSolicitud = resultadoSolicitud;
     }
 }
