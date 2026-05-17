@@ -2,6 +2,10 @@ package lobby;
 
 import dto.JugadorDTO;
 import dto.SolicitudUnionDTO;
+import styles.PanelContenido;
+import styles.PanelFondo;
+import styles.PanelMarco;
+import styles.Style;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -9,15 +13,11 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.util.List;
 
 public class UIPantallaCarga extends JFrame implements ISuscriptorLobby {
 
-    private static final Color AZUL_PANEL = new Color(52, 62, 125);
-    private static final Color AMARILLO = new Color(190, 165, 45);
     private static final Color VERDE = new Color(60, 160, 60);
     private static final Color ROJO = new Color(180, 50, 50);
 
@@ -40,53 +40,17 @@ public class UIPantallaCarga extends JFrame implements ISuscriptorLobby {
         setLocationRelativeTo(null);
         setUndecorated(true);
 
-        JPanel fondo = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g;
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                RadialGradientPaint gradiente = new RadialGradientPaint(
-                        getWidth() / 2f, getHeight() / 2f, getWidth() / 1.4f,
-                        new float[]{0f, 1f},
-                        new Color[]{new Color(160, 20, 20), new Color(60, 0, 0)}
-                );
-                g2d.setPaint(gradiente);
-                g2d.fillRect(0, 0, getWidth(), getHeight());
-            }
-        };
+        PanelFondo fondo = new PanelFondo();
         fondo.setLayout(new GridBagLayout());
         setContentPane(fondo);
 
-        habilitarArrastre(fondo);
+        PanelFondo.habilitarArrastre(this, fondo);
 
-        JPanel marcoOscuro = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g;
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2d.setColor(new Color(15, 15, 15));
-                g2d.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 35, 35));
-            }
-        };
-        marcoOscuro.setOpaque(false);
-        marcoOscuro.setLayout(new GridBagLayout());
+        PanelMarco marcoOscuro = new PanelMarco();
         marcoOscuro.setPreferredSize(new Dimension(870, 540));
 
-        JPanel panelAzul = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g;
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2d.setColor(AZUL_PANEL);
-                g2d.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 22, 22));
-            }
-        };
-        panelAzul.setOpaque(false);
+        PanelContenido panelAzul = new PanelContenido();
         panelAzul.setPreferredSize(new Dimension(830, 500));
-        panelAzul.setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -245,7 +209,7 @@ public class UIPantallaCarga extends JFrame implements ISuscriptorLobby {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2d = (Graphics2D) g.create();
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2d.setColor(getModel().isPressed() ? AMARILLO.darker() : AMARILLO);
+                g2d.setColor(getModel().isPressed() ? Style.AMARILLO.darker() : Style.AMARILLO);
                 g2d.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 24, 24));
                 g2d.dispose();
                 super.paintComponent(g);
@@ -287,20 +251,6 @@ public class UIPantallaCarga extends JFrame implements ISuscriptorLobby {
                     break;
             }
         });
-    }
-
-    private void habilitarArrastre(Component c) {
-        MouseAdapter ma = new MouseAdapter() {
-            private Point inicio;
-            @Override public void mousePressed(MouseEvent e)  { inicio = e.getLocationOnScreen(); }
-            @Override public void mouseDragged(MouseEvent e)  {
-                Point p = e.getLocationOnScreen();
-                setLocation(getX() + p.x - inicio.x, getY() + p.y - inicio.y);
-                inicio = p;
-            }
-        };
-        c.addMouseListener(ma);
-        c.addMouseMotionListener(ma);
     }
 
     public static void main(String[] args) {
