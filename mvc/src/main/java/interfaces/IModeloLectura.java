@@ -85,12 +85,82 @@ public interface IModeloLectura {
      * @return the boolean
      */
     boolean isSeleccionColorPendiente();
+
+    /**
+     * Is seleccion color propia boolean.
+     *
+     * @return the boolean
+     */
     boolean isSeleccionColorPropia();
+
+    /**
+     * Is evento ruleta propio boolean.
+     *
+     * @return the boolean
+     */
     boolean isEventoRuletaPropio();
+
+    /**
+     * Carta cima es castigo boolean.
+     *
+     * @return the boolean
+     */
     boolean cartaCimaEsCastigo();
+
+    /**
+     * Tiene castigo pendiente local boolean.
+     *
+     * @return the boolean
+     */
     boolean tieneCastigoPendienteLocal();
+
+    /**
+     * Gets cartas pendientes castigo local.
+     *
+     * @return the cartas pendientes castigo local
+     */
     int getCartasPendientesCastigoLocal();
+
+    /**
+     * Puede usar mazo boolean.
+     *
+     * @return the boolean
+     */
     boolean puedeUsarMazo();
+
+    /**
+     * Puede intentar jugar carta boolean.
+     *
+     * @return the boolean
+     */
     boolean puedeIntentarJugarCarta();
+
+    /**
+     * Puede jugar carta boolean.
+     *
+     * @param carta the carta
+     * @return the boolean
+     */
     boolean puedeJugarCarta(CartaDTO carta);
+
+    /**
+     * Gets vista activa.
+     *
+     * @return the vista activa
+     */
+    boolean getVistaActiva();
+
+    /**
+     * Gets abandono.
+     *
+     * @return the abandono
+     */
+    boolean getAbandono();
+
+    /**
+     * Gets mi nombre.
+     *
+     * @return the mi nombre
+     */
+    String getMiNombre();
 }

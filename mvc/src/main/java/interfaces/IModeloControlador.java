@@ -71,4 +71,18 @@ public interface IModeloControlador {
      * @param color the color
      */
     void aplicarSeleccionColor(String color);
+
+    /**
+     * Sets vista activa.
+     *
+     * @param vistaActiva the vista activa
+     */
+    void setVistaActiva(boolean vistaActiva);
+
+    /**
+     * Sets abandono.
+     *
+     * @param abandono the abandono
+     */
+    void setAbandono(boolean abandono);
 }

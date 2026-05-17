@@ -25,7 +25,6 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     private boolean vistaActiva;
 
     /**
-     * IReceptor
      * Instantiates a new Modelo.
      *
      * @param serializer     the serializer
@@ -330,39 +329,28 @@ public class Modelo implements IModeloControlador, IModeloLectura {
                 + cima.getValor();
     }
 
-    /**
-     * Is vista activa boolean.
-     *
-     * @return the boolean
-     */
-    public boolean isVistaActiva() {
+    @Override
+    public boolean getVistaActiva() {
         return vistaActiva;
     }
 
-    /**
-     * Sets vista activa.
-     *
-     * @param vistaActiva the vista activa
-     */
+    @Override
     public void setVistaActiva(boolean vistaActiva) {
         this.vistaActiva = vistaActiva;
     }
 
-    /**
-     * Is abandono boolean.
-     *
-     * @return the boolean
-     */
-    public boolean isAbandono() {
+    @Override
+    public boolean getAbandono() {
         return abandono;
     }
 
-    /**
-     * Sets abandono.
-     *
-     * @param abandono the abandono
-     */
+    @Override
     public void setAbandono(boolean abandono) {
         this.abandono = abandono;
+    }
+
+    @Override
+    public String getMiNombre() {
+        return miNombre;
     }
 }
