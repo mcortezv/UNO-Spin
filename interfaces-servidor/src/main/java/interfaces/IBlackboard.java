@@ -1,5 +1,6 @@
 package interfaces;
 import dto.CartaDTO;
+import dto.EstadoPartidaDTO;
 import dto.JugadorDTO;
 import dto.SolicitudUnionDTO;
 import dto.TipoEventoRuletaDTO;
@@ -80,4 +81,6 @@ public interface IBlackboard {
     String getUltimaAccionLobby();
     String getNombreSolicitudResuelta();
     String getHostNombre();
+    List<String> getNombresConectados();
+    EstadoPartidaDTO getEstadoParaJugador(String nombre);
 }

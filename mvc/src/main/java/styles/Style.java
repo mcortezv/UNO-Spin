@@ -49,4 +49,7 @@ public class Style {
      * The constant BUTTON_FONT.
      */
     public static final java.awt.Font BUTTON_FONT = new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14);
+
+    public static final Color AMARILLO  = new Color(240, 200, 0);
+    public static final Color AZUL_PANEL = new Color(52, 62, 125);
 }

@@ -3,20 +3,25 @@ import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoCarta;
 import dto.TipoEventoRuletaDTO;
 import dominio.IDominio;
+import dominio.ILobby;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The type Partida.
  */
-public class Partida implements IDominio {
+public class Partida implements IDominio, ILobby {
     private static final int CARTAS_INICIALES = 7;
     private static final int VALOR_CARTA_ACCION = 20;
     private static final int VALOR_CARTA_COMODIN = 50;
     private static final int NUMERO_SPIN_POR_COLOR = 2;
     private static final String[] COLORES = {"ROJO", "AZUL", "AMARILLO", "VERDE"};
+    private static final int MAX_JUGADORES = 4;
+
     private List<Jugador> jugadores;
     private EstadoPartida estadoPartida;
     private int indiceJugadorActual;
@@ -24,6 +29,12 @@ public class Partida implements IDominio {
     private Tablero tablero;
     private boolean unoGritado = false;
     private boolean ultimaJugadaValida = true;
+
+    private final List<Jugador> jugadoresInscritos = new ArrayList<>();
+    private final Map<String, Jugador> solicitudesJugadores = new LinkedHashMap<>();
+    private String hostNombre;
+    private ConfiguracionPartida configuracion;
+    private boolean lobbyAbierto = true;
 
     /**
      * Instantiates a new Partida.
@@ -48,6 +59,7 @@ public class Partida implements IDominio {
 
     @Override
     public void iniciarPartida(List<Jugador> jugadoresIniciales, ConfiguracionPartida configuracion) {
+        this.lobbyAbierto = false;
         this.jugadores = jugadoresIniciales;
         this.indiceJugadorActual = 0;
         this.sentidoHorario = true;
@@ -181,7 +193,7 @@ public class Partida implements IDominio {
         try {
             Carta cartaRobada = tablero.getMazo().robarCarta();
             jugadores.get(indiceJugadorActual).getMano().getCartas().add(cartaRobada);
-        } catch (Exception e) {
+        } catch (Exception _) {
         }
     }
 
@@ -214,7 +226,7 @@ public class Partida implements IDominio {
         try {
             Carta castigo = tablero.getMazo().robarCarta();
             jugadores.get(indiceJugador).getMano().getCartas().add(castigo);
-        } catch (Exception e) {
+        } catch (Exception _) {
         }
     }
 
@@ -439,9 +451,9 @@ public class Partida implements IDominio {
             Mano tmp = jugadores.get(n - 1).getMano();
             for (int i = n - 1; i > 0; i--)
                 jugadores.get(i).setMano(jugadores.get(i - 1).getMano());
-            jugadores.get(0).setMano(tmp);
+            jugadores.getFirst().setMano(tmp);
         } else {
-            Mano tmp = jugadores.get(0).getMano();
+            Mano tmp = jugadores.getFirst().getMano();
             for (int i = 0; i < n - 1; i++)
                 jugadores.get(i).setMano(jugadores.get(i + 1).getMano());
             jugadores.get(n - 1).setMano(tmp);
@@ -484,5 +496,72 @@ public class Partida implements IDominio {
                     try { j.getMano().getCartas().add(tablero.getMazo().robarCarta()); }
                     catch (Exception e) { System.out.println("Mazo vacio."); }
                 });
+    }
+
+
+    @Override
+    public void registrarJugadorLobby(Jugador jugador) {
+        if (jugadoresInscritos.isEmpty()) {
+            jugadoresInscritos.add(jugador);
+            hostNombre = jugador.getNombre();
+        } else {
+            solicitudesJugadores.put(jugador.getNombre(), jugador);
+        }
+    }
+
+    @Override
+    public void aceptarSolicitudLobby(String nombre) {
+        Jugador jugador = solicitudesJugadores.remove(nombre);
+        if (jugador != null) jugadoresInscritos.add(jugador);
+    }
+
+    @Override
+    public void rechazarSolicitudLobby(String nombre) {
+        solicitudesJugadores.remove(nombre);
+    }
+
+    @Override
+    public boolean puedeUnirseAlLobby() {
+        return lobbyAbierto && jugadoresInscritos.size() < MAX_JUGADORES;
+    }
+
+    @Override
+    public boolean esSalaLlena() {
+        return jugadoresInscritos.size() >= MAX_JUGADORES;
+    }
+
+    @Override
+    public List<Jugador> getJugadoresInscritos() {
+        return jugadoresInscritos;
+    }
+
+    @Override
+    public List<Jugador> getSolicitudesPendientesLobby() {
+        return new ArrayList<>(solicitudesJugadores.values());
+    }
+
+    @Override
+    public String getHostNombre() {
+        return hostNombre;
+    }
+
+    @Override
+    public void setConfiguracion(ConfiguracionPartida configuracion) {
+        this.configuracion = configuracion;
+    }
+
+    @Override
+    public ConfiguracionPartida getConfiguracion() {
+        return configuracion != null ? configuracion : configuracionDefault();
+    }
+
+    private ConfiguracionPartida configuracionDefault() {
+        ConfiguracionPartida c = new ConfiguracionPartida();
+        c.setValorMinimo(0);
+        c.setValorMaximo(9);
+        c.setCantidadComodines(8);
+        c.setCantidadCartasAccion(6);
+        c.setTiempoMaximoRuleta(10f);
+        return c;
     }
 }
