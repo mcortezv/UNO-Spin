@@ -15,6 +15,7 @@ public class EstadoPartidaDTO {
     private boolean ultimaJugadaValida;
     private List<SolicitudUnionDTO> solicitudesPendientes;
     private String resultadoSolicitud;
+    private EventoFinalizacionDTO eventoFinalizacion;
 
     /**
      * Instantiates a new Estado partida dto.
@@ -197,4 +198,15 @@ public class EstadoPartidaDTO {
     public void setResultadoSolicitud(String resultadoSolicitud) {
         this.resultadoSolicitud = resultadoSolicitud;
     }
+
+    public EventoFinalizacionDTO getEventoFinalizacion() {
+        return eventoFinalizacion;
+    }
+
+    public void setEventoFinalizacion(EventoFinalizacionDTO eventoFinalizacion) {
+        this.eventoFinalizacion = eventoFinalizacion;
+    }
+    
+    
+    
 }

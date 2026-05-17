@@ -49,5 +49,9 @@ public enum TipoAccion {
 
     ACEPTAR_SOLICITUD,
 
-    RECHAZAR_SOLICITUD
+    RECHAZAR_SOLICITUD,
+    /**
+     * Solicitar finalizar la partida.
+     */
+    SOLICITAR_FINALIZAR
 }
