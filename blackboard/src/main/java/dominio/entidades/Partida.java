@@ -24,6 +24,8 @@ public class Partida implements IDominio {
     private Tablero tablero;
     private boolean unoGritado = false;
     private boolean ultimaJugadaValida = true;
+    private int votosAFavor = 0;
+    private int votosEnContra = 0;
 
     /**
      * Instantiates a new Partida.
@@ -309,6 +311,20 @@ public class Partida implements IDominio {
     @Override
     public TipoEventoRuletaDTO getEventoRuleta() {
         return tablero.getRuleta().getEventoRuleta();
+    }
+    
+    @Override
+    public void registrarVoto(boolean acepta) {
+        if(acepta) {
+            votosAFavor++;
+        } else {
+            votosEnContra++;
+        }
+    }
+    
+    @Override
+    public boolean estaTerminada() {
+        return jugadores != null && votosAFavor >= jugadores.size();
     }
 
     /**
