@@ -21,14 +21,19 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     private EstadoPartidaDTO estadoPartida;
     private int cartasPendientesCastigoLocal;
     private String ultimaCartaCimaProcesada;
+    private boolean abandono;
+    private boolean vistaActiva;
 
-    /**IReceptor
+    /**
+     * IReceptor
      * Instantiates a new Modelo.
      *
      * @param serializer     the serializer
      * @param dispatcher     the dispatcher
      * @param ipServidor     the ip servidor
      * @param puertoServidor the puerto servidor
+     * @param puertoEscucha  the puerto escucha
+     * @param ipLocal        the ip local
      */
     public Modelo(ISerializer serializer, IDispatcher dispatcher, String ipServidor, int puertoServidor, int puertoEscucha, String ipLocal) {
         this.serializer = serializer;
@@ -323,5 +328,41 @@ public class Modelo implements IModeloControlador, IModeloLectura {
                 + cima.getColor() + "|"
                 + cima.getNumero() + "|"
                 + cima.getValor();
+    }
+
+    /**
+     * Is vista activa boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isVistaActiva() {
+        return vistaActiva;
+    }
+
+    /**
+     * Sets vista activa.
+     *
+     * @param vistaActiva the vista activa
+     */
+    public void setVistaActiva(boolean vistaActiva) {
+        this.vistaActiva = vistaActiva;
+    }
+
+    /**
+     * Is abandono boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isAbandono() {
+        return abandono;
+    }
+
+    /**
+     * Sets abandono.
+     *
+     * @param abandono the abandono
+     */
+    public void setAbandono(boolean abandono) {
+        this.abandono = abandono;
     }
 }
