@@ -85,4 +85,14 @@ public interface IModeloControlador {
      * @param abandono the abandono
      */
     void setAbandono(boolean abandono);
+
+    /**
+     * Solicitar abandono.
+     */
+    void solicitarAbandono();
+
+    /**
+     * Abandonar partida.
+     */
+    void abandonarPartida();
 }

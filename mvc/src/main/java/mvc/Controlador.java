@@ -104,4 +104,18 @@ public class Controlador {
     public void onSeleccionColor(String color) {
         modelo.aplicarSeleccionColor(color);
     }
+
+    /**
+     * Solicitar abandono.
+     */
+    public void solicitarAbandono() {
+        modelo.solicitarAbandono();
+    }
+
+    /**
+     * Abandonar partida.
+     */
+    public void abandonarPartida() {
+        modelo.abandonarPartida();
+    }
 }

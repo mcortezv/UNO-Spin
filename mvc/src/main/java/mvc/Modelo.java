@@ -353,4 +353,14 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     public String getMiNombre() {
         return miNombre;
     }
+
+    @Override
+    public void solicitarAbandono() {
+
+    }
+
+    @Override
+    public void abandonarPartida() {
+
+    }
 }
