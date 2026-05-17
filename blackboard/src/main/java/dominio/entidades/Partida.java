@@ -34,6 +34,7 @@ public class Partida implements IDominio, ILobby {
     private final Map<String, Jugador> solicitudesJugadores = new LinkedHashMap<>();
     private String hostNombre;
     private ConfiguracionPartida configuracion;
+    private boolean lobbyAbierto = true;
 
     /**
      * Instantiates a new Partida.
@@ -58,6 +59,7 @@ public class Partida implements IDominio, ILobby {
 
     @Override
     public void iniciarPartida(List<Jugador> jugadoresIniciales, ConfiguracionPartida configuracion) {
+        this.lobbyAbierto = false;
         this.jugadores = jugadoresIniciales;
         this.indiceJugadorActual = 0;
         this.sentidoHorario = true;
@@ -520,8 +522,7 @@ public class Partida implements IDominio, ILobby {
 
     @Override
     public boolean puedeUnirseAlLobby() {
-        return estadoPartida == EstadoPartida.NO_INICIADA
-                && jugadoresInscritos.size() < MAX_JUGADORES;
+        return lobbyAbierto && jugadoresInscritos.size() < MAX_JUGADORES;
     }
 
     @Override
