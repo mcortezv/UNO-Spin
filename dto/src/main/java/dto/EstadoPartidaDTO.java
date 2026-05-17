@@ -12,6 +12,7 @@ public class EstadoPartidaDTO {
     private List<CartaDTO> manoJugador;
     private boolean esTuTurno;
     private TipoEventoRuletaDTO eventoRuletaActivo;
+    private EventoAbandonoDTO eventoAbandono;
     private boolean ultimaJugadaValida;
     private List<SolicitudUnionDTO> solicitudesPendientes;
     private String resultadoSolicitud;
@@ -26,6 +27,7 @@ public class EstadoPartidaDTO {
      *
      * @param indiceJugadorActual the indice jugador actual
      * @param estadoPartida       the estado partida
+     * @param eventoAbandono      the evento abandono
      * @param cartaCima           the carta cima
      * @param jugadores           the jugadores
      * @param manoJugador         the mano jugador
@@ -33,11 +35,12 @@ public class EstadoPartidaDTO {
      * @param eventoRuletaActivo  the evento ruleta activo
      * @param ultimaJugadaValida  the ultima jugada valida
      */
-    public EstadoPartidaDTO(int indiceJugadorActual, String estadoPartida, CartaDTO cartaCima, List<JugadorDTO> jugadores, List<CartaDTO> manoJugador, boolean esTuTurno, TipoEventoRuletaDTO eventoRuletaActivo, boolean ultimaJugadaValida) {
+    public EstadoPartidaDTO(int indiceJugadorActual, String estadoPartida, EventoAbandonoDTO eventoAbandono, CartaDTO cartaCima, List<JugadorDTO> jugadores, List<CartaDTO> manoJugador, boolean esTuTurno, TipoEventoRuletaDTO eventoRuletaActivo, boolean ultimaJugadaValida) {
         this.indiceJugadorActual = indiceJugadorActual;
         this.estadoPartida = estadoPartida;
         this.cartaCima = cartaCima;
         this.jugadores = jugadores;
+        this.eventoAbandono = eventoAbandono;
         this.manoJugador = manoJugador;
         this.esTuTurno = esTuTurno;
         this.eventoRuletaActivo = eventoRuletaActivo;
@@ -188,13 +191,53 @@ public class EstadoPartidaDTO {
         this.ultimaJugadaValida = ultimaJugadaValida;
     }
 
+    /**
+     * Gets solicitudes pendientes.
+     *
+     * @return the solicitudes pendientes
+     */
     public List<SolicitudUnionDTO> getSolicitudesPendientes() { return solicitudesPendientes; }
+
+    /**
+     * Sets solicitudes pendientes.
+     *
+     * @param solicitudesPendientes the solicitudes pendientes
+     */
     public void setSolicitudesPendientes(List<SolicitudUnionDTO> solicitudesPendientes) {
         this.solicitudesPendientes = solicitudesPendientes;
     }
 
+    /**
+     * Gets resultado solicitud.
+     *
+     * @return the resultado solicitud
+     */
     public String getResultadoSolicitud() { return resultadoSolicitud; }
+
+    /**
+     * Sets resultado solicitud.
+     *
+     * @param resultadoSolicitud the resultado solicitud
+     */
     public void setResultadoSolicitud(String resultadoSolicitud) {
         this.resultadoSolicitud = resultadoSolicitud;
+    }
+
+    /**
+     * Gets evento abandono.
+     *
+     * @return the evento abandono
+     */
+    public EventoAbandonoDTO getEventoAbandono() {
+        return eventoAbandono;
+    }
+
+    /**
+     * Sets evento abandono.
+     *
+     * @param eventoAbandono the evento abandono
+     */
+    public void setEventoAbandono(EventoAbandonoDTO eventoAbandono) {
+        this.eventoAbandono = eventoAbandono;
     }
 }
