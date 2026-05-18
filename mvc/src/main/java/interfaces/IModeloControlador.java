@@ -71,4 +71,16 @@ public interface IModeloControlador {
      * @param color the color
      */
     void aplicarSeleccionColor(String color);
+    
+    /**
+     * Solicitar terminar la partida.
+     */
+    void solicitarTerminarPartida();
+
+    /**
+     * Enviar el voto para terminar la partida.
+     *
+     * @param acepta the desicion
+     */
+    void enviarVotoTerminar(boolean acepta);
 }

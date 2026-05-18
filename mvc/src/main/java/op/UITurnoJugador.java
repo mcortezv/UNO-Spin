@@ -5,6 +5,7 @@ import dto.JugadorDTO;
 import dialogs.DialogoElegirColor;
 import dialogs.DialogoEventoRuleta;
 import dialogs.FabricaDialogosEvento;
+import dto.EventoFinalizacionDTO;
 import interfaces.IModeloLectura;
 import interfaces.ISuscriptor;
 import mvc.Controlador;
@@ -44,6 +45,12 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
     private boolean mostrandoDialogoColor = false;
     private boolean mostrandoDialogoEvento = false;
     private TipoEventoRuletaDTO ultimoEventoMostrado = null;
+    
+    private final JButton btnFinalizarPartida;
+    private boolean mostrarDialogoVotacion = false;
+    private boolean mostrarDialogoEspera = false;
+    private JDialog dialogoEspera = null;
+    private boolean mostroRechazo = false;
 
     /**
      * Instantiates a new Ui turno jugador.
@@ -65,6 +72,7 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         this.btnTirarCarta = new Button("Tirar Carta", new Color(45, 45, 45));
         this.btnUno      = new Button("UNO", new Color(185, 25, 25));
         this.btnUno.setFont(new Font("Arial", Font.BOLD, 16));
+        this.btnFinalizarPartida = new Button("Finalizar Partida", new Color(45, 45, 45));
 
         this.slotTop   = crearSlot();
         this.slotLeft  = crearSlot();
@@ -124,6 +132,20 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         gbc.insets = new Insets(0, 0, 8, 0);
         panelFondo.add(construirZonaJugadorActivo(), gbc);
 
+        JPanel panelFinalizar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 8));
+        panelFinalizar.setOpaque(false);
+        panelFinalizar.add(btnFinalizarPartida);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
+        gbc.insets = new Insets(8, 0, 0, 8);
+        panelFondo.add(panelFinalizar, gbc);
+
         setContentPane(panelFondo);
     }
 
@@ -161,6 +183,7 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         btnUno.addActionListener(e -> controlador.onUnoGritado());
         tablero.setOnPedirCarta(controlador::onPedirCarta);
         tablero.setOnGiroCompleto(controlador::onSpinCompletado);
+        btnFinalizarPartida.addActionListener(e -> controlador.onSolicitarTerminar());
     }
 
     @Override
@@ -220,6 +243,34 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
             mostrandoDialogoEvento = false;
         }
 
+        EventoFinalizacionDTO eventoFin = modelo.getEventoFinalizacion();
+
+        if (eventoFin == null) {
+            mostrarDialogoVotacion = false;
+            mostroRechazo = false;
+            mostrarDialogoEspera = false;
+            if (dialogoEspera != null) {
+                dialogoEspera.dispose();
+                dialogoEspera = null;
+            }
+        } else if (eventoFin.getPosiciones() != null) {
+            mostrarTablaPosiciones(eventoFin.getPosiciones());
+        } else if (modelo.isVotacionPendiente() && !mostrarDialogoVotacion) {
+            mostrarDialogoVotacion = true;
+            mostrarDialogoVotacion();
+            mostrarDialogoVotacion = false;
+        } else if (modelo.isYaVote() && !mostrarDialogoEspera && !mostroRechazo) {
+            mostrarDialogoEspera = true;
+            mostrarEsperaVotacion();
+            mostrarDialogoEspera = false;
+        } else if (!modelo.isVotacionPendiente() && !modelo.isYaVote() && !mostroRechazo && eventoFin != null) {
+            mostroRechazo = true;
+            if (dialogoEspera != null) {
+                dialogoEspera.dispose();
+                dialogoEspera = null;
+            }
+            mostrarMensajeRechazo();
+        }
     }
 
     private void mostrarDialogoEvento(TipoEventoRuletaDTO evento, IModeloLectura modelo) {
@@ -232,6 +283,61 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         if (esTurnoPropio) {
             controlador.onResultadoEvento(evento.name(), dialogo.getResultado());
         }
+    }
+
+    private void mostrarDialogoVotacion() {
+        JDialog dialog = new JDialog(this, "Votación en curso...", true);
+        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+        JLabel label = new JLabel("¿Deseas que finalice la partida?", SwingConstants.CENTER);
+        label.setBorder(BorderFactory.createEmptyBorder(20, 30, 10, 30));
+
+        JButton btnSi = new JButton("SI");
+        JButton btnNo = new JButton("NO");
+
+        btnSi.addActionListener(e -> {
+            dialog.dispose();
+            controlador.onVotoTerminar(true);
+        });
+        btnNo.addActionListener(e -> {
+            dialog.dispose();
+            controlador.onVotoTerminar(false);
+        });
+
+        JPanel panelBotones = new JPanel(new FlowLayout());
+        panelBotones.add(btnSi);
+        panelBotones.add(btnNo);
+
+        dialog.setLayout(new BorderLayout());
+        dialog.add(label, BorderLayout.CENTER);
+        dialog.add(panelBotones, BorderLayout.SOUTH);
+        dialog.pack();
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    }
+
+    private void mostrarEsperaVotacion() {
+        dialogoEspera = new JDialog(this, "Votación en curso...", false); // false aquí
+        dialogoEspera.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        JLabel label = new JLabel("Esperando a que el resto de jugadores voten", SwingConstants.CENTER);
+        label.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        dialogoEspera.add(label);
+        dialogoEspera.pack();
+        dialogoEspera.setLocationRelativeTo(this);
+        dialogoEspera.setVisible(true);
+    }
+
+    private void mostrarTablaPosiciones(List<JugadorDTO> posiciones) {
+        
+    }
+
+    private void mostrarMensajeRechazo() {
+        JOptionPane.showMessageDialog(
+                this,
+                "La votación fue rechazada. La partida continúa.",
+                "Votación en curso...",
+                JOptionPane.INFORMATION_MESSAGE
+        );
     }
 
     private void actualizarRival(List<JugadorDTO> rivales, int idx, JPanel slot, UIJugador.Posicion posicion) {

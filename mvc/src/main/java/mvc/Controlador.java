@@ -104,4 +104,20 @@ public class Controlador {
     public void onSeleccionColor(String color) {
         modelo.aplicarSeleccionColor(color);
     }
+    
+    /**
+     * On solicitar terminar partida.
+     */
+    public void onSolicitarTerminar() {
+        modelo.solicitarTerminarPartida();
+    }
+
+    /**
+     * On enviar voto.
+     *
+     * @param acepta the desicion
+     */
+    public void onVotoTerminar(boolean acepta) {
+        modelo.enviarVotoTerminar(acepta);
+    }
 }

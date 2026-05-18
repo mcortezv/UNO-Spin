@@ -13,7 +13,12 @@ import java.util.List;
 public class EventoFinalizacionDTO {
     
     private List<JugadorDTO> posiciones;
-    private boolean resultadoVotacion;
+    private Boolean resultadoVotacion;
+
+    public EventoFinalizacionDTO() {
+        this.posiciones = null;
+        this.resultadoVotacion = Boolean.parseBoolean(null);
+    }
 
     public EventoFinalizacionDTO(List<JugadorDTO> posiciones) {
         this.posiciones = posiciones;
@@ -31,7 +36,7 @@ public class EventoFinalizacionDTO {
         this.posiciones = posiciones;
     }
 
-    public boolean isResultadoVotacion() {
+    public Boolean isResultadoVotacion() {
         return resultadoVotacion;
     }
 

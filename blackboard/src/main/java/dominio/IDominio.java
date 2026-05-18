@@ -157,4 +157,8 @@ public interface IDominio {
      */
     boolean estaTerminada();
 
+    int getVotosAFavor();
+
+    int getVotosEnContra();
+
 }

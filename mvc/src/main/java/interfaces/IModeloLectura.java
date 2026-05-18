@@ -1,6 +1,7 @@
 package interfaces;
 import dto.TipoEventoRuletaDTO;
 import dto.CartaDTO;
+import dto.EventoFinalizacionDTO;
 import dto.JugadorDTO;
 import java.util.List;
 
@@ -93,4 +94,8 @@ public interface IModeloLectura {
     boolean puedeUsarMazo();
     boolean puedeIntentarJugarCarta();
     boolean puedeJugarCarta(CartaDTO carta);
+    EventoFinalizacionDTO getEventoFinalizacion();
+    boolean isYaVote();
+    boolean isVotoEnviado();
+    boolean isVotacionPendiente();
 }

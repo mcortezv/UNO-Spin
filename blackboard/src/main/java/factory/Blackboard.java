@@ -85,6 +85,10 @@ public class Blackboard implements IBlackboard, IReceptor{
             case RECHAZAR_SOLICITUD -> procesarRechazarSolicitud(accion);
             default -> {
                 if (dominio == null || dominio.getEstadoPartida() == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA) break;
+
+                if (tipo != TipoAccion.SOLICITAR_FINALIZAR) {
+                    eventoFinalizacion = null;
+                }
                 switch (tipo) {
                     case JUGAR_CARTA         -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
                     case PEDIR_CARTA         -> dominio.robarCartaJugadorActual();
@@ -180,25 +184,26 @@ public class Blackboard implements IBlackboard, IReceptor{
             ultimaAccionLobby = null;
         }
     }
-    
+
     private void procesarFinalizacion(TipoAccionDTO accion) {
-    if (dominio == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA) return;
+        if (dominio == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA) return;
 
-    boolean acepta = Boolean.parseBoolean(accion.getResultadoEvento());
+        boolean acepta = Boolean.parseBoolean(accion.getResultadoEvento());
+        dominio.registrarVoto(acepta);
 
-    dominio.registrarVoto(acepta);
+        System.out.println("votosEnContra: " + dominio.getVotosEnContra() + " estaTerminada: " + dominio.estaTerminada());
 
-    if (dominio.estaTerminada()) {
-        List<Jugador> jugadores = dominio.getJugadores();
-        List<JugadorDTO> posiciones = jugadores.stream()
-            .sorted((a, b) -> a.getMano().getCartas().size() - b.getMano().getCartas().size())
-            .map(j -> JugadorMapper.toDTO(j, false))
-            .collect(Collectors.toList());
-        eventoFinalizacion = new EventoFinalizacionDTO(posiciones);
-    } else {
-        eventoFinalizacion = new EventoFinalizacionDTO(false);
+        if (dominio.estaTerminada()) {
+            List<Jugador> jugadores = dominio.getJugadores();
+            List<JugadorDTO> posiciones = jugadores.stream()
+                    .sorted((a, b) -> a.getMano().getCartas().size() - b.getMano().getCartas().size())
+                    .map(j -> JugadorMapper.toDTO(j, false))
+                    .collect(Collectors.toList());
+            eventoFinalizacion = new EventoFinalizacionDTO(posiciones);
+        } else {
+            eventoFinalizacion = new EventoFinalizacionDTO(false);
+        }
     }
-}
 
     private void arrancarPartida() {
         if (configuracion == null) {

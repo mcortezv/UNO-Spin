@@ -321,11 +321,18 @@ public class Partida implements IDominio {
             votosEnContra++;
         }
     }
-    
+
     @Override
     public boolean estaTerminada() {
         return jugadores != null && votosAFavor >= jugadores.size();
     }
+
+
+    @Override
+    public int getVotosAFavor() { return votosAFavor; }
+
+    @Override
+    public int getVotosEnContra() { return votosEnContra; }
 
     /**
      * Gets tablero.
