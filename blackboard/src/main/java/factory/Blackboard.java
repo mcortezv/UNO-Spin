@@ -78,27 +78,41 @@ public class Blackboard implements IBlackboard, IReceptor{
         TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
         TipoAccion tipo = TipoAccion.valueOf(accion.getTipoAccion());
         switch (tipo) {
-            case CREAR_PARTIDA      -> procesarCrearPartida(accion);
-            case UNIRSE_PARTIDA     -> procesarUnirse(accion);
-            case CONFIRMAR_INICIO   -> procesarConfirmacion(accion);
-            case ACEPTAR_SOLICITUD  -> procesarAceptarSolicitud(accion);
+            case CREAR_PARTIDA -> procesarCrearPartida(accion);
+            case UNIRSE_PARTIDA -> procesarUnirse(accion);
+            case CONFIRMAR_INICIO -> procesarConfirmacion(accion);
+            case ACEPTAR_SOLICITUD -> procesarAceptarSolicitud(accion);
             case RECHAZAR_SOLICITUD -> procesarRechazarSolicitud(accion);
             default -> {
-                if (dominio == null || dominio.getEstadoPartida() == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA) break;
+                if (dominio == null || dominio.getEstadoPartida() == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA)
+                    break;
 
                 if (tipo != TipoAccion.SOLICITAR_FINALIZAR) {
                     eventoFinalizacion = null;
+                    dominio.resetearVotos();
                 }
                 switch (tipo) {
-                    case JUGAR_CARTA         -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
-                    case PEDIR_CARTA         -> dominio.robarCartaJugadorActual();
+                    case JUGAR_CARTA -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
+                    case PEDIR_CARTA -> dominio.robarCartaJugadorActual();
                     case PEDIR_CARTA_CASTIGO -> dominio.robarCartaSinAvanzarTurno();
-                    case GRITAR_UNO          -> dominio.gritarUno();
-                    case SELECCIONAR_COLOR   -> dominio.aplicarSeleccionColor(accion.getCartaDTO().getColor().toUpperCase());
-                    case GIRAR_RULETA        -> { try { dominio.procesarGiroRuleta(); } catch (Exception e) { System.err.println("Ruleta: " + e.getMessage()); } }
-                    case RECONOCER_EVENTO    -> { TipoEventoRuletaDTO ev = dominio.getEventoRuleta(); dominio.aplicarEfectoRuleta(ev, parsearResultado(ev, accion.getResultadoEvento())); dominio.avanzarTurno(); }
+                    case GRITAR_UNO -> dominio.gritarUno();
+                    case SELECCIONAR_COLOR ->
+                            dominio.aplicarSeleccionColor(accion.getCartaDTO().getColor().toUpperCase());
+                    case GIRAR_RULETA -> {
+                        try {
+                            dominio.procesarGiroRuleta();
+                        } catch (Exception e) {
+                            System.err.println("Ruleta: " + e.getMessage());
+                        }
+                    }
+                    case RECONOCER_EVENTO -> {
+                        TipoEventoRuletaDTO ev = dominio.getEventoRuleta();
+                        dominio.aplicarEfectoRuleta(ev, parsearResultado(ev, accion.getResultadoEvento()));
+                        dominio.avanzarTurno();
+                    }
                     case SOLICITAR_FINALIZAR -> procesarFinalizacion(accion);
-                    default                  -> {}
+                    default -> {
+                    }
                 }
             }
         }
@@ -212,6 +226,7 @@ public class Blackboard implements IBlackboard, IReceptor{
             eventoFinalizacion = new EventoFinalizacionDTO(posiciones);
         } else if (dominio.getVotosEnContra() > 0) {
             eventoFinalizacion = new EventoFinalizacionDTO(false);
+            dominio.resetearVotos();
         } else {
             EventoFinalizacionDTO enCurso = new EventoFinalizacionDTO(false);
             enCurso.setVotacionEnCurso(true);

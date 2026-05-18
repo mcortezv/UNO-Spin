@@ -24,6 +24,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     private boolean yaVote = false;
     private boolean votoEnviado = false;
 
+
     /**IReceptor
      * Instantiates a new Modelo.
      *
@@ -50,6 +51,9 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         this.estadoPartida = estado;
         EventoFinalizacionDTO evento = estado.getEventoFinalizacion();
         if (evento == null) {
+            yaVote = false;
+            votoEnviado = false;
+        } else if (!evento.isVotacionEnCurso() && evento.getPosiciones() == null) {
             yaVote = false;
             votoEnviado = false;
         }

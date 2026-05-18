@@ -334,6 +334,12 @@ public class Partida implements IDominio {
     @Override
     public int getVotosEnContra() { return votosEnContra; }
 
+    @Override
+    public void resetearVotos() {
+        votosAFavor = 0;
+        votosEnContra = 0;
+    }
+
     /**
      * Gets tablero.
      *

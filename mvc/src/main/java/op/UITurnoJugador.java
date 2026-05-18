@@ -51,6 +51,7 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
     private boolean mostrarDialogoEspera = false;
     private JDialog dialogoEspera = null;
     private boolean mostroRechazo = false;
+    private JDialog dialogoVotacion = null;
 
     /**
      * Instantiates a new Ui turno jugador.
@@ -260,20 +261,27 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
             }
             mostrarTablaPosiciones(eventoFin.getPosiciones());
         } else if (!eventoFin.isVotacionEnCurso() && !mostroRechazo) {
-            mostroRechazo = true;
+            if (dialogoVotacion != null) {
+                dialogoVotacion.dispose();
+                dialogoVotacion = null;
+            }
             if (dialogoEspera != null) {
                 dialogoEspera.dispose();
                 dialogoEspera = null;
             }
+            mostroRechazo = true;
             mostrarMensajeRechazo();
-        } else if (modelo.isVotacionPendiente() && !mostrarDialogoVotacion) {
-            mostrarDialogoVotacion = true;
-            mostrarDialogoVotacion();
-            mostrarDialogoVotacion = false;
-        } else if (modelo.isVotoEnviado() && modelo.isYaVote() && !mostrarDialogoEspera) {
-            mostrarDialogoEspera = true;
-            mostrarEsperaVotacion();
-            mostrarDialogoEspera = false;
+        } else if (eventoFin.isVotacionEnCurso()) {
+            mostroRechazo = false;
+            if (modelo.isVotacionPendiente() && !mostrarDialogoVotacion) {
+                mostrarDialogoVotacion = true;
+                mostrarDialogoVotacion();
+                mostrarDialogoVotacion = false;
+            } else if (modelo.isVotoEnviado() && modelo.isYaVote() && !mostrarDialogoEspera) {
+                mostrarDialogoEspera = true;
+                mostrarEsperaVotacion();
+                mostrarDialogoEspera = false;
+            }
         }
     }
 
@@ -290,8 +298,8 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
     }
 
     private void mostrarDialogoVotacion() {
-        JDialog dialog = new JDialog(this, "Votación en curso...", true);
-        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        dialogoVotacion = new JDialog(this, "Votación en curso...", false);
+        dialogoVotacion.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
         JLabel label = new JLabel("¿Deseas que finalice la partida?", SwingConstants.CENTER);
         label.setBorder(BorderFactory.createEmptyBorder(20, 30, 10, 30));
@@ -300,11 +308,15 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         JButton btnNo = new JButton("NO");
 
         btnSi.addActionListener(e -> {
-            dialog.dispose();
+            dialogoVotacion.dispose();
+            dialogoVotacion = null;
+            mostrarDialogoVotacion = false;
             controlador.onVotoTerminar(true);
         });
         btnNo.addActionListener(e -> {
-            dialog.dispose();
+            dialogoVotacion.dispose();
+            dialogoVotacion = null;
+            mostrarDialogoVotacion = false;
             controlador.onVotoTerminar(false);
         });
 
@@ -312,12 +324,12 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         panelBotones.add(btnSi);
         panelBotones.add(btnNo);
 
-        dialog.setLayout(new BorderLayout());
-        dialog.add(label, BorderLayout.CENTER);
-        dialog.add(panelBotones, BorderLayout.SOUTH);
-        dialog.pack();
-        dialog.setLocationRelativeTo(this);
-        dialog.setVisible(true);
+        dialogoVotacion.setLayout(new BorderLayout());
+        dialogoVotacion.add(label, BorderLayout.CENTER);
+        dialogoVotacion.add(panelBotones, BorderLayout.SOUTH);
+        dialogoVotacion.pack();
+        dialogoVotacion.setLocationRelativeTo(this);
+        dialogoVotacion.setVisible(true);
     }
 
     private void mostrarEsperaVotacion() {

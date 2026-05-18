@@ -161,4 +161,6 @@ public interface IDominio {
 
     int getVotosEnContra();
 
+    void resetearVotos();
+
 }
