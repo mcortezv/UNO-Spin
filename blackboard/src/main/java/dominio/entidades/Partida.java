@@ -501,9 +501,10 @@ public class Partida implements IDominio {
         EventoAbandonoDTO evento = new EventoAbandonoDTO();
 
         for (Jugador j : jugadores) {
-            if (j.getNombre().equals(nombre)){
+            if (j.getNombre().equalsIgnoreCase(nombre)){
                 evento.setNombreAbandono(nombre);
                 jugadores.remove(j);
+                break;
             }
         }
 
@@ -518,7 +519,7 @@ public class Partida implements IDominio {
 
     private void devolverCartas(String nombre) {
         for (Jugador j : jugadores) {
-            if (j.getNombre().equals(nombre)){
+            if (j.getNombre().equalsIgnoreCase(nombre)){
                 List<Carta> cartas = j.getMano().getCartas();
                 tablero.getMazo().addCartas(cartas);
             }

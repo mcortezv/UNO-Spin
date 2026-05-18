@@ -363,7 +363,20 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     public void abandonarPartida() {
         vistaActiva = false;
         TipoAccionDTO accion = new TipoAccionDTO("ABANDONAR_PARTIDA");
+        JugadorDTO jugador = new JugadorDTO();
+        jugador.setNombre(miNombre);
+        accion.setJugadorDTO(jugador);
         enviar(accion);
         notifyObservers();
+    }
+
+    @Override
+    public String getNombreAbandono(){
+        return estadoPartida.getEventoAbandono().getNombreAbandono();
+    }
+
+    @Override
+    public String getNombreGanador(){
+        return estadoPartida.getEventoAbandono().getNombreGanador();
     }
 }

@@ -78,6 +78,7 @@ public class Blackboard implements IBlackboard, IReceptor{
             case CONFIRMAR_INICIO   -> procesarConfirmacion(accion);
             case ACEPTAR_SOLICITUD  -> procesarAceptarSolicitud(accion);
             case RECHAZAR_SOLICITUD -> procesarRechazarSolicitud(accion);
+            case ABANDONAR_PARTIDA -> procesarAbandono(accion);
             default -> {
                 if (dominio == null || dominio.getEstadoPartida() == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA) break;
                 switch (tipo) {
@@ -286,5 +287,9 @@ public class Blackboard implements IBlackboard, IReceptor{
         EventoAbandonoDTO temp = this.eventoAbandono;
         eventoAbandono = null;
         return temp;
+    }
+
+    private void procesarAbandono(TipoAccionDTO accion) {
+        eventoAbandono = dominio.removerJugador(JugadorMapper.toEntity(accion.getJugadorDTO()).getNombre());
     }
 }

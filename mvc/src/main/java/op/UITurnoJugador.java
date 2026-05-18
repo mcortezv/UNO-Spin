@@ -238,6 +238,24 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
             this.dispose();
         }
 
+        if (modelo.getNombreAbandono() != null){
+            if (modelo.getNombreGanador() != null){
+                JOptionPane.showConfirmDialog(
+                        this,
+                        modelo.getMiNombre() + " ha abandonado la partida, por lo que eres declarado ganador por defecto.",
+                        "¡Haz Ganado!",
+                        JOptionPane.OK_OPTION
+                );
+            } else {
+                JOptionPane.showConfirmDialog(
+                        this,
+                        "Sus cartas han sido devueltas al mazo.",
+                        modelo.getMiNombre() + " ha abandonado la partida",
+                        JOptionPane.OK_OPTION
+                );
+            }
+        }
+
         boolean jugadaValidaAhora = modelo.isUltimaJugadaValida();
         if (!jugadaValidaAhora && ultimaJugadaValidaAnterior) {
             JOptionPane.showMessageDialog(this, "Carta no compatible con la cima del descarte.");

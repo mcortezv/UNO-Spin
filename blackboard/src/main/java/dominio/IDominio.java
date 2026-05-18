@@ -3,6 +3,7 @@ import dominio.entidades.Carta;
 import dominio.entidades.ConfiguracionPartida;
 import dominio.entidades.Jugador;
 import dominio.entidades.enums.EstadoPartida;
+import dto.EventoAbandonoDTO;
 import dto.TipoEventoRuletaDTO;
 import java.util.List;
 
@@ -141,4 +142,12 @@ public interface IDominio {
      * @return the evento ruleta
      */
     TipoEventoRuletaDTO getEventoRuleta();
+
+    /**
+     * Remover jugador evento abandono dto.
+     *
+     * @param nombre the nombre
+     * @return the evento abandono dto
+     */
+    EventoAbandonoDTO removerJugador(String nombre);
 }

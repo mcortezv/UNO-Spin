@@ -163,4 +163,18 @@ public interface IModeloLectura {
      * @return the mi nombre
      */
     String getMiNombre();
+
+    /**
+     * Gets nombre abandono.
+     *
+     * @return the nombre abandono
+     */
+    String getNombreAbandono();
+
+    /**
+     * Gets nombre ganador.
+     *
+     * @return the nombre ganador
+     */
+    String getNombreGanador();
 }
