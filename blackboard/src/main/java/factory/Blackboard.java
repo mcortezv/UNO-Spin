@@ -5,15 +5,11 @@ import dominio.entidades.Jugador;
 import dominio.entidades.Partida;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoAccion;
-import dto.TipoEventoRuletaDTO;
+import dto.*;
 import interfaces.IBlackboardObservador;
 import mappers.CartaMapper;
 import mappers.ConfiguracionPartidaMapper;
 import mappers.JugadorMapper;
-import dto.CartaDTO;
-import dto.JugadorDTO;
-import dto.SolicitudUnionDTO;
-import dto.TipoAccionDTO;
 import interfaces.IBlackboard;
 import interfaces.IReceptor;
 import interfaces.ISerializer;
@@ -47,6 +43,7 @@ public class Blackboard implements IBlackboard, IReceptor{
     private String nombreSolicitudResuelta = null;
     private String hostNombre = null;
     private ConfiguracionPartida configuracion;
+    private EventoAbandonoDTO eventoAbandono;
 
     /**
      * Instantiates a new Blackboard.
@@ -282,5 +279,10 @@ public class Blackboard implements IBlackboard, IReceptor{
             try { return Integer.parseInt(raw); } catch (NumberFormatException e) { return null; }
         }
         return raw;
+    }
+
+    @Override
+    public EventoAbandonoDTO getEventoAbandono() {
+        return eventoAbandono;
     }
 }

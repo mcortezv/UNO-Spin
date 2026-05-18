@@ -1,6 +1,7 @@
 package dominio.entidades;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoCarta;
+import dto.EventoAbandonoDTO;
 import dto.TipoEventoRuletaDTO;
 import dominio.IDominio;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class Partida implements IDominio {
     private Tablero tablero;
     private boolean unoGritado = false;
     private boolean ultimaJugadaValida = true;
+    private String ganador;
 
     /**
      * Instantiates a new Partida.
@@ -484,5 +486,26 @@ public class Partida implements IDominio {
                     try { j.getMano().getCartas().add(tablero.getMazo().robarCarta()); }
                     catch (Exception e) { System.out.println("Mazo vacio."); }
                 });
+    }
+
+    public EventoAbandonoDTO removerJugador(String nombre) {
+        return null;
+    }
+
+    public String getGanador(){
+        return null;
+    }
+
+    public void devolverCartas(String nombre) {
+        for (Jugador j : jugadores) {
+            if (j.getNombre().equals(nombre)){
+                List<Carta> cartas = j.getMano().getCartas();
+                tablero.getMazo().addCartas(cartas);
+            }
+        }
+    }
+
+    public void finalizarPartida() {
+        estadoPartida = EstadoPartida.FINALIZADA;
     }
 }

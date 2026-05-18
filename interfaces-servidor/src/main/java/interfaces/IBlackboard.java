@@ -1,8 +1,6 @@
 package interfaces;
-import dto.CartaDTO;
-import dto.JugadorDTO;
-import dto.SolicitudUnionDTO;
-import dto.TipoEventoRuletaDTO;
+import dto.*;
+
 import java.util.List;
 
 /**
@@ -76,8 +74,38 @@ public interface IBlackboard {
      */
     int getPuertoJugador(String nombre);
 
+    /**
+     * Gets solicitudes pendientes.
+     *
+     * @return the solicitudes pendientes
+     */
     List<SolicitudUnionDTO> getSolicitudesPendientes();
+
+    /**
+     * Gets ultima accion lobby.
+     *
+     * @return the ultima accion lobby
+     */
     String getUltimaAccionLobby();
+
+    /**
+     * Gets nombre solicitud resuelta.
+     *
+     * @return the nombre solicitud resuelta
+     */
     String getNombreSolicitudResuelta();
+
+    /**
+     * Gets host nombre.
+     *
+     * @return the host nombre
+     */
     String getHostNombre();
+
+    /**
+     * Gets evento abandono.
+     *
+     * @return the evento abandono
+     */
+    EventoAbandonoDTO getEventoAbandono();
 }
