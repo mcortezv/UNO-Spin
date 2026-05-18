@@ -353,6 +353,10 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         return miNombre;
     }
 
+    public void setMiNombre(String nombre) {
+        this.miNombre = nombre;
+    }
+
     @Override
     public void solicitarAbandono() {
         abandono = true;
@@ -372,11 +376,13 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public String getNombreAbandono(){
-        return estadoPartida.getEventoAbandono().getNombreAbandono();
+        return estadoPartida != null && estadoPartida.getEventoAbandono() != null
+                ? estadoPartida.getEventoAbandono().getNombreAbandono() : null;
     }
 
     @Override
     public String getNombreGanador(){
-        return estadoPartida.getEventoAbandono().getNombreGanador();
+        return estadoPartida != null && estadoPartida.getEventoAbandono() != null
+                ? estadoPartida.getEventoAbandono().getNombreGanador() : null;
     }
 }

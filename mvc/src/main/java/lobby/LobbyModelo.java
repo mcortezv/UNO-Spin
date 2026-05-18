@@ -48,6 +48,10 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
         this.onPartidaIniciada = callback;
     }
 
+    public JugadorDTO getJugadorLocal() {
+        return jugadorLocal;
+    }
+
 
     @Override
     public void aceptarSolicitud(String nombre) {

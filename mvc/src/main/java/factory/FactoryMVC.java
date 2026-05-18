@@ -39,7 +39,12 @@ public class FactoryMVC implements IFactoryMVC {
         UIPantallaCarga pantallaCarga = new UIPantallaCarga(lobbyControlador);
         lobbyModelo.suscribir(lobbyUI);
         lobbyModelo.suscribir(pantallaCarga);
-        lobbyModelo.setOnPartidaIniciada(() -> gameUI.setVisible(true));
+        lobbyModelo.setOnPartidaIniciada(() -> {
+            if (lobbyModelo.getJugadorLocal() != null) {
+                gameModelo.setMiNombre(lobbyModelo.getJugadorLocal().getNombre());
+            }
+            gameUI.setVisible(true);
+        });
 
         SwingUtilities.invokeLater(() -> lobbyUI.setVisible(true));
 
