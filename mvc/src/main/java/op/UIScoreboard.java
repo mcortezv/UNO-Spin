@@ -152,17 +152,13 @@ public class UIScoreboard extends JFrame {
             g2.setColor(PODIO_COLOR);
             g2.fillRect(x, y, anchoColumna, altPodio);
 
-            int posReal = ordenVisual[slot] + 1;
+            int posReal = posiciones.get(ordenVisual[slot]).getCantidadCartas();
             String numStr = String.valueOf(posReal);
             Color medallaColor = switch (posReal) {
-                case 1 ->
-                    ORO;
-                case 2 ->
-                    PLATA;
-                case 3 ->
-                    BRONCE;
-                default ->
-                    CUARTO;
+                case 1 -> ORO;
+                case 2 -> PLATA;
+                case 3 -> BRONCE;
+                default -> CUARTO;
             };
 
             int hx = cx, hy = y + 25;

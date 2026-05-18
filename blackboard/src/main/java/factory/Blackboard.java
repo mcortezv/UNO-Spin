@@ -191,14 +191,24 @@ public class Blackboard implements IBlackboard, IReceptor{
         boolean acepta = Boolean.parseBoolean(accion.getResultadoEvento());
         dominio.registrarVoto(acepta);
 
-        System.out.println("votosEnContra: " + dominio.getVotosEnContra() + " estaTerminada: " + dominio.estaTerminada());
-
         if (dominio.estaTerminada()) {
             List<Jugador> jugadores = dominio.getJugadores();
-            List<JugadorDTO> posiciones = jugadores.stream()
+            List<Jugador> ordenados = jugadores.stream()
                     .sorted((a, b) -> a.getMano().getCartas().size() - b.getMano().getCartas().size())
-                    .map(j -> JugadorMapper.toDTO(j, false))
                     .collect(Collectors.toList());
+
+            List<JugadorDTO> posiciones = new ArrayList<>();
+            for (int i = 0; i < ordenados.size(); i++) {
+                JugadorDTO dto = JugadorMapper.toDTO(ordenados.get(i), false);
+                int posicion = 1;
+                for (int j = 0; j < i; j++) {
+                    if (ordenados.get(j).getMano().getCartas().size() < ordenados.get(i).getMano().getCartas().size()) {
+                        posicion = j + 2;
+                    }
+                }
+                dto.setCantidadCartas(posicion);
+                posiciones.add(dto);
+            }
             eventoFinalizacion = new EventoFinalizacionDTO(posiciones);
         } else if (dominio.getVotosEnContra() > 0) {
             eventoFinalizacion = new EventoFinalizacionDTO(false);
