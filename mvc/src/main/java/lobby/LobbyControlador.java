@@ -25,7 +25,15 @@ public class LobbyControlador {
         modelo.rechazarSolicitud(nombre);
     }
 
-    public void confirmarInicio() {
+    public void solicitarInicio() {
+        modelo.solicitarInicio();
+    }
+
+    public void confirmarInicio(){
         modelo.confirmarInicio();
+    }
+    
+    public void negarInicio(){
+        modelo.rechazarInicio();
     }
 }

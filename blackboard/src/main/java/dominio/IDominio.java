@@ -12,6 +12,16 @@ import java.util.List;
  */
 public interface IDominio {
 
+    
+    void agregarConfirmacion(Jugador jugador);
+    
+    boolean todosConfirmaron();
+    
+    void cancelarConfirmaciones();
+
+    void solicitarInicio();
+    
+    
     /**
      * Iniciar partida.
      *
@@ -91,6 +101,8 @@ public interface IDominio {
      * @return the indice jugador actual
      */
     int getIndiceJugadorActual();
+
+    int getCantidadConfirmaciones();
 
     /**
      * Gets jugadores.

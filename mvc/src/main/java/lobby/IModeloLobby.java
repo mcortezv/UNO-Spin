@@ -10,5 +10,9 @@ public interface IModeloLobby {
 
     void rechazarSolicitud(String nombre);
 
+    void solicitarInicio();
+    
     void confirmarInicio();
+    
+    void rechazarInicio();
 }
