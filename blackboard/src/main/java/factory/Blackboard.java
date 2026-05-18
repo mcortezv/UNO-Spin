@@ -200,8 +200,12 @@ public class Blackboard implements IBlackboard, IReceptor{
                     .map(j -> JugadorMapper.toDTO(j, false))
                     .collect(Collectors.toList());
             eventoFinalizacion = new EventoFinalizacionDTO(posiciones);
-        } else {
+        } else if (dominio.getVotosEnContra() > 0) {
             eventoFinalizacion = new EventoFinalizacionDTO(false);
+        } else {
+            EventoFinalizacionDTO enCurso = new EventoFinalizacionDTO(false);
+            enCurso.setVotacionEnCurso(true);
+            eventoFinalizacion = enCurso;
         }
     }
 

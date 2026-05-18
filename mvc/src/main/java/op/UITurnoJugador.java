@@ -247,29 +247,29 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
 
         if (eventoFin == null) {
             mostrarDialogoVotacion = false;
-            mostroRechazo = false;
             mostrarDialogoEspera = false;
+            mostroRechazo = false;
             if (dialogoEspera != null) {
                 dialogoEspera.dispose();
                 dialogoEspera = null;
             }
         } else if (eventoFin.getPosiciones() != null) {
             mostrarTablaPosiciones(eventoFin.getPosiciones());
-        } else if (modelo.isVotacionPendiente() && !mostrarDialogoVotacion) {
-            mostrarDialogoVotacion = true;
-            mostrarDialogoVotacion();
-            mostrarDialogoVotacion = false;
-        } else if (modelo.isYaVote() && !mostrarDialogoEspera && !mostroRechazo) {
-            mostrarDialogoEspera = true;
-            mostrarEsperaVotacion();
-            mostrarDialogoEspera = false;
-        } else if (!modelo.isVotacionPendiente() && !modelo.isYaVote() && !mostroRechazo && eventoFin != null) {
+        } else if (!eventoFin.isVotacionEnCurso() && !mostroRechazo) {
             mostroRechazo = true;
             if (dialogoEspera != null) {
                 dialogoEspera.dispose();
                 dialogoEspera = null;
             }
             mostrarMensajeRechazo();
+        } else if (modelo.isVotacionPendiente() && !mostrarDialogoVotacion) {
+            mostrarDialogoVotacion = true;
+            mostrarDialogoVotacion();
+            mostrarDialogoVotacion = false;
+        } else if (modelo.isVotoEnviado() && modelo.isYaVote() && !mostrarDialogoEspera) {
+            mostrarDialogoEspera = true;
+            mostrarEsperaVotacion();
+            mostrarDialogoEspera = false;
         }
     }
 

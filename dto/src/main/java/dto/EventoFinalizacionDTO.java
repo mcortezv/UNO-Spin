@@ -14,6 +14,7 @@ public class EventoFinalizacionDTO {
     
     private List<JugadorDTO> posiciones;
     private Boolean resultadoVotacion;
+    private boolean votacionEnCurso = false;
 
     public EventoFinalizacionDTO() {
         this.posiciones = null;
@@ -43,6 +44,10 @@ public class EventoFinalizacionDTO {
     public void setResultadoVotacion(boolean resultadoVotacion) {
         this.resultadoVotacion = resultadoVotacion;
     }
+
+    public boolean isVotacionEnCurso() { return votacionEnCurso; }
+
+    public void setVotacionEnCurso(boolean v) { this.votacionEnCurso = v; }
     
     
 }

@@ -361,8 +361,8 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         EventoFinalizacionDTO evento = estadoPartida.getEventoFinalizacion();
         return evento != null
                 && evento.getPosiciones() == null
-                && Boolean.FALSE.equals(evento.isResultadoVotacion())
-                && !yaVote;
+                && evento.isVotacionEnCurso()
+                && !votoEnviado;
     }
 
     @Override
