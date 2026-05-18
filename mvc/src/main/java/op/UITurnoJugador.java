@@ -240,18 +240,18 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
 
         if (modelo.getNombreAbandono() != null){
             if (modelo.getNombreGanador() != null){
-                JOptionPane.showConfirmDialog(
+                JOptionPane.showMessageDialog(
                         this,
                         modelo.getMiNombre() + " ha abandonado la partida, por lo que eres declarado ganador por defecto.",
                         "¡Haz Ganado!",
-                        JOptionPane.OK_OPTION
+                        JOptionPane.INFORMATION_MESSAGE
                 );
             } else {
-                JOptionPane.showConfirmDialog(
+                JOptionPane.showMessageDialog(
                         this,
                         "Sus cartas han sido devueltas al mazo.",
                         modelo.getMiNombre() + " ha abandonado la partida",
-                        JOptionPane.OK_OPTION
+                        JOptionPane.INFORMATION_MESSAGE
                 );
             }
         }
