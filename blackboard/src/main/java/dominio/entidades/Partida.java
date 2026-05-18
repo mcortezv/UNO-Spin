@@ -1,8 +1,10 @@
 package dominio.entidades;
+
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoCarta;
 import dto.TipoEventoRuletaDTO;
 import dominio.IDominio;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,11 +14,11 @@ import java.util.concurrent.ThreadLocalRandom;
  * The type Partida.
  */
 public class Partida implements IDominio {
-    private static final int CARTAS_INICIALES = 7;
-    private static final int VALOR_CARTA_ACCION = 20;
-    private static final int VALOR_CARTA_COMODIN = 50;
-    private static final int NUMERO_SPIN_POR_COLOR = 2;
-    private static final String[] COLORES = {"ROJO", "AZUL", "AMARILLO", "VERDE"};
+    private static int CARTAS_INICIALES = 7;
+    private static int VALOR_CARTA_ACCION = 20;
+    private static int VALOR_CARTA_COMODIN = 50;
+    private static int NUMERO_SPIN_POR_COLOR = 2;
+    private static String[] COLORES = {"ROJO", "AZUL", "AMARILLO", "VERDE"};
     private List<Jugador> jugadores;
     private EstadoPartida estadoPartida;
     private int indiceJugadorActual;
@@ -28,7 +30,8 @@ public class Partida implements IDominio {
     /**
      * Instantiates a new Partida.
      */
-    public Partida() {}
+    public Partida() {
+    }
 
     /**
      * Instantiates a new Partida.
@@ -60,7 +63,8 @@ public class Partida implements IDominio {
             for (int i = 0; i < CARTAS_INICIALES; i++) {
                 try {
                     j.getMano().getCartas().add(mazo.robarCarta());
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
             }
         }
 
@@ -169,13 +173,19 @@ public class Partida implements IDominio {
         }
 
         switch (carta.getTipoCarta()) {
-            case NUMERO_SPIN  -> estadoPartida = EstadoPartida.GIRO_PENDIENTE;
-            case REVERSA      -> { sentidoHorario = !sentidoHorario; avanzarTurno(); }
-            case BLOQUEO      -> { avanzarTurno(); avanzarTurno(); }
-            case TOMA_DOS     -> avanzarTurno();
-            case TOMA_CUATRO  -> estadoPartida = EstadoPartida.SELECCION_COLOR_PENDIENTE;
+            case NUMERO_SPIN -> estadoPartida = EstadoPartida.GIRO_PENDIENTE;
+            case REVERSA -> {
+                sentidoHorario = !sentidoHorario;
+                avanzarTurno();
+            }
+            case BLOQUEO -> {
+                avanzarTurno();
+                avanzarTurno();
+            }
+            case TOMA_DOS -> avanzarTurno();
+            case TOMA_CUATRO -> estadoPartida = EstadoPartida.SELECCION_COLOR_PENDIENTE;
             case CAMBIO_COLOR -> estadoPartida = EstadoPartida.SELECCION_COLOR_PENDIENTE;
-            default           -> avanzarTurno();
+            default -> avanzarTurno();
         }
         return true;
     }
@@ -203,6 +213,7 @@ public class Partida implements IDominio {
             System.out.println("No hay más cartas disponibles.");
         }
     }
+
     @Override
     public void aplicarSeleccionColor(String color) {
         Carta cima = tablero.getDescarte().getUltimaCarta();
@@ -252,10 +263,16 @@ public class Partida implements IDominio {
                 }
             }
             case ROBAR_HASTA_AZUL -> {
-                try { robarHastaColor(jugadorActual, "AZUL"); } catch (Exception ignored) {}
+                try {
+                    robarHastaColor(jugadorActual, "AZUL");
+                } catch (Exception ignored) {
+                }
             }
             case ROBAR_HASTA_ROJO -> {
-                try { robarHastaColor(jugadorActual, "ROJO"); } catch (Exception ignored) {}
+                try {
+                    robarHastaColor(jugadorActual, "ROJO");
+                } catch (Exception ignored) {
+                }
             }
             case INTERCAMBIO_DE_MANOS -> intercambiarManos();
             case PUNTUACION_MAS_BAJA -> {
@@ -263,9 +280,10 @@ public class Partida implements IDominio {
                     aplicarCastigoPuntuacionBaja(nombre);
                 }
             }
-            case GUERRA    -> aplicarGuerra();
-            case CASI_UNO  -> aplicarCasiUno(jugadorActual);
-            case MOSTRAR_LA_MANO -> { }
+            case GUERRA -> aplicarGuerra();
+            case CASI_UNO -> aplicarCasiUno(jugadorActual);
+            case MOSTRAR_LA_MANO -> {
+            }
         }
         estadoPartida = EstadoPartida.EN_PROCESO;
     }
@@ -280,10 +298,14 @@ public class Partida implements IDominio {
     }
 
     @Override
-    public EstadoPartida getEstadoPartida() { return estadoPartida; }
+    public EstadoPartida getEstadoPartida() {
+        return estadoPartida;
+    }
 
     @Override
-    public int getIndiceJugadorActual() { return indiceJugadorActual; }
+    public int getIndiceJugadorActual() {
+        return indiceJugadorActual;
+    }
 
     @Override
     public int getCantidadCartasJugador(int indiceJugador) {
@@ -318,6 +340,14 @@ public class Partida implements IDominio {
     @Override
     public TipoEventoRuletaDTO getEventoRuleta() {
         return tablero.getRuleta().getEventoRuleta();
+    }
+
+    @Override
+    public void setsConfiguracion(ConfiguracionPartida configuracion) {
+        CARTAS_INICIALES = configuracion.getCartasIniciales();
+        VALOR_CARTA_ACCION = configuracion.getValorCartaAccion();
+        VALOR_CARTA_COMODIN = configuracion.getValorCartaComodin();
+        NUMERO_SPIN_POR_COLOR = configuracion.getNumeroSpinPorColor();
     }
 
     /**
@@ -436,7 +466,9 @@ public class Partida implements IDominio {
         if (descarte.size() <= 1) return;
         List<Carta> recicladas = new ArrayList<>(descarte.subList(0, descarte.size() - 1));
         descarte.subList(0, descarte.size() - 1).clear();
-        recicladas.forEach(c -> { if (c.esComodin()) c.setColor(null); });
+        recicladas.forEach(c -> {
+            if (c.esComodin()) c.setColor(null);
+        });
         Collections.shuffle(recicladas);
         tablero.getMazo().getCartas().addAll(recicladas);
     }
@@ -489,8 +521,11 @@ public class Partida implements IDominio {
                 .filter(j -> j.getNombre().equals(nombre))
                 .findFirst()
                 .ifPresent(j -> {
-                    try { j.getMano().getCartas().add(tablero.getMazo().robarCarta()); }
-                    catch (Exception e) { System.out.println("Mazo vacío."); }
+                    try {
+                        j.getMano().getCartas().add(tablero.getMazo().robarCarta());
+                    } catch (Exception e) {
+                        System.out.println("Mazo vacío.");
+                    }
                 });
     }
 }

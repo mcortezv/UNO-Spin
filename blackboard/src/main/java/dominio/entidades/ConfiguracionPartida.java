@@ -4,11 +4,17 @@ package dominio.entidades;
  * The type Configuracion partida.
  */
 public class ConfiguracionPartida {
+    private int cartasIniciales;
     private int valorMinimo;
     private int valorMaximo;
     private int cantidadComodines;
     private int cantidadCartasAccion;
     private float tiempoMaximoRuleta;
+    private int valorCartaAccion;
+    private int valorCartaComodin;
+    private int numeroSpinPorColor;
+
+
 
     /**
      * Instantiates a new Configuracion partida.
@@ -104,5 +110,37 @@ public class ConfiguracionPartida {
      */
     public void setTiempoMaximoRuleta(float tiempoMaximoRuleta) {
         this.tiempoMaximoRuleta = tiempoMaximoRuleta;
+    }
+
+    public int getCartasIniciales() {
+        return cartasIniciales;
+    }
+
+    public void setCartasIniciales(int cartasIniciales) {
+        this.cartasIniciales = cartasIniciales;
+    }
+
+    public int getValorCartaComodin() {
+        return valorCartaComodin;
+    }
+
+    public void setValorCartaComodin(int valorCartaComodin) {
+        this.valorCartaComodin = valorCartaComodin;
+    }
+
+    public int getValorCartaAccion() {
+        return valorCartaAccion;
+    }
+
+    public void setValorCartaAccion(int valorCartaAccion) {
+        this.valorCartaAccion = valorCartaAccion;
+    }
+
+    public int getNumeroSpinPorColor() {
+        return numeroSpinPorColor;
+    }
+
+    public void setNumeroSpinPorColor(int numeroSpinPorColor) {
+        this.numeroSpinPorColor = numeroSpinPorColor;
     }
 }

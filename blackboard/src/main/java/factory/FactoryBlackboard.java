@@ -29,6 +29,9 @@ public class FactoryBlackboard implements IFactoryBlackboard {
         return blackboard;
     }
 
+
+
+
     @Override
     public IBlackboard crearBlackboardObservable(ISerializer serializer) {
         return crearBlackboard(serializer);

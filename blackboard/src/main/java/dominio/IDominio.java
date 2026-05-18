@@ -149,4 +149,7 @@ public interface IDominio {
      * @return the evento ruleta
      */
     TipoEventoRuletaDTO getEventoRuleta();
+
+    void setsConfiguracion(ConfiguracionPartida configuracion);
+
 }

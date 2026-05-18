@@ -1,4 +1,5 @@
 package factory;
+
 import dominio.IDominio;
 import dominio.entidades.ConfiguracionPartida;
 import dominio.entidades.Jugador;
@@ -15,6 +16,7 @@ import dto.TipoAccionDTO;
 import interfaces.IBlackboard;
 import interfaces.IReceptor;
 import interfaces.ISerializer;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,7 +26,7 @@ import java.util.Set;
  * The type Blackboard.
  *
  */
-public class Blackboard implements IBlackboard, IReceptor{
+public class Blackboard implements IBlackboard, IReceptor {
 
     private static final int MIN_JUGADORES = 2;
     private static final int MAX_JUGADORES = 4;
@@ -49,6 +51,8 @@ public class Blackboard implements IBlackboard, IReceptor{
         instance = this;
     }
 
+
+
     /**
      * Suscribir.
      *
@@ -63,19 +67,31 @@ public class Blackboard implements IBlackboard, IReceptor{
         TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
         TipoAccion tipo = TipoAccion.valueOf(accion.getTipoAccion());
         switch (tipo) {
-            case UNIRSE_PARTIDA   -> procesarUnirse(accion);
+            case UNIRSE_PARTIDA -> procesarUnirse(accion);
             case CONFIRMAR_INICIO -> procesarConfirmacion(accion);
             default -> {
-                if (dominio.getEstadoPartida() == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA) break;
+                if (dominio.getEstadoPartida() == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA)
+                    break;
                 switch (tipo) {
-                    case JUGAR_CARTA       -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
-                    case PEDIR_CARTA       -> dominio.robarCartaJugadorActual();
+                    case JUGAR_CARTA -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
+                    case PEDIR_CARTA -> dominio.robarCartaJugadorActual();
                     case PEDIR_CARTA_CASTIGO -> dominio.robarCartaSinAvanzarTurno();
-                    case GRITAR_UNO        -> dominio.gritarUno();
+                    case GRITAR_UNO -> dominio.gritarUno();
                     case SELECCIONAR_COLOR -> dominio.aplicarSeleccionColor(accion.getCartaDTO().getColor());
-                    case GIRAR_RULETA      -> { try { dominio.procesarGiroRuleta(); } catch (Exception e) { System.err.println("Ruleta: " + e.getMessage()); } }
-                    case RECONOCER_EVENTO  -> { TipoEventoRuletaDTO ev = dominio.getEventoRuleta(); dominio.aplicarEfectoRuleta(ev, parsearResultado(ev, accion.getResultadoEvento())); dominio.avanzarTurno(); }
-                    default                -> {}
+                    case GIRAR_RULETA -> {
+                        try {
+                            dominio.procesarGiroRuleta();
+                        } catch (Exception e) {
+                            System.err.println("Ruleta: " + e.getMessage());
+                        }
+                    }
+                    case RECONOCER_EVENTO -> {
+                        TipoEventoRuletaDTO ev = dominio.getEventoRuleta();
+                        dominio.aplicarEfectoRuleta(ev, parsearResultado(ev, accion.getResultadoEvento()));
+                        dominio.avanzarTurno();
+                    }
+                    default -> {
+                    }
                 }
             }
         }
@@ -182,8 +198,21 @@ public class Blackboard implements IBlackboard, IReceptor{
     private Object parsearResultado(TipoEventoRuletaDTO evento, String raw) {
         if (raw == null || evento == null) return null;
         if (evento == TipoEventoRuletaDTO.DESCARTAR_POR_NUMERO) {
-            try { return Integer.parseInt(raw); } catch (NumberFormatException e) { return null; }
+            try {
+                return Integer.parseInt(raw);
+            } catch (NumberFormatException e) {
+                return null;
+            }
         }
         return raw;
     }
+
+    public void procesarConfiguracion(ConfiguracionPartida configuracion) {
+
+        dominio.setsConfiguracion(configuracion);
+
+
+    }
+
+
 }

@@ -21,6 +21,10 @@ public class ConfiguracionPartidaMapper {
         entity.setCantidadComodines(dto.getCantidadComodines());
         entity.setCantidadCartasAccion(dto.getCantidadCartasAccion());
         entity.setTiempoMaximoRuleta(dto.getTiempoMaximoRuleta());
+        entity.setCartasIniciales(dto.getCartasIniciales());
+        entity.setValorCartaAccion(dto.getValorCartaAccion());
+        entity.setValorCartaComodin(dto.getValorCartaComodin());
+        entity.setNumeroSpinPorColor(dto.getNumeroSpinPorColor());
         return entity;
     }
 }

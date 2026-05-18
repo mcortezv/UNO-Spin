@@ -4,11 +4,15 @@ package dto;
  * The type Configuracion partida dto.
  */
 public class ConfiguracionPartidaDTO {
+    private int cartasIniciales;
     private int valorMinimo;
     private int valorMaximo;
     private int cantidadComodines;
     private int cantidadCartasAccion;
     private float tiempoMaximoRuleta;
+    private int valorCartaAccion;
+    private int valorCartaComodin;
+    private int numeroSpinPorColor;
 
     /**
      * Instantiates a new Configuracion partida dto.
@@ -25,12 +29,13 @@ public class ConfiguracionPartidaDTO {
      * @param tiempoMaximoRuleta   the tiempo maximo ruleta
      */
     public ConfiguracionPartidaDTO(int valorMinimo, int valorMaximo, int cantidadComodines,
-                                    int cantidadCartasAccion, float tiempoMaximoRuleta) {
+                                    int cantidadCartasAccion, float tiempoMaximoRuleta, int cartasIniciales) {
         this.valorMinimo = valorMinimo;
         this.valorMaximo = valorMaximo;
         this.cantidadComodines = cantidadComodines;
         this.cantidadCartasAccion = cantidadCartasAccion;
         this.tiempoMaximoRuleta = tiempoMaximoRuleta;
+        this.cartasIniciales= cartasIniciales;
     }
 
     /**
@@ -102,4 +107,36 @@ public class ConfiguracionPartidaDTO {
      * @param tiempoMaximoRuleta the tiempo maximo ruleta
      */
     public void setTiempoMaximoRuleta(float tiempoMaximoRuleta) { this.tiempoMaximoRuleta = tiempoMaximoRuleta; }
+
+    public int getCartasIniciales() {
+        return cartasIniciales;
+    }
+
+    public void setCartasIniciales(int cartasIniciales) {
+        this.cartasIniciales = cartasIniciales;
+    }
+
+    public int getValorCartaAccion() {
+        return valorCartaAccion;
+    }
+
+    public void setValorCartaAccion(int valorCartaAccion) {
+        this.valorCartaAccion = valorCartaAccion;
+    }
+
+    public int getValorCartaComodin() {
+        return valorCartaComodin;
+    }
+
+    public void setValorCartaComodin(int valorCartaComodin) {
+        this.valorCartaComodin = valorCartaComodin;
+    }
+
+    public int getNumeroSpinPorColor() {
+        return numeroSpinPorColor;
+    }
+
+    public void setNumeroSpinPorColor(int numeroSpinPorColor) {
+        this.numeroSpinPorColor = numeroSpinPorColor;
+    }
 }
