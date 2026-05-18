@@ -105,6 +105,37 @@ public class ControlServidor implements IBlackboardObservador {
                 dtoHost.setSolicitudesPendientes(solicitudes);
                 enviar(dtoHost, puertoHost, ipHost);
             }
+            
+            case "SOLICITAR_INICIO" -> {
+                String jugadorSolicitante= blackboard.getNombreSolicitudResuelta();
+                for(JugadorDTO jugador: jugadores){
+
+                    if (jugador.getNombre().equals(jugadorSolicitante)) continue;
+                    String ip= blackboard.getIpJugador(jugador.getNombre());
+                    int puerto= blackboard.getPuertoJugador(jugador.getNombre());
+                    if (ip == null) continue; 
+                    
+                    EstadoPartidaDTO estado= new EstadoPartidaDTO();
+                    estado.setEstadoPartida("SOLICITUD_PENDIENTE");
+                    estado.setJugadores(jugadores);
+                    enviar(estado, puerto, ip);
+                }
+            }
+
+            case "NEGAR_INICIO" ->{
+                for(JugadorDTO jugador: jugadores){
+                    String ip= blackboard.getIpJugador(jugador.getNombre());
+                    int puerto= blackboard.getPuertoJugador(jugador.getNombre());
+                    if (ip == null) continue;
+
+                    EstadoPartidaDTO estado= new EstadoPartidaDTO();
+                    estado.setEstadoPartida("SOLICITUD_CANCELADA");
+                    estado.setJugadores(jugadores);
+                    enviar(estado, puerto, ip);
+
+                }
+            }
+
         }
     }
 

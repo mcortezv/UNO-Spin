@@ -43,7 +43,11 @@ public enum TipoAccion {
     /**
      * Confirmar inicio tipo accion.
      */
+    SOLICITAR_INICIO,
+
     CONFIRMAR_INICIO,
+
+    RECHAZAR_INICIO,
 
     CREAR_PARTIDA,
 

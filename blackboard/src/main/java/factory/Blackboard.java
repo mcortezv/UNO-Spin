@@ -39,7 +39,7 @@ public class Blackboard implements IBlackboard, IReceptor{
     private IDominio dominio;
     private final ISerializer serializer;
     private final List<Jugador> jugadoresInscritos = new ArrayList<>();
-    private final Set<String> confirmaciones = new HashSet<>();
+    //private final Set<String> confirmaciones = new HashSet<>();
     private final Map<String, String> ipsPorNombre = new LinkedHashMap<>();
     private final Map<String, Integer> puertosPorNombre = new LinkedHashMap<>();
     private final Map<String, SolicitudUnionDTO> solicitudes = new LinkedHashMap<>();
@@ -78,9 +78,11 @@ public class Blackboard implements IBlackboard, IReceptor{
         switch (tipo) {
             case CREAR_PARTIDA      -> procesarCrearPartida(accion);
             case UNIRSE_PARTIDA     -> procesarUnirse(accion);
-            case CONFIRMAR_INICIO   -> procesarConfirmacion(accion);
+            case SOLICITAR_INICIO   -> procesarSolicitudInicio(accion);
             case ACEPTAR_SOLICITUD  -> procesarAceptarSolicitud(accion);
             case RECHAZAR_SOLICITUD -> procesarRechazarSolicitud(accion);
+            case CONFIRMAR_INICIO   -> procesarConfirmarInicio(accion);
+            case RECHAZAR_INICIO    -> procesarRechazarInicio(accion);
             default -> {
                 if (dominio == null || dominio.getEstadoPartida() == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA) break;
                 switch (tipo) {
@@ -163,19 +165,39 @@ public class Blackboard implements IBlackboard, IReceptor{
         nombreSolicitudResuelta = nombre;
     }
 
-    private void procesarConfirmacion(TipoAccionDTO accion) {
+    private void procesarSolicitudInicio(TipoAccionDTO accion) {
         if (dominio == null || dominio.getEstadoPartida() != EstadoPartida.NO_INICIADA) return;
         if (accion.getJugadorDTO() == null) return;
+        dominio.solicitarInicio();
+        String nombre= accion.getJugadorDTO().getNombre();
+        nombreSolicitudResuelta= nombre;
 
-        confirmaciones.add(accion.getJugadorDTO().getNombre());
+       // Jugador jugador= JugadorMapper.toEntity(accion.getJugadorDTO());
+       // dominio.agregarConfirmacion(jugador);
+        ultimaAccionLobby= "SOLICITAR_INICIO";
 
-        boolean todosConfirmaron = jugadoresInscritos.stream()
-                .allMatch(j -> confirmaciones.contains(j.getNombre()));
-        if (todosConfirmaron && jugadoresInscritos.size() >= MIN_JUGADORES) {
+        
+//        if (dominio.getCantidadConfirmaciones() >=  MIN_JUGADORES && jugadoresInscritos.size() >= MAX_JUGADORES){
+//            arrancarPartida();
+//        }
+    }
+
+    private void procesarConfirmarInicio(TipoAccionDTO accion){
+        Jugador jugador= JugadorMapper.toEntity(accion.getJugadorDTO());
+        dominio.agregarConfirmacion(jugador);
+        ultimaAccionLobby= "CONFIRMAR_INICIO";
+
+        if (dominio.getCantidadConfirmaciones() >= jugadoresInscritos.size()-1 && jugadoresInscritos.size() >= MIN_JUGADORES){
             arrancarPartida();
-        } else {
-            ultimaAccionLobby = null;
         }
+
+    }
+
+    private void procesarRechazarInicio(TipoAccionDTO accion){
+        Jugador jugador= JugadorMapper.toEntity(accion.getJugadorDTO());
+        dominio.cancelarConfirmaciones();
+        ultimaAccionLobby= "NEGAR_INICIO";
+
     }
 
     private void arrancarPartida() {

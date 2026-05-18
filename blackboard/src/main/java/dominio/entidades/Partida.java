@@ -5,7 +5,9 @@ import dto.TipoEventoRuletaDTO;
 import dominio.IDominio;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -17,6 +19,7 @@ public class Partida implements IDominio {
     private static final int VALOR_CARTA_COMODIN = 50;
     private static final int NUMERO_SPIN_POR_COLOR = 2;
     private static final String[] COLORES = {"ROJO", "AZUL", "AMARILLO", "VERDE"};
+    private final List<Jugador> confirmaciones = new ArrayList<>();
     private List<Jugador> jugadores;
     private EstadoPartida estadoPartida;
     private int indiceJugadorActual;
@@ -24,6 +27,7 @@ public class Partida implements IDominio {
     private Tablero tablero;
     private boolean unoGritado = false;
     private boolean ultimaJugadaValida = true;
+    
 
     /**
      * Instantiates a new Partida.
@@ -129,7 +133,26 @@ public class Partida implements IDominio {
         }
         return cartas.isEmpty() ? null : cartas.removeLast();
     }
+    
+    public void agregarConfirmacion(Jugador jugador) {
+    confirmaciones.add(jugador);
+    }
 
+    public boolean todosConfirmaron() {
+        return jugadores.stream()
+                .allMatch(j -> confirmaciones.stream()
+                        .anyMatch(c -> c.getNombre().equals(j.getNombre())));
+    }
+
+    public void cancelarConfirmaciones() {
+
+        confirmaciones.clear();
+    }
+
+    public void solicitarInicio(){
+
+    }
+    
     @Override
     public boolean aplicarJugada(Carta carta) {
         if (!tablero.getDescarte().validarCartaEntrante(carta)) {
@@ -327,6 +350,10 @@ public class Partida implements IDominio {
      */
     public void setTablero(Tablero t) {
         this.tablero = t;
+    }
+
+    public int getCantidadConfirmaciones() {
+        return confirmaciones.size();
     }
 
     /**

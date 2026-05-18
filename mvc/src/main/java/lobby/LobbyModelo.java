@@ -10,6 +10,7 @@ import interfaces.ISerializer;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.Timer;
 
 public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLobbyReceptor {
 
@@ -81,10 +82,22 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
         accion.setPuerto(puertoEscucha);
         enviar(accion);
     }
+    
+    public void confirmarInicio(){
+        TipoAccionDTO accion= new TipoAccionDTO("CONFIRMAR_INICIO");
+        accion.setJugadorDTO(jugadorLocal);
+        enviar(accion);
+    }
+    
+    public void rechazarInicio(){
+        TipoAccionDTO accion= new TipoAccionDTO("RECHAZAR_INICIO");
+        accion.setJugadorDTO(jugadorLocal);
+        enviar(accion);
+    }
 
     @Override
-    public void confirmarInicio() {
-        TipoAccionDTO accion = new TipoAccionDTO("CONFIRMAR_INICIO");
+    public void solicitarInicio() {
+        TipoAccionDTO accion = new TipoAccionDTO("SOLICITAR_INICIO");
         accion.setJugadorDTO(jugadorLocal);
         enviar(accion);
     }
@@ -123,7 +136,27 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
             if (onPartidaIniciada != null) {
                 SwingUtilities.invokeLater(onPartidaIniciada);
             }
-        } else {
+        } else if("SOLICITUD_PENDIENTE".equals(estadoPartida)){
+            estadoUnion= "SOLICITUD_PENDIENTE";
+            jugadoresEnSala = estado.getJugadores() != null
+                    ? estado.getJugadores() : new ArrayList<>();
+            notificarVistas();
+        
+        } else if("SOLICITUD_CANCELADA".equals(estadoPartida)){
+            estadoUnion= "SOLICITUD_CANCELADA";
+            jugadoresEnSala = estado.getJugadores() != null
+                    ? estado.getJugadores() : new ArrayList<>();
+            notificarVistas();
+
+            Timer timer= new Timer(3000, e->{
+                estadoUnion= "EN_SALA";
+                notificarVistas();
+
+            });
+            timer.setRepeats(false);
+            timer.start();
+
+        }else {
             estadoUnion = "EN_SALA";
             jugadoresEnSala = estado.getJugadores() != null
                     ? estado.getJugadores() : new ArrayList<>();

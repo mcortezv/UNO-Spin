@@ -23,5 +23,9 @@ public enum EstadoPartida {
     /**
      * Seleccion color pendiente estado partida.
      */
-    SELECCION_COLOR_PENDIENTE
+    SELECCION_COLOR_PENDIENTE,
+
+    SOLICITUD_PENDIENTE,
+
+    SOLICITUD_CANCELADA;
 }
