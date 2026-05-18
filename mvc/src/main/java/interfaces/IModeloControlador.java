@@ -80,13 +80,6 @@ public interface IModeloControlador {
     void setVistaActiva(boolean vistaActiva);
 
     /**
-     * Sets abandono.
-     *
-     * @param abandono the abandono
-     */
-    void setAbandono(boolean abandono);
-
-    /**
      * Solicitar abandono.
      */
     void solicitarAbandono();

@@ -283,6 +283,8 @@ public class Blackboard implements IBlackboard, IReceptor{
 
     @Override
     public EventoAbandonoDTO getEventoAbandono() {
-        return eventoAbandono;
+        EventoAbandonoDTO temp = this.eventoAbandono;
+        eventoAbandono = null;
+        return temp;
     }
 }

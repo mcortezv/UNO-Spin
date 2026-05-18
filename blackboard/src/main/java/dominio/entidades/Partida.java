@@ -516,7 +516,7 @@ public class Partida implements IDominio {
         return evento;
     }
 
-    public void devolverCartas(String nombre) {
+    private void devolverCartas(String nombre) {
         for (Jugador j : jugadores) {
             if (j.getNombre().equals(nombre)){
                 List<Carta> cartas = j.getMano().getCartas();

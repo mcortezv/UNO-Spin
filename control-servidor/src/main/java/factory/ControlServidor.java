@@ -1,10 +1,7 @@
 package factory;
+import dto.*;
 import interfaces.*;
-import dto.CartaDTO;
-import dto.EstadoPartidaDTO;
-import dto.JugadorDTO;
-import dto.SolicitudUnionDTO;
-import dto.TipoEventoRuletaDTO;
+
 import java.util.List;
 
 /**
@@ -128,12 +125,14 @@ public class ControlServidor implements IBlackboardObservador {
         List<JugadorDTO> jugadores = blackboard.getJugadores();
         CartaDTO cartaCima = blackboard.getCartaCima();
         List<CartaDTO> mano = blackboard.getManoJugador(indiceJugador);
+        EventoAbandonoDTO eventoAbandono = blackboard.getEventoAbandono();
         TipoEventoRuletaDTO eventoRuleta = "GIRO_PENDIENTE".equals(blackboard.getEstadoPartida())
                 ? blackboard.getEventoRuleta()
                 : null;
         return new EstadoPartidaDTO(
                 blackboard.getIndiceJugadorActual(),
                 blackboard.getEstadoPartida(),
+                eventoAbandono,
                 cartaCima,
                 jugadores,
                 mano,

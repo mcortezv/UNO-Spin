@@ -41,6 +41,8 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         this.puertoServidor = puertoServidor;
         this.puertoEscucha = puertoEscucha;
         this.ipLocal = ipLocal;
+        this.abandono = false;
+        this.vistaActiva = true;
     }
 
     /**
@@ -341,12 +343,9 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public boolean getAbandono() {
-        return abandono;
-    }
-
-    @Override
-    public void setAbandono(boolean abandono) {
-        this.abandono = abandono;
+        boolean temp = abandono;
+        abandono = false;
+        return temp;
     }
 
     @Override
@@ -356,11 +355,15 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public void solicitarAbandono() {
-
+        abandono = true;
+        notifyObservers();
     }
 
     @Override
     public void abandonarPartida() {
-
+        vistaActiva = false;
+        TipoAccionDTO accion = new TipoAccionDTO("ABANDONAR_PARTIDA");
+        enviar(accion);
+        notifyObservers();
     }
 }
