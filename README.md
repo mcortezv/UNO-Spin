@@ -14,5 +14,5 @@ java -jar cliente-assembler/target/cliente.jar
 
 `Paso 4:` Cliente 2
 ```bash
-java -jar cliente-assembler\target\cliente.jar 6001
+java -jar cliente-assembler/target/cliente.jar 6001
 ```
