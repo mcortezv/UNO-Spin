@@ -1,5 +1,4 @@
 target/
-**/target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -15,6 +14,9 @@ target/
 *.iml
 *.ipr
 .ai/
+servidor-assembler/dependency-reduced-pom.xml
+cliente-assembler/dependency-reduced-pom.xml
+
 ### Eclipse ###
 .apt_generated
 .classpath

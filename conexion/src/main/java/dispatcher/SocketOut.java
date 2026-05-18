@@ -1,23 +1,34 @@
 package dispatcher;
+import interfaces.IDispatcher;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SocketOut {
+/**
+ * The type Socket out.
+ */
+public class SocketOut implements IDispatcher {
     private ExecutorService worker;
 
+    /**
+     * Start.
+     */
     public void start() {
         this.worker = Executors.newCachedThreadPool();
     }
 
+    /**
+     * Close.
+     */
     public void close() {
         if (worker != null && !worker.isShutdown()) {
             worker.shutdown();
         }
     }
 
-    public void update(String json, int port, String ip) {
+    @Override
+    public void enviar(String json, int port, String ip) {
         System.out.println("Recibido. Enviando a " + ip + ":" + port);
         worker.submit(() -> {
             try (Socket socket = new Socket(ip, port); PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {

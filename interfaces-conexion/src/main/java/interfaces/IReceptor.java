@@ -1,6 +1,14 @@
 package interfaces;
 
+/**
+ * The interface Receptor componente.
+ */
 public interface IReceptor {
 
-    void update(String json, int port, String ip);
+    /**
+     * Recibir mensaje.
+     *
+     * @param json the json
+     */
+    void recibirMensaje(String json);
 }
