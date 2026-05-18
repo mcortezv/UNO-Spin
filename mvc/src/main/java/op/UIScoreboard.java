@@ -14,12 +14,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.util.List;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
+
 import styles.Button;
 
 /**
@@ -116,20 +112,15 @@ public class UIScoreboard extends JFrame {
             canvas.add(lblNombre);
         }
 
-        Button btnSalir = new Button("SALIR", new Color(30, 30, 30)) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(ORO);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
-                super.paintComponent(g);
-            }
-        };
+        JButton btnSalir = new JButton("SALIR");
+        btnSalir.setBackground(ORO);
         btnSalir.setForeground(new Color(30, 30, 30));
         btnSalir.setFont(new Font("Arial", Font.BOLD, 16));
+        btnSalir.setFocusPainted(false);
+        btnSalir.setBorderPainted(false);
+        btnSalir.setOpaque(true);
         int btnW = 160, btnH = 42;
-        btnSalir.setBounds(ANCHO / 2 - btnW / 2, ALTO - 70, btnW, btnH);
+        btnSalir.setBounds(ANCHO / 2 - btnW / 2, ALTO - 90, btnW, btnH);
         btnSalir.addActionListener(e -> System.exit(0));
         canvas.add(btnSalir);
 
@@ -194,38 +185,32 @@ public class UIScoreboard extends JFrame {
     }
 
     private int[] calcularOrdenVisual() {
-        int n = posiciones.size();
-        if (n == 1) {
-            return new int[]{0};
-        }
-        if (n == 2) {
-            return new int[]{1, 0};
-        }
-        if (n == 3) {
-            return new int[]{1, 0, 2};
-        }
+        int n = Math.min(posiciones.size(), 4);
+        if (n == 1) return new int[]{0};
+        if (n == 2) return new int[]{1, 0};
+        if (n == 3) return new int[]{1, 0, 2};
         return new int[]{1, 0, 2, 3};
     }
 
+
     private int[] calcularXCentros() {
         int n = Math.min(posiciones.size(), 4);
-        int margen = 120;
-        int espacio = n == 1 ? 0 : (ANCHO - margen * 2) / (n - 1);
         int[] cx = new int[n];
-        for (int i = 0; i < n; i++) {
-            cx[i] = n == 1 ? ANCHO / 2 : margen + i * espacio;
+        switch (n) {
+            case 1 -> cx = new int[]{ANCHO / 2};
+            case 2 -> cx = new int[]{ANCHO / 2 - 120, ANCHO / 2 + 120};
+            case 3 -> cx = new int[]{ANCHO / 2 - 200, ANCHO / 2, ANCHO / 2 + 200};
+            case 4 -> cx = new int[]{ANCHO / 2 - 300, ANCHO / 2 - 100, ANCHO / 2 + 100, ANCHO / 2 + 300};
         }
         return cx;
     }
 
     private int[] calcularAlturasPodio() {
         int n = Math.min(posiciones.size(), 4);
-        int[] alturas = {200, 140, 100, 70};
-        int[] ordenVisual = calcularOrdenVisual();
+        int[] todasAlturas = {140, 200, 100, 70};
         int[] resultado = new int[n];
-        for (int slot = 0; slot < n; slot++) {
-            int posReal = ordenVisual[slot];
-            resultado[slot] = alturas[posReal];
+        for (int i = 0; i < n; i++) {
+            resultado[i] = todasAlturas[i];
         }
         return resultado;
     }
