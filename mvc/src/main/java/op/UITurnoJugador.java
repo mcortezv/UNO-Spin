@@ -254,6 +254,10 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
                 dialogoEspera = null;
             }
         } else if (eventoFin.getPosiciones() != null) {
+            if (dialogoEspera != null) {
+                dialogoEspera.dispose();
+                dialogoEspera = null;
+            }
             mostrarTablaPosiciones(eventoFin.getPosiciones());
         } else if (!eventoFin.isVotacionEnCurso() && !mostroRechazo) {
             mostroRechazo = true;
@@ -317,7 +321,7 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
     }
 
     private void mostrarEsperaVotacion() {
-        dialogoEspera = new JDialog(this, "Votación en curso...", false); // false aquí
+        dialogoEspera = new JDialog(this, "Votación en curso...", false);
         dialogoEspera.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         JLabel label = new JLabel("Esperando a que el resto de jugadores voten", SwingConstants.CENTER);
         label.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
@@ -328,7 +332,11 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
     }
 
     private void mostrarTablaPosiciones(List<JugadorDTO> posiciones) {
-        
+        SwingUtilities.invokeLater(() -> {
+            UIScoreboard scoreboard = new UIScoreboard(posiciones);
+            scoreboard.setVisible(true);
+            this.dispose();
+        });
     }
 
     private void mostrarMensajeRechazo() {
