@@ -488,12 +488,32 @@ public class Partida implements IDominio {
                 });
     }
 
-    public EventoAbandonoDTO removerJugador(String nombre) {
-        return null;
+    public void setGanador(String nombre){
+        this.ganador = nombre;
     }
 
     public String getGanador(){
-        return null;
+        return ganador;
+    }
+
+    public EventoAbandonoDTO removerJugador(String nombre) {
+        devolverCartas(nombre);
+        EventoAbandonoDTO evento = new EventoAbandonoDTO();
+
+        for (Jugador j : jugadores) {
+            if (j.getNombre().equals(nombre)){
+                evento.setNombreAbandono(nombre);
+                jugadores.remove(j);
+            }
+        }
+
+        if (jugadores.size() <= 1) {
+            setGanador(jugadores.getFirst().getNombre());
+            evento.setNombreGanador(ganador);
+            finalizarPartida();
+        }
+
+        return evento;
     }
 
     public void devolverCartas(String nombre) {
