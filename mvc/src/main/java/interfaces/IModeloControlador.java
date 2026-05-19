@@ -100,4 +100,6 @@ public interface IModeloControlador {
      * @param acepta the desicion
      */
     void enviarVotoTerminar(boolean acepta);
+
+    void setNombreJugador(String nombre);
 }

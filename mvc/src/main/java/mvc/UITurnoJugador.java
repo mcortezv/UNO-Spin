@@ -1,5 +1,4 @@
-package op;
-import com.sun.tools.javac.Main;
+package mvc;
 import dto.TipoEventoRuletaDTO;
 import dto.CartaDTO;
 import dto.JugadorDTO;
@@ -9,11 +8,15 @@ import dialogs.FabricaDialogosEvento;
 import dto.EventoFinalizacionDTO;
 import interfaces.IModeloLectura;
 import interfaces.ISuscriptor;
-import mvc.Controlador;
+import op.UICarta;
+import op.UIJugador;
+import op.UIMano;
+import op.UITablero;
 import styles.Button;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The type Ui turno jugador.
@@ -78,7 +81,7 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         this.btnFinalizarPartida = new Button("Finalizar Partida", new Color(45, 45, 45));
 
         ImageIcon iconoOriginal = new ImageIcon(
-                getClass().getResource("/exit.png")
+                Objects.requireNonNull(getClass().getResource("/exit.png"))
         );
         Image imagenEscalada = iconoOriginal.getImage()
                 .getScaledInstance(60, 30, Image.SCALE_SMOOTH);
@@ -256,6 +259,10 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
             if (resultado == JOptionPane.YES_OPTION) {
                 controlador.abandonarPartida();
             }
+        }
+
+        if (!isVisible() && modelo.getCartaCima() != null) {
+            setVisible(true);
         }
 
         if (!modelo.getVistaActiva()) {

@@ -364,7 +364,8 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         return miNombre;
     }
 
-    public void setMiNombre(String nombre) {
+    @Override
+    public void setNombreJugador(String nombre) {
         this.miNombre = nombre;
     }
 
