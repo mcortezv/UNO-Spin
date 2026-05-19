@@ -1,5 +1,7 @@
 package lobby;
 
+import dto.JugadorDTO;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -176,17 +178,20 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
     private void onUnirse() {
         String nombre = campoNombre.getText().trim();
         if (nombre.isEmpty()) return;
-        controlador.solicitarUnion(nombre, avatarSeleccionado);
+        JugadorDTO jugador = new JugadorDTO();
+        jugador.setNombre(nombre);
+        jugador.setNumeroAvatar(avatarSeleccionado);
+        controlador.solicitarUnion(jugador);
     }
 
     @Override
     public void actualizar(IModeloLobbyLectura modelo) {
         SwingUtilities.invokeLater(() -> {
             switch (modelo.getEstadoUnion()) {
-                case "PENDIENTE":
+                case PENDIENTE:
                     setVisible(false);
                     break;
-                case "RECHAZADA":
+                case RECHAZADA:
                     setVisible(true);
                     JOptionPane.showMessageDialog(UICrearJugador.this,
                             "El host rechazó tu solicitud.",
