@@ -169,7 +169,7 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
 
     @Override public EstadoUnion getEstadoUnion() { return estadoUnion; }
     @Override public String getMensajeError() { return mensajeError; }
-    @Override public List<JugadorDTO> getJugadoresEnSa la() { return jugadoresEnSala; }
+    @Override public List<JugadorDTO> getJugadoresEnSala() { return jugadoresEnSala; }
     @Override public List<SolicitudUnionDTO> getSolicitudesPendientes() { return solicitudesPendientes; }
 
     private void notificarVistas() {
