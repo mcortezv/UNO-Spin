@@ -160,7 +160,7 @@ public class ControlServidor implements IBlackboardObservador {
         TipoEventoRuletaDTO eventoRuleta = "GIRO_PENDIENTE".equals(blackboard.getEstadoPartida())
                 ? blackboard.getEventoRuleta()
                 : null;
-        return new EstadoPartidaDTO(
+         EstadoPartidaDTO dto = new EstadoPartidaDTO(
                 blackboard.getIndiceJugadorActual(),
                 blackboard.getEstadoPartida(),
                 eventoAbandono,
@@ -170,6 +170,9 @@ public class ControlServidor implements IBlackboardObservador {
                 blackboard.getIndiceJugadorActual() == indiceJugador,
                 eventoRuleta,
                 blackboard.isUltimaJugadaValida());
+        dto.setEventoFinalizacion(blackboard.getEventoFinalizacion());
+    return dto;  
+        
     }
 
     private void enviar(EstadoPartidaDTO dto, int puerto, String ip) {

@@ -23,6 +23,9 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     private String ultimaCartaCimaProcesada;
     private boolean abandono;
     private boolean vistaActiva;
+    private boolean yaVote = false;
+    private boolean votoEnviado = false;
+
 
     /**
      * Instantiates a new Modelo.
@@ -52,6 +55,14 @@ public class Modelo implements IModeloControlador, IModeloLectura {
      */
     public void actualizarEstado(EstadoPartidaDTO estado) {
         this.estadoPartida = estado;
+        EventoFinalizacionDTO evento = estado.getEventoFinalizacion();
+        if (evento == null) {
+            yaVote = false;
+            votoEnviado = false;
+        } else if (!evento.isVotacionEnCurso() && evento.getPosiciones() == null) {
+            yaVote = false;
+            votoEnviado = false;
+        }
         procesarCastigoCartaCima();
         notifyObservers();
     }
@@ -385,4 +396,43 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         return estadoPartida != null && estadoPartida.getEventoAbandono() != null
                 ? estadoPartida.getEventoAbandono().getNombreGanador() : null;
     }
+
+    @Override
+    public void solicitarTerminarPartida() {
+        yaVote = true;
+        votoEnviado = true;
+        TipoAccionDTO accion = new TipoAccionDTO("SOLICITAR_FINALIZAR");
+        accion.setResultadoEvento("true");
+        enviar(accion);
+    }
+
+    @Override
+    public void enviarVotoTerminar(boolean acepta) {
+        yaVote = acepta;
+        votoEnviado = true;
+        TipoAccionDTO accion = new TipoAccionDTO("SOLICITAR_FINALIZAR");
+        accion.setResultadoEvento(String.valueOf(acepta));
+        enviar(accion);
+    }
+
+    @Override
+    public EventoFinalizacionDTO getEventoFinalizacion() {
+        return estadoPartida != null ? estadoPartida.getEventoFinalizacion() : null;
+    }
+
+    @Override
+    public boolean isVotacionPendiente() {
+        if (estadoPartida == null) return false;
+        EventoFinalizacionDTO evento = estadoPartida.getEventoFinalizacion();
+        return evento != null
+                && evento.getPosiciones() == null
+                && evento.isVotacionEnCurso()
+                && !votoEnviado;
+    }
+
+    @Override
+    public boolean isVotoEnviado() { return votoEnviado; }
+
+    public boolean isYaVote() { return yaVote; }
+
 }
