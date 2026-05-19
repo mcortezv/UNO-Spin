@@ -14,7 +14,18 @@ public class ConfiguracionPartida {
      * Instantiates a new Configuracion partida.
      */
     public ConfiguracionPartida() {
+
     }
+
+    public ConfiguracionPartida(ConfiguracionPartida copia) {
+        valorMaximo = copia.getValorMaximo();
+        valorMinimo = copia.getValorMinimo();
+        cantidadComodines = copia.getCantidadComodines();
+        cantidadCartasAccion = copia.getCantidadCartasAccion();
+        tiempoMaximoRuleta = copia.getTiempoMaximoRuleta();
+    }
+
+
 
     /**
      * Gets valor minimo.

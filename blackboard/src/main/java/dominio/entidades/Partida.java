@@ -14,11 +14,13 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * The type Partida.
  */
+
 public class Partida implements IDominio {
     private static final int CARTAS_INICIALES = 7;
     private static final int VALOR_CARTA_ACCION = 20;
     private static final int VALOR_CARTA_COMODIN = 50;
     private static final int NUMERO_SPIN_POR_COLOR = 2;
+    private ConfiguracionPartida configuracionPartida;
     private static final String[] COLORES = {"ROJO", "AZUL", "AMARILLO", "VERDE"};
     private final List<Jugador> confirmaciones = new ArrayList<>();
     private List<Jugador> jugadores;
@@ -47,11 +49,12 @@ public class Partida implements IDominio {
      * @param sentidoHorario      the sentido horario
      */
     public Partida(EstadoPartida estadoPartida, int indiceJugadorActual,
-                   List<Jugador> jugadores, boolean sentidoHorario) {
+                   List<Jugador> jugadores, boolean sentidoHorario, ConfiguracionPartida configuracion) {
         this.estadoPartida = estadoPartida;
         this.indiceJugadorActual = indiceJugadorActual;
         this.jugadores = jugadores;
         this.sentidoHorario = sentidoHorario;
+        this.configuracionPartida= configuracion;
     }
 
     @Override
@@ -571,6 +574,11 @@ public class Partida implements IDominio {
         }
 
         return evento;
+    }
+
+    @Override
+    public void procesarConfiguracion(ConfiguracionPartida configuracion) {
+        this.configuracionPartida= new ConfiguracionPartida(configuracion);
     }
 
     private void devolverCartas(String nombre) {

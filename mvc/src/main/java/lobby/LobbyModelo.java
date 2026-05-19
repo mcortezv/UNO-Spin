@@ -1,9 +1,6 @@
 package lobby;
 
-import dto.EstadoPartidaDTO;
-import dto.JugadorDTO;
-import dto.SolicitudUnionDTO;
-import dto.TipoAccionDTO;
+import dto.*;
 import interfaces.IDispatcher;
 import interfaces.ISerializer;
 
@@ -90,6 +87,13 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
     public void rechazarInicio(){
         TipoAccionDTO accion= new TipoAccionDTO("RECHAZAR_INICIO");
         accion.setJugadorDTO(jugadorLocal);
+        enviar(accion);
+    }
+
+    @Override
+    public void setsConfiguracion(ConfiguracionPartidaDTO dto) {
+        TipoAccionDTO accion= new TipoAccionDTO("NO_INICIADA");
+        accion.setConfiguracion(dto);
         enviar(accion);
     }
 

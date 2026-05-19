@@ -1,5 +1,4 @@
 package dominio;
-
 import dominio.entidades.Carta;
 import dominio.entidades.ConfiguracionPartida;
 import dominio.entidades.Jugador;
@@ -183,5 +182,14 @@ public interface IDominio {
     int getVotosEnContra();
 
     void resetearVotos();
+
+
+    /**
+     * Setea la configuración de la partida
+     * @param configuracion
+     */
+    void procesarConfiguracion(ConfiguracionPartida configuracion);
+
+
 
 }

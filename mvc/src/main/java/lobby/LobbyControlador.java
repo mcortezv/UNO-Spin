@@ -1,5 +1,6 @@
 package lobby;
 
+import dto.ConfiguracionPartidaDTO;
 import dto.JugadorDTO;
 import interfaces.IOnJuegoIniciado;
 
@@ -46,11 +47,15 @@ public class LobbyControlador implements ISuscriptorLobby {
         modelo.solicitarInicio();
     }
 
-    public void confirmarInicio(){
+    public void confirmarInicio() {
         modelo.confirmarInicio();
     }
-    
-    public void negarInicio(){
+
+    public void negarInicio() {
         modelo.rechazarInicio();
+    }
+
+    public void solicitarConfiguracion(ConfiguracionPartidaDTO dto) {
+        modelo.setsConfiguracion(dto);
     }
 }
