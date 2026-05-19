@@ -118,4 +118,20 @@ public class Controlador {
     public void abandonarPartida() {
         modelo.abandonarPartida();
     }
+
+    /**
+     * On solicitar terminar partida.
+     */
+    public void onSolicitarTerminar() {
+        modelo.solicitarTerminarPartida();
+    }
+
+    /**
+     * On enviar voto.
+     *
+     * @param acepta the desicion
+     */
+    public void onVotoTerminar(boolean acepta) {
+        modelo.enviarVotoTerminar(acepta);
+    }
 }

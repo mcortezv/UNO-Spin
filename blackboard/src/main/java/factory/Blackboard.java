@@ -10,6 +10,11 @@ import interfaces.IBlackboardObservador;
 import mappers.CartaMapper;
 import mappers.ConfiguracionPartidaMapper;
 import mappers.JugadorMapper;
+import dto.CartaDTO;
+import dto.EventoFinalizacionDTO;
+import dto.JugadorDTO;
+import dto.SolicitudUnionDTO;
+import dto.TipoAccionDTO;
 import interfaces.IBlackboard;
 import interfaces.IReceptor;
 import interfaces.ISerializer;
@@ -44,6 +49,7 @@ public class Blackboard implements IBlackboard, IReceptor{
     private String hostNombre = null;
     private ConfiguracionPartida configuracion;
     private EventoAbandonoDTO eventoAbandono;
+    private EventoFinalizacionDTO eventoFinalizacion = null;
 
     /**
      * Instantiates a new Blackboard.
@@ -73,25 +79,44 @@ public class Blackboard implements IBlackboard, IReceptor{
         TipoAccionDTO accion = serializer.deserialize(json, TipoAccionDTO.class);
         TipoAccion tipo = TipoAccion.valueOf(accion.getTipoAccion());
         switch (tipo) {
-            case CREAR_PARTIDA      -> procesarCrearPartida(accion);
-            case UNIRSE_PARTIDA     -> procesarUnirse(accion);
+            case CREAR_PARTIDA -> procesarCrearPartida(accion);
+            case UNIRSE_PARTIDA -> procesarUnirse(accion);
             case SOLICITAR_INICIO   -> procesarSolicitudInicio(accion);
-            case ACEPTAR_SOLICITUD  -> procesarAceptarSolicitud(accion);
+            case ACEPTAR_SOLICITUD -> procesarAceptarSolicitud(accion);
             case RECHAZAR_SOLICITUD -> procesarRechazarSolicitud(accion);
             case CONFIRMAR_INICIO   -> procesarConfirmarInicio(accion);
             case RECHAZAR_INICIO    -> procesarRechazarInicio(accion);
             case ABANDONAR_PARTIDA -> procesarAbandono(accion);
             default -> {
-                if (dominio == null || dominio.getEstadoPartida() == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA) break;
+                if (dominio == null || dominio.getEstadoPartida() == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA)
+                    break;
+
+                if (tipo != TipoAccion.SOLICITAR_FINALIZAR) {
+                    eventoFinalizacion = null;
+                    dominio.resetearVotos();
+                }
                 switch (tipo) {
-                    case JUGAR_CARTA         -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
-                    case PEDIR_CARTA         -> dominio.robarCartaJugadorActual();
+                    case JUGAR_CARTA -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
+                    case PEDIR_CARTA -> dominio.robarCartaJugadorActual();
                     case PEDIR_CARTA_CASTIGO -> dominio.robarCartaSinAvanzarTurno();
-                    case GRITAR_UNO          -> dominio.gritarUno();
-                    case SELECCIONAR_COLOR   -> dominio.aplicarSeleccionColor(accion.getCartaDTO().getColor().toUpperCase());
-                    case GIRAR_RULETA        -> { try { dominio.procesarGiroRuleta(); } catch (Exception e) { System.err.println("Ruleta: " + e.getMessage()); } }
-                    case RECONOCER_EVENTO    -> { TipoEventoRuletaDTO ev = dominio.getEventoRuleta(); dominio.aplicarEfectoRuleta(ev, parsearResultado(ev, accion.getResultadoEvento())); dominio.avanzarTurno(); }
-                    default                  -> {}
+                    case GRITAR_UNO -> dominio.gritarUno();
+                    case SELECCIONAR_COLOR ->
+                            dominio.aplicarSeleccionColor(accion.getCartaDTO().getColor().toUpperCase());
+                    case GIRAR_RULETA -> {
+                        try {
+                            dominio.procesarGiroRuleta();
+                        } catch (Exception e) {
+                            System.err.println("Ruleta: " + e.getMessage());
+                        }
+                    }
+                    case RECONOCER_EVENTO -> {
+                        TipoEventoRuletaDTO ev = dominio.getEventoRuleta();
+                        dominio.aplicarEfectoRuleta(ev, parsearResultado(ev, accion.getResultadoEvento()));
+                        dominio.avanzarTurno();
+                    }
+                    case SOLICITAR_FINALIZAR -> procesarFinalizacion(accion);
+                    default -> {
+                    }
                 }
             }
         }
@@ -198,6 +223,41 @@ public class Blackboard implements IBlackboard, IReceptor{
 
     }
 
+    private void procesarFinalizacion(TipoAccionDTO accion) {
+        if (dominio == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA) return;
+
+        boolean acepta = Boolean.parseBoolean(accion.getResultadoEvento());
+        dominio.registrarVoto(acepta);
+
+        if (dominio.estaTerminada()) {
+            List<Jugador> jugadores = dominio.getJugadores();
+            List<Jugador> ordenados = jugadores.stream()
+                    .sorted((a, b) -> a.getMano().getCartas().size() - b.getMano().getCartas().size())
+                    .collect(Collectors.toList());
+
+            List<JugadorDTO> posiciones = new ArrayList<>();
+            for (int i = 0; i < ordenados.size(); i++) {
+                JugadorDTO dto = JugadorMapper.toDTO(ordenados.get(i), false);
+                int posicion = 1;
+                for (int j = 0; j < i; j++) {
+                    if (ordenados.get(j).getMano().getCartas().size() < ordenados.get(i).getMano().getCartas().size()) {
+                        posicion = j + 2;
+                    }
+                }
+                dto.setCantidadCartas(posicion);
+                posiciones.add(dto);
+            }
+            eventoFinalizacion = new EventoFinalizacionDTO(posiciones);
+        } else if (dominio.getVotosEnContra() > 0) {
+            eventoFinalizacion = new EventoFinalizacionDTO(false);
+            dominio.resetearVotos();
+        } else {
+            EventoFinalizacionDTO enCurso = new EventoFinalizacionDTO(false);
+            enCurso.setVotacionEnCurso(true);
+            eventoFinalizacion = enCurso;
+        }
+    }
+
     private void arrancarPartida() {
         if (configuracion == null) {
             configuracion = configuracionDefault();
@@ -279,6 +339,11 @@ public class Blackboard implements IBlackboard, IReceptor{
     public boolean isUltimaJugadaValida() {
         return dominio != null && dominio.isUltimaJugadaValida();
     }
+
+    @Override
+    public EventoFinalizacionDTO getEventoFinalizacion() {
+        return eventoFinalizacion;
+}
 
     @Override
     public String getIpJugador(String nombre) {

@@ -1,6 +1,11 @@
 package interfaces;
 import dto.*;
 
+import dto.CartaDTO;
+import dto.EventoFinalizacionDTO;
+import dto.JugadorDTO;
+import dto.SolicitudUnionDTO;
+import dto.TipoEventoRuletaDTO;
 import java.util.List;
 
 /**
@@ -75,10 +80,16 @@ public interface IBlackboard {
     int getPuertoJugador(String nombre);
 
     /**
+     * Gets evento finalizacion.
+
+    /**
      * Gets solicitudes pendientes.
      *
      * @return the solicitudes pendientes
      */
+
+    EventoFinalizacionDTO getEventoFinalizacion();
+
     List<SolicitudUnionDTO> getSolicitudesPendientes();
 
     /**
