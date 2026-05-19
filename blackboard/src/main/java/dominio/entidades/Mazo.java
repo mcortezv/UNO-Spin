@@ -65,4 +65,12 @@ public class Mazo {
         return cartas.remove(ultimaPosicion);
     }
 
+    /**
+     * Add cartas.
+     *
+     * @param cartas the cartas
+     */
+    public void addCartas(List<Carta> cartas) {
+        this.cartas.addAll(cartas);
+    }
 }

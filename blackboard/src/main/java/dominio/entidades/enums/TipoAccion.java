@@ -43,12 +43,25 @@ public enum TipoAccion {
     /**
      * Confirmar inicio tipo accion.
      */
+    SOLICITAR_INICIO,
+
     CONFIRMAR_INICIO,
 
+    RECHAZAR_INICIO,
+
+    /**
+     * Crear partida tipo accion.
+     */
     CREAR_PARTIDA,
 
+    /**
+     * Aceptar solicitud tipo accion.
+     */
     ACEPTAR_SOLICITUD,
 
+    /**
+     * Rechazar solicitud tipo accion.
+     */
     RECHAZAR_SOLICITUD,
     /**
      * Solicitar finalizar la partida.

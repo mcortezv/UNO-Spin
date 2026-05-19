@@ -114,7 +114,7 @@ public class UIPantallaCarga extends JFrame implements ISuscriptorLobby {
         panelAzul.add(panelSolicitudes, gbc);
 
         JButton botonIniciar = crearBotonIniciar();
-        botonIniciar.addActionListener(e -> controlador.confirmarInicio());
+        botonIniciar.addActionListener(e -> controlador.solicitarInicio());
         gbc.insets = new Insets(15, 20, 20, 20);
         panelAzul.add(botonIniciar, gbc);
 
@@ -279,14 +279,32 @@ public class UIPantallaCarga extends JFrame implements ISuscriptorLobby {
                     actualizarSolicitudes(modelo.getSolicitudesPendientes());
                     setVisible(true);
                     break;
+                case "SOLICITUD_PENDIENTE":
+                    mostrarDialogoConfirmacion();
+                    break;
                 case "RECHAZADA":
                     setVisible(false);
                     break;
                 case "EN_JUEGO":
                     dispose();
                     break;
+                case "SOLICITUD_CANCELADA":
+                    labelTitulo.setText("JUGADORES EN SESION");
+                    labelEstado.setText("Un jugador ha rechazado el inicio del juego");
+                    actualizarSolicitudes(modelo.getSolicitudesPendientes());
+                    setVisible(true);
+                    break;
             }
         });
+    }
+    
+    private void mostrarDialogoConfirmacion(){
+        int respuesta= JOptionPane.showConfirmDialog(this, "Un jugador quiere iniciar, confirmas?", "Solicitud de Inicio", JOptionPane.YES_NO_OPTION);
+        if(respuesta == JOptionPane.YES_OPTION){
+            controlador.confirmarInicio();
+        } else{
+            controlador.negarInicio();
+        }
     }
 
     private void habilitarArrastre(Component c) {

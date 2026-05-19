@@ -1,4 +1,6 @@
 package interfaces;
+import dto.*;
+
 import dto.CartaDTO;
 import dto.EventoFinalizacionDTO;
 import dto.JugadorDTO;
@@ -76,16 +78,45 @@ public interface IBlackboard {
      * @return the port, or 0 if not registered
      */
     int getPuertoJugador(String nombre);
-    
+
     /**
      * Gets evento finalizacion.
 
-     * @return el EventoFinalizacionDTO si hay uno activo, null en caso contrario
+    /**
+     * Gets solicitudes pendientes.
+     *
+     * @return the solicitudes pendientes
      */
+
     EventoFinalizacionDTO getEventoFinalizacion();
 
     List<SolicitudUnionDTO> getSolicitudesPendientes();
+
+    /**
+     * Gets ultima accion lobby.
+     *
+     * @return the ultima accion lobby
+     */
     String getUltimaAccionLobby();
+
+    /**
+     * Gets nombre solicitud resuelta.
+     *
+     * @return the nombre solicitud resuelta
+     */
     String getNombreSolicitudResuelta();
+
+    /**
+     * Gets host nombre.
+     *
+     * @return the host nombre
+     */
     String getHostNombre();
+
+    /**
+     * Gets evento abandono.
+     *
+     * @return the evento abandono
+     */
+    EventoAbandonoDTO getEventoAbandono();
 }

@@ -21,17 +21,21 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     private EstadoPartidaDTO estadoPartida;
     private int cartasPendientesCastigoLocal;
     private String ultimaCartaCimaProcesada;
+    private boolean abandono;
+    private boolean vistaActiva;
     private boolean yaVote = false;
     private boolean votoEnviado = false;
 
 
-    /**IReceptor
+    /**
      * Instantiates a new Modelo.
      *
      * @param serializer     the serializer
      * @param dispatcher     the dispatcher
      * @param ipServidor     the ip servidor
      * @param puertoServidor the puerto servidor
+     * @param puertoEscucha  the puerto escucha
+     * @param ipLocal        the ip local
      */
     public Modelo(ISerializer serializer, IDispatcher dispatcher, String ipServidor, int puertoServidor, int puertoEscucha, String ipLocal) {
         this.serializer = serializer;
@@ -40,6 +44,8 @@ public class Modelo implements IModeloControlador, IModeloLectura {
         this.puertoServidor = puertoServidor;
         this.puertoEscucha = puertoEscucha;
         this.ipLocal = ipLocal;
+        this.abandono = false;
+        this.vistaActiva = true;
     }
 
     /**
@@ -337,6 +343,61 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     }
 
     @Override
+    public boolean getVistaActiva() {
+        return vistaActiva;
+    }
+
+    @Override
+    public void setVistaActiva(boolean vistaActiva) {
+        this.vistaActiva = vistaActiva;
+    }
+
+    @Override
+    public boolean getAbandono() {
+        boolean temp = abandono;
+        abandono = false;
+        return temp;
+    }
+
+    @Override
+    public String getMiNombre() {
+        return miNombre;
+    }
+
+    public void setMiNombre(String nombre) {
+        this.miNombre = nombre;
+    }
+
+    @Override
+    public void solicitarAbandono() {
+        abandono = true;
+        notifyObservers();
+    }
+
+    @Override
+    public void abandonarPartida() {
+        vistaActiva = false;
+        TipoAccionDTO accion = new TipoAccionDTO("ABANDONAR_PARTIDA");
+        JugadorDTO jugador = new JugadorDTO();
+        jugador.setNombre(miNombre);
+        accion.setJugadorDTO(jugador);
+        enviar(accion);
+        notifyObservers();
+    }
+
+    @Override
+    public String getNombreAbandono(){
+        return estadoPartida != null && estadoPartida.getEventoAbandono() != null
+                ? estadoPartida.getEventoAbandono().getNombreAbandono() : null;
+    }
+
+    @Override
+    public String getNombreGanador(){
+        return estadoPartida != null && estadoPartida.getEventoAbandono() != null
+                ? estadoPartida.getEventoAbandono().getNombreGanador() : null;
+    }
+
+    @Override
     public void solicitarTerminarPartida() {
         yaVote = true;
         votoEnviado = true;
@@ -373,5 +434,5 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     public boolean isVotoEnviado() { return votoEnviado; }
 
     public boolean isYaVote() { return yaVote; }
-    
+
 }

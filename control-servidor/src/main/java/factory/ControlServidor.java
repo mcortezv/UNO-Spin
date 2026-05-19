@@ -1,10 +1,7 @@
 package factory;
+import dto.*;
 import interfaces.*;
-import dto.CartaDTO;
-import dto.EstadoPartidaDTO;
-import dto.JugadorDTO;
-import dto.SolicitudUnionDTO;
-import dto.TipoEventoRuletaDTO;
+
 import java.util.List;
 
 /**
@@ -105,6 +102,37 @@ public class ControlServidor implements IBlackboardObservador {
                 dtoHost.setSolicitudesPendientes(solicitudes);
                 enviar(dtoHost, puertoHost, ipHost);
             }
+            
+            case "SOLICITAR_INICIO" -> {
+                String jugadorSolicitante= blackboard.getNombreSolicitudResuelta();
+                for(JugadorDTO jugador: jugadores){
+
+                    if (jugador.getNombre().equals(jugadorSolicitante)) continue;
+                    String ip= blackboard.getIpJugador(jugador.getNombre());
+                    int puerto= blackboard.getPuertoJugador(jugador.getNombre());
+                    if (ip == null) continue; 
+                    
+                    EstadoPartidaDTO estado= new EstadoPartidaDTO();
+                    estado.setEstadoPartida("SOLICITUD_PENDIENTE");
+                    estado.setJugadores(jugadores);
+                    enviar(estado, puerto, ip);
+                }
+            }
+
+            case "NEGAR_INICIO" ->{
+                for(JugadorDTO jugador: jugadores){
+                    String ip= blackboard.getIpJugador(jugador.getNombre());
+                    int puerto= blackboard.getPuertoJugador(jugador.getNombre());
+                    if (ip == null) continue;
+
+                    EstadoPartidaDTO estado= new EstadoPartidaDTO();
+                    estado.setEstadoPartida("SOLICITUD_CANCELADA");
+                    estado.setJugadores(jugadores);
+                    enviar(estado, puerto, ip);
+
+                }
+            }
+
         }
     }
 
@@ -128,12 +156,14 @@ public class ControlServidor implements IBlackboardObservador {
         List<JugadorDTO> jugadores = blackboard.getJugadores();
         CartaDTO cartaCima = blackboard.getCartaCima();
         List<CartaDTO> mano = blackboard.getManoJugador(indiceJugador);
+        EventoAbandonoDTO eventoAbandono = blackboard.getEventoAbandono();
         TipoEventoRuletaDTO eventoRuleta = "GIRO_PENDIENTE".equals(blackboard.getEstadoPartida())
                 ? blackboard.getEventoRuleta()
                 : null;
          EstadoPartidaDTO dto = new EstadoPartidaDTO(
                 blackboard.getIndiceJugadorActual(),
                 blackboard.getEstadoPartida(),
+                eventoAbandono,
                 cartaCima,
                 jugadores,
                 mano,

@@ -4,6 +4,7 @@ import dominio.entidades.Carta;
 import dominio.entidades.ConfiguracionPartida;
 import dominio.entidades.Jugador;
 import dominio.entidades.enums.EstadoPartida;
+import dto.EventoAbandonoDTO;
 import dto.TipoEventoRuletaDTO;
 import java.util.List;
 
@@ -11,6 +12,16 @@ import java.util.List;
  * The interface Dominio.
  */
 public interface IDominio {
+
+
+    void agregarConfirmacion(Jugador jugador);
+
+    boolean todosConfirmaron();
+
+    void cancelarConfirmaciones();
+
+    void solicitarInicio();
+
 
     /**
      * Iniciar partida.
@@ -92,6 +103,8 @@ public interface IDominio {
      */
     int getIndiceJugadorActual();
 
+    int getCantidadConfirmaciones();
+
     /**
      * Gets jugadores.
      *
@@ -142,6 +155,14 @@ public interface IDominio {
      * @return the evento ruleta
      */
     TipoEventoRuletaDTO getEventoRuleta();
+
+    /**
+     * Remover jugador evento abandono dto.
+     *
+     * @param nombre the nombre
+     * @return the evento abandono dto
+     */
+    EventoAbandonoDTO removerJugador(String nombre);
 
     /**
      * Registra el voto de un jugador para finalizar la partida.

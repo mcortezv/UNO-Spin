@@ -1,11 +1,14 @@
 package dominio.entidades;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoCarta;
+import dto.EventoAbandonoDTO;
 import dto.TipoEventoRuletaDTO;
 import dominio.IDominio;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -17,6 +20,7 @@ public class Partida implements IDominio {
     private static final int VALOR_CARTA_COMODIN = 50;
     private static final int NUMERO_SPIN_POR_COLOR = 2;
     private static final String[] COLORES = {"ROJO", "AZUL", "AMARILLO", "VERDE"};
+    private final List<Jugador> confirmaciones = new ArrayList<>();
     private List<Jugador> jugadores;
     private EstadoPartida estadoPartida;
     private int indiceJugadorActual;
@@ -24,6 +28,8 @@ public class Partida implements IDominio {
     private Tablero tablero;
     private boolean unoGritado = false;
     private boolean ultimaJugadaValida = true;
+    private String ganador;
+
     private int votosAFavor = 0;
     private int votosEnContra = 0;
 
@@ -130,6 +136,25 @@ public class Partida implements IDominio {
             }
         }
         return cartas.isEmpty() ? null : cartas.removeLast();
+    }
+
+    public void agregarConfirmacion(Jugador jugador) {
+    confirmaciones.add(jugador);
+    }
+
+    public boolean todosConfirmaron() {
+        return jugadores.stream()
+                .allMatch(j -> confirmaciones.stream()
+                        .anyMatch(c -> c.getNombre().equals(j.getNombre())));
+    }
+
+    public void cancelarConfirmaciones() {
+
+        confirmaciones.clear();
+    }
+
+    public void solicitarInicio(){
+
     }
 
     @Override
@@ -312,7 +337,7 @@ public class Partida implements IDominio {
     public TipoEventoRuletaDTO getEventoRuleta() {
         return tablero.getRuleta().getEventoRuleta();
     }
-    
+
     @Override
     public void registrarVoto(boolean acepta) {
         if(acepta) {
@@ -356,6 +381,10 @@ public class Partida implements IDominio {
      */
     public void setTablero(Tablero t) {
         this.tablero = t;
+    }
+
+    public int getCantidadConfirmaciones() {
+        return confirmaciones.size();
     }
 
     /**
@@ -513,5 +542,47 @@ public class Partida implements IDominio {
                     try { j.getMano().getCartas().add(tablero.getMazo().robarCarta()); }
                     catch (Exception e) { System.out.println("Mazo vacio."); }
                 });
+    }
+
+    public void setGanador(String nombre){
+        this.ganador = nombre;
+    }
+
+    public String getGanador(){
+        return ganador;
+    }
+
+    public EventoAbandonoDTO removerJugador(String nombre) {
+        devolverCartas(nombre);
+        EventoAbandonoDTO evento = new EventoAbandonoDTO();
+
+        for (Jugador j : jugadores) {
+            if (j.getNombre().equalsIgnoreCase(nombre)){
+                evento.setNombreAbandono(nombre);
+                jugadores.remove(j);
+                break;
+            }
+        }
+
+        if (jugadores.size() <= 1) {
+            setGanador(jugadores.getFirst().getNombre());
+            evento.setNombreGanador(ganador);
+            finalizarPartida();
+        }
+
+        return evento;
+    }
+
+    private void devolverCartas(String nombre) {
+        for (Jugador j : jugadores) {
+            if (j.getNombre().equalsIgnoreCase(nombre)){
+                List<Carta> cartas = j.getMano().getCartas();
+                tablero.getMazo().addCartas(cartas);
+            }
+        }
+    }
+
+    public void finalizarPartida() {
+        estadoPartida = EstadoPartida.FINALIZADA;
     }
 }

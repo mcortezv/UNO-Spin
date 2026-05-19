@@ -1,4 +1,5 @@
 package op;
+import com.sun.tools.javac.Main;
 import dto.TipoEventoRuletaDTO;
 import dto.CartaDTO;
 import dto.JugadorDTO;
@@ -34,6 +35,7 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
     private final JLabel lblCastigo;
     private final JButton btnTirarCarta;
     private final JButton btnUno;
+    private final JButton btnAbandonar;
 
     private final PanelFondo panelFondo;
 
@@ -45,7 +47,7 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
     private boolean mostrandoDialogoColor = false;
     private boolean mostrandoDialogoEvento = false;
     private TipoEventoRuletaDTO ultimoEventoMostrado = null;
-    
+
     private final JButton btnFinalizarPartida;
     private boolean mostrarDialogoVotacion = false;
     private boolean mostrarDialogoEspera = false;
@@ -75,6 +77,18 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         this.btnUno.setFont(new Font("Arial", Font.BOLD, 16));
         this.btnFinalizarPartida = new Button("Finalizar Partida", new Color(45, 45, 45));
 
+        ImageIcon iconoOriginal = new ImageIcon(
+                getClass().getResource("/exit.png")
+        );
+        Image imagenEscalada = iconoOriginal.getImage()
+                .getScaledInstance(60, 30, Image.SCALE_SMOOTH);
+        ImageIcon iconoAbandonar = new ImageIcon(imagenEscalada);
+        this.btnAbandonar = new JButton(iconoAbandonar);
+        btnAbandonar.setBorderPainted(false);
+        btnAbandonar.setContentAreaFilled(false);
+        btnAbandonar.setFocusPainted(false);
+        btnAbandonar.setOpaque(false);
+
         this.slotTop   = crearSlot();
         this.slotLeft  = crearSlot();
         this.slotRight = crearSlot();
@@ -87,21 +101,44 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
     }
 
     private void construirLayout() {
+
         panelFondo.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+
+        JPanel topBar = new JPanel(new BorderLayout());
+        topBar.setOpaque(false);
+
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
+        leftPanel.setOpaque(false);
+
+        leftPanel.add(btnAbandonar);
+
+        topBar.add(leftPanel, BorderLayout.WEST);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 3;
         gbc.weightx = 1.0;
         gbc.weighty = 0.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(0, 0, 0, 0);
+
+        panelFondo.add(topBar, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 3;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(8, 0, 0, 0);
+
         panelFondo.add(slotTop, gbc);
 
         gbc.gridwidth = 1;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.VERTICAL;
 
@@ -109,28 +146,32 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         gbc.weightx = 0.0;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0, 8, 0, 0);
+
         panelFondo.add(slotLeft, gbc);
 
         gbc.gridx = 1;
         gbc.weightx = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(0, 0, 0, 0);
+
         panelFondo.add(tablero, gbc);
 
         gbc.gridx = 2;
         gbc.weightx = 0.0;
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.insets = new Insets(0, 0, 0, 8);
+
         panelFondo.add(slotRight, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         gbc.gridwidth = 3;
         gbc.weightx = 1.0;
         gbc.weighty = 0.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0, 0, 8, 0);
+
         panelFondo.add(construirZonaJugadorActivo(), gbc);
 
         JPanel panelFinalizar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 8));
@@ -184,6 +225,7 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         btnUno.addActionListener(e -> controlador.onUnoGritado());
         tablero.setOnPedirCarta(controlador::onPedirCarta);
         tablero.setOnGiroCompleto(controlador::onSpinCompletado);
+        btnAbandonar.addActionListener(e -> controlador.solicitarAbandono());
         btnFinalizarPartida.addActionListener(e -> controlador.onSolicitarTerminar());
     }
 
@@ -203,6 +245,40 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         btnUno.setEnabled(puedeIntentar);
         tablero.getMazo().setActive(puedeUsarMazo);
         tablero.getRuleta().setActive(false);
+
+        if (modelo.getAbandono()) {
+            int resultado = JOptionPane.showConfirmDialog(
+                    this,
+                    "Una vez salga no podra entrar de nuevo y su juego se perdera por completo.",
+                    "Desea Abandonar la Partida?",
+                    JOptionPane.YES_NO_OPTION
+            );
+            if (resultado == JOptionPane.YES_OPTION) {
+                controlador.abandonarPartida();
+            }
+        }
+
+        if (!modelo.getVistaActiva()) {
+            this.dispose();
+        }
+
+        if (modelo.getNombreAbandono() != null){
+            if (modelo.getNombreGanador() != null){
+                JOptionPane.showMessageDialog(
+                        this,
+                        modelo.getMiNombre() + " ha abandonado la partida, por lo que eres declarado ganador por defecto.",
+                        "¡Haz Ganado!",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Sus cartas han sido devueltas al mazo.",
+                        modelo.getMiNombre() + " ha abandonado la partida",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        }
 
         boolean jugadaValidaAhora = modelo.isUltimaJugadaValida();
         if (!jugadaValidaAhora && ultimaJugadaValidaAnterior) {
