@@ -1,9 +1,6 @@
 package lobby;
 
-import dto.EstadoPartidaDTO;
-import dto.JugadorDTO;
-import dto.SolicitudUnionDTO;
-import dto.TipoAccionDTO;
+import dto.*;
 import interfaces.IDispatcher;
 import interfaces.ISerializer;
 
@@ -100,6 +97,13 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
     }
 
     @Override
+    public void setsConfiguracion(ConfiguracionPartidaDTO dto) {
+        TipoAccionDTO accion= new TipoAccionDTO("NO_INICIADA");
+        accion.setConfiguracion(dto);
+        enviar(accion);
+    }
+
+    @Override
     public void solicitarInicio() {
         TipoAccionDTO accion = new TipoAccionDTO("SOLICITAR_INICIO");
         accion.setJugadorDTO(jugadorLocal);
@@ -174,7 +178,7 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
 
     @Override public String getEstadoUnion() { return estadoUnion; }
     @Override public String getMensajeError() { return mensajeError; }
-    @Override public List<JugadorDTO> getJugadoresEnSala() { return jugadoresEnSala; }
+    @Override public List<JugadorDTO> getJugadoresEnSa la() { return jugadoresEnSala; }
     @Override public List<SolicitudUnionDTO> getSolicitudesPendientes() { return solicitudesPendientes; }
 
     private void notificarVistas() {

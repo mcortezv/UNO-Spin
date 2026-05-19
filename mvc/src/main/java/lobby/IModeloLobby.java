@@ -1,5 +1,6 @@
 package lobby;
 
+import dto.ConfiguracionPartidaDTO;
 import dto.JugadorDTO;
 
 public interface IModeloLobby {
@@ -15,4 +16,8 @@ public interface IModeloLobby {
     void confirmarInicio();
     
     void rechazarInicio();
+
+    void setsConfiguracion(ConfiguracionPartidaDTO dto);
+
+
 }

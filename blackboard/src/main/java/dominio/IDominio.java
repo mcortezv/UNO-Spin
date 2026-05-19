@@ -162,4 +162,13 @@ public interface IDominio {
      * @return the evento abandono dto
      */
     EventoAbandonoDTO removerJugador(String nombre);
+
+    /**
+     * Setea la configuración de la partida
+     * @param configuracion
+     */
+    void procesarConfiguracion(ConfiguracionPartida configuracion);
+
+
+
 }
