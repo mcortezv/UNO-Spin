@@ -1,6 +1,7 @@
 package interfaces;
 import dto.TipoEventoRuletaDTO;
 import dto.CartaDTO;
+import dto.EventoFinalizacionDTO;
 import dto.JugadorDTO;
 import java.util.List;
 
@@ -177,4 +178,8 @@ public interface IModeloLectura {
      * @return the nombre ganador
      */
     String getNombreGanador();
+    EventoFinalizacionDTO getEventoFinalizacion();
+    boolean isYaVote();
+    boolean isVotoEnviado();
+    boolean isVotacionPendiente();
 }

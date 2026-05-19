@@ -19,14 +19,12 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
     private final int puertoEscucha;
     private final String ipLocal;
 
-    private String estadoUnion = "INICIAL";
+    private EstadoUnion estadoUnion = EstadoUnion.INICIAL;
     private String mensajeError;
     private String resultadoSolicitud;
     private List<JugadorDTO> jugadoresEnSala = new ArrayList<>();
     private List<SolicitudUnionDTO> solicitudesPendientes = new ArrayList<>();
     private JugadorDTO jugadorLocal;
-    private Runnable onPartidaIniciada;
-
     public LobbyModelo(IDispatcher dispatcher, ISerializer serializer,
                        String ipServidor, int puertoServidor,
                        int puertoEscucha, String ipLocal) {
@@ -40,10 +38,6 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
 
     public void suscribir(ISuscriptorLobby vista) {
         vistas.add(vista);
-    }
-
-    public void setOnPartidaIniciada(Runnable callback) {
-        this.onPartidaIniciada = callback;
     }
 
     public JugadorDTO getJugadorLocal() {
@@ -72,7 +66,7 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
     @Override
     public void solicitarUnion(JugadorDTO jugador) {
         this.jugadorLocal = jugador;
-        this.estadoUnion = "PENDIENTE";
+        this.estadoUnion = EstadoUnion.PENDIENTE;
         this.mensajeError = null;
         this.resultadoSolicitud = null;
         notificarVistas();
@@ -116,11 +110,11 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
         if (estado.getResultadoSolicitud() != null) {
             this.resultadoSolicitud = estado.getResultadoSolicitud();
             if ("ACEPTADA".equals(resultadoSolicitud)) {
-                estadoUnion = "EN_SALA";
+                estadoUnion = EstadoUnion.EN_SALA;
                 jugadoresEnSala = estado.getJugadores() != null
                         ? estado.getJugadores() : new ArrayList<>();
             } else if ("RECHAZADA".equals(resultadoSolicitud)) {
-                estadoUnion = "RECHAZADA";
+                estadoUnion = EstadoUnion.RECHAZADA;
                 mensajeError = "Solicitud rechazada por el host.";
             }
             notificarVistas();
@@ -131,7 +125,7 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
             solicitudesPendientes = estado.getSolicitudesPendientes();
             jugadoresEnSala = estado.getJugadores() != null
                     ? estado.getJugadores() : new ArrayList<>();
-            estadoUnion = "EN_SALA";
+            estadoUnion = EstadoUnion.EN_SALA;
             notificarVistas();
             return;
         }
@@ -139,25 +133,22 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
         String estadoPartida = estado.getEstadoPartida();
         if ("EN_PROCESO".equals(estadoPartida) || "GIRO_PENDIENTE".equals(estadoPartida)
                 || "SELECCION_COLOR_PENDIENTE".equals(estadoPartida)) {
-            estadoUnion = "EN_JUEGO";
+            estadoUnion = EstadoUnion.EN_JUEGO;
             notificarVistas();
-            if (onPartidaIniciada != null) {
-                SwingUtilities.invokeLater(onPartidaIniciada);
-            }
         } else if("SOLICITUD_PENDIENTE".equals(estadoPartida)){
-            estadoUnion= "SOLICITUD_PENDIENTE";
+            estadoUnion = EstadoUnion.SOLICITUD_PENDIENTE;
             jugadoresEnSala = estado.getJugadores() != null
                     ? estado.getJugadores() : new ArrayList<>();
             notificarVistas();
         
         } else if("SOLICITUD_CANCELADA".equals(estadoPartida)){
-            estadoUnion= "SOLICITUD_CANCELADA";
+            estadoUnion = EstadoUnion.SOLICITUD_CANCELADA;
             jugadoresEnSala = estado.getJugadores() != null
                     ? estado.getJugadores() : new ArrayList<>();
             notificarVistas();
 
             Timer timer= new Timer(3000, e->{
-                estadoUnion= "EN_SALA";
+                estadoUnion = EstadoUnion.EN_SALA;
                 notificarVistas();
 
             });
@@ -165,7 +156,7 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
             timer.start();
 
         }else {
-            estadoUnion = "EN_SALA";
+            estadoUnion = EstadoUnion.EN_SALA;
             jugadoresEnSala = estado.getJugadores() != null
                     ? estado.getJugadores() : new ArrayList<>();
             notificarVistas();
@@ -173,10 +164,10 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
     }
 
     public boolean estaEnJuego() {
-        return "EN_JUEGO".equals(estadoUnion);
+        return estadoUnion == EstadoUnion.EN_JUEGO;
     }
 
-    @Override public String getEstadoUnion() { return estadoUnion; }
+    @Override public EstadoUnion getEstadoUnion() { return estadoUnion; }
     @Override public String getMensajeError() { return mensajeError; }
     @Override public List<JugadorDTO> getJugadoresEnSa la() { return jugadoresEnSala; }
     @Override public List<SolicitudUnionDTO> getSolicitudesPendientes() { return solicitudesPendientes; }

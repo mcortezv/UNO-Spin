@@ -88,4 +88,18 @@ public interface IModeloControlador {
      * Abandonar partida.
      */
     void abandonarPartida();
+
+    /**
+     * Solicitar terminar la partida.
+     */
+    void solicitarTerminarPartida();
+
+    /**
+     * Enviar el voto para terminar la partida.
+     *
+     * @param acepta the desicion
+     */
+    void enviarVotoTerminar(boolean acepta);
+
+    void setNombreJugador(String nombre);
 }

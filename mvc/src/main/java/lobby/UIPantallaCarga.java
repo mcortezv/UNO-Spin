@@ -267,28 +267,28 @@ public class UIPantallaCarga extends JFrame implements ISuscriptorLobby {
     public void actualizar(IModeloLobbyLectura modelo) {
         SwingUtilities.invokeLater(() -> {
             switch (modelo.getEstadoUnion()) {
-                case "PENDIENTE":
+                case PENDIENTE:
                     labelTitulo.setText("Esperando Respuesta");
                     labelEstado.setText(" ");
                     setVisible(true);
                     break;
-                case "EN_SALA":
+                case EN_SALA:
                     labelTitulo.setText("JUGADORES EN SESION");
                     labelEstado.setText(" ");
                     actualizarTabla(modelo.getJugadoresEnSala());
                     actualizarSolicitudes(modelo.getSolicitudesPendientes());
                     setVisible(true);
                     break;
-                case "SOLICITUD_PENDIENTE":
+                case SOLICITUD_PENDIENTE:
                     mostrarDialogoConfirmacion();
                     break;
-                case "RECHAZADA":
+                case RECHAZADA:
                     setVisible(false);
                     break;
-                case "EN_JUEGO":
+                case EN_JUEGO:
                     dispose();
                     break;
-                case "SOLICITUD_CANCELADA":
+                case SOLICITUD_CANCELADA:
                     labelTitulo.setText("JUGADORES EN SESION");
                     labelEstado.setText("Un jugador ha rechazado el inicio del juego");
                     actualizarSolicitudes(modelo.getSolicitudesPendientes());

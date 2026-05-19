@@ -2,19 +2,36 @@ package lobby;
 
 import dto.ConfiguracionPartidaDTO;
 import dto.JugadorDTO;
+import interfaces.IOnJuegoIniciado;
 
-public class LobbyControlador {
+public class LobbyControlador implements ISuscriptorLobby {
 
     private final IModeloLobby modelo;
+    private IOnJuegoIniciado controladorJuego;
+    private String miNombre;
+    private boolean juegoIniciado = false;
+
 
     public LobbyControlador(IModeloLobby modelo) {
         this.modelo = modelo;
     }
 
-    public void solicitarUnion(String nombre, int avatar) {
-        JugadorDTO jugador = new JugadorDTO();
-        jugador.setNombre(nombre.trim());
-        jugador.setNumeroAvatar(avatar);
+    public void setControladorJuego(IOnJuegoIniciado controladorJuego) {
+        this.controladorJuego = controladorJuego;
+    }
+
+    @Override
+    public void actualizar(IModeloLobbyLectura modelo) {
+        if (!juegoIniciado && modelo.getEstadoUnion() == EstadoUnion.EN_JUEGO) {
+            juegoIniciado = true;
+            if (controladorJuego != null) {
+                controladorJuego.iniciarJuego(miNombre);
+            }
+        }
+    }
+
+    public void solicitarUnion(JugadorDTO jugador) {
+        this.miNombre = jugador.getNombre();
         modelo.solicitarUnion(jugador);
     }
 

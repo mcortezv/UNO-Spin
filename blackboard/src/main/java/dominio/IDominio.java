@@ -12,21 +12,21 @@ import java.util.List;
  */
 public interface IDominio {
 
-    
+
     void agregarConfirmacion(Jugador jugador);
-    
+
     boolean todosConfirmaron();
-    
+
     void cancelarConfirmaciones();
 
     void solicitarInicio();
-    
-    
+
+
     /**
      * Iniciar partida.
      *
      * @param jugadoresIniciales the jugadores iniciales
-     * @param configuracion      the configuracion
+     * @param configuracion the configuracion
      */
     void iniciarPartida(List<Jugador> jugadoresIniciales, ConfiguracionPartida configuracion);
 
@@ -78,7 +78,7 @@ public interface IDominio {
     /**
      * Aplicar efecto ruleta.
      *
-     * @param evento    the evento
+     * @param evento the evento
      * @param resultado the resultado
      */
     void aplicarEfectoRuleta(TipoEventoRuletaDTO evento, Object resultado);
@@ -162,6 +162,27 @@ public interface IDominio {
      * @return the evento abandono dto
      */
     EventoAbandonoDTO removerJugador(String nombre);
+
+    /**
+     * Registra el voto de un jugador para finalizar la partida.
+     *
+     * @param acepta true si vota a favor, false en contra
+     */
+    void registrarVoto(boolean acepta);
+
+    /**
+     * Indica si la votación resultó en finalización (todos a favor).
+     *
+     * @return true si la partida debe terminar
+     */
+    boolean estaTerminada();
+
+    int getVotosAFavor();
+
+    int getVotosEnContra();
+
+    void resetearVotos();
+
 
     /**
      * Setea la configuración de la partida

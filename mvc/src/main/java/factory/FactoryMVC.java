@@ -9,7 +9,7 @@ import mvc.Controlador;
 import mvc.Modelo;
 import lobby.UICrearJugador;
 import lobby.UIPantallaCarga;
-import op.UITurnoJugador;
+import mvc.UITurnoJugador;
 import javax.swing.*;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -35,20 +35,16 @@ public class FactoryMVC implements IFactoryMVC {
 
         LobbyModelo lobbyModelo = new LobbyModelo(dispatcher, serializer, IP_SERVIDOR, PUERTO_SERVIDOR, puertoCliente, ipLocal);
         LobbyControlador lobbyControlador = new LobbyControlador(lobbyModelo);
+        lobbyControlador.setControladorJuego(gameControlador);
         UICrearJugador lobbyUI = new UICrearJugador(lobbyControlador);
         UIPantallaCarga pantallaCarga = new UIPantallaCarga(lobbyControlador);
+        lobbyModelo.suscribir(lobbyControlador);
         lobbyModelo.suscribir(lobbyUI);
         lobbyModelo.suscribir(pantallaCarga);
-        lobbyModelo.setOnPartidaIniciada(() -> {
-            if (lobbyModelo.getJugadorLocal() != null) {
-                gameModelo.setMiNombre(lobbyModelo.getJugadorLocal().getNombre());
-            }
-            gameUI.setVisible(true);
-        });
 
         SwingUtilities.invokeLater(() -> lobbyUI.setVisible(true));
 
-        return new LobbyMVC(serializer, lobbyModelo, gameModelo);
+        return new MVC(serializer, lobbyModelo, gameModelo);
     }
 
     private static String detectarIpLocal() {

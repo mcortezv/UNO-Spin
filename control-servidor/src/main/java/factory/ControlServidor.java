@@ -2,7 +2,10 @@ package factory;
 import dto.*;
 import interfaces.*;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The type Control servidor.
@@ -47,19 +50,12 @@ public class ControlServidor implements IBlackboardObservador {
         List<JugadorDTO> jugadores = blackboard.getJugadores();
         List<SolicitudUnionDTO> solicitudes = blackboard.getSolicitudesPendientes();
 
-        System.out.println("[CS] lobby accion=" + accion + " host=" + host);
 
         switch (accion) {
-            case "HOST_UNIDO" -> {
-                EstadoPartidaDTO dto = new EstadoPartidaDTO();
-                dto.setEstadoPartida("NO_INICIADA");
-                dto.setJugadores(jugadores);
-                enviar(dto, puertoHost, ipHost);
-            }
+            case "HOST_UNIDO" -> enviar(crearEstadoSala(jugadores), puertoHost, ipHost);
+
             case "SOLICITUD_NUEVA" -> {
-                EstadoPartidaDTO dto = new EstadoPartidaDTO();
-                dto.setEstadoPartida("NO_INICIADA");
-                dto.setJugadores(jugadores);
+                EstadoPartidaDTO dto = crearEstadoSala(jugadores);
                 dto.setSolicitudesPendientes(solicitudes);
                 enviar(dto, puertoHost, ipHost);
             }
@@ -73,66 +69,56 @@ public class ControlServidor implements IBlackboardObservador {
                 dtoNuevo.setJugadores(jugadores);
                 enviar(dtoNuevo, puerto, ip);
 
-                EstadoPartidaDTO dtoHost2 = new EstadoPartidaDTO();
-                dtoHost2.setEstadoPartida("NO_INICIADA");
-                dtoHost2.setJugadores(jugadores);
-                dtoHost2.setSolicitudesPendientes(solicitudes);
-                enviar(dtoHost2, puertoHost, ipHost);
+                EstadoPartidaDTO dtoHost = crearEstadoSala(jugadores);
+                dtoHost.setSolicitudesPendientes(solicitudes);
+                enviar(dtoHost, puertoHost, ipHost);
 
-                EstadoPartidaDTO dtoSala = new EstadoPartidaDTO();
-                dtoSala.setEstadoPartida("NO_INICIADA");
-                dtoSala.setJugadores(jugadores);
-                for (JugadorDTO j : jugadores) {
-                    if (j.getNombre().equals(nombre)) continue;
-                    if (j.getNombre().equals(host)) continue;
-                    enviar(dtoSala, blackboard.getPuertoJugador(j.getNombre()),
-                            blackboard.getIpJugador(j.getNombre()));
-                }
+                broadcastExcepto(crearEstadoSala(jugadores), jugadores, nombre, host);
             }
             case "SOLICITUD_RECHAZADA" -> {
                 String nombre = blackboard.getNombreSolicitudResuelta();
                 String ip = blackboard.getIpJugador(nombre);
                 int puerto = blackboard.getPuertoJugador(nombre);
+
                 EstadoPartidaDTO dtoJugador = new EstadoPartidaDTO();
                 dtoJugador.setResultadoSolicitud("RECHAZADA");
                 enviar(dtoJugador, puerto, ip);
-                EstadoPartidaDTO dtoHost = new EstadoPartidaDTO();
-                dtoHost.setEstadoPartida("NO_INICIADA");
-                dtoHost.setJugadores(jugadores);
+
+                EstadoPartidaDTO dtoHost = crearEstadoSala(jugadores);
                 dtoHost.setSolicitudesPendientes(solicitudes);
                 enviar(dtoHost, puertoHost, ipHost);
             }
-            
             case "SOLICITAR_INICIO" -> {
-                String jugadorSolicitante= blackboard.getNombreSolicitudResuelta();
-                for(JugadorDTO jugador: jugadores){
-
-                    if (jugador.getNombre().equals(jugadorSolicitante)) continue;
-                    String ip= blackboard.getIpJugador(jugador.getNombre());
-                    int puerto= blackboard.getPuertoJugador(jugador.getNombre());
-                    if (ip == null) continue; 
-                    
-                    EstadoPartidaDTO estado= new EstadoPartidaDTO();
-                    estado.setEstadoPartida("SOLICITUD_PENDIENTE");
-                    estado.setJugadores(jugadores);
-                    enviar(estado, puerto, ip);
-                }
+                String solicitante = blackboard.getNombreSolicitudResuelta();
+                EstadoPartidaDTO estado = new EstadoPartidaDTO();
+                estado.setEstadoPartida("SOLICITUD_PENDIENTE");
+                estado.setJugadores(jugadores);
+                broadcastExcepto(estado, jugadores, solicitante);
             }
-
-            case "NEGAR_INICIO" ->{
-                for(JugadorDTO jugador: jugadores){
-                    String ip= blackboard.getIpJugador(jugador.getNombre());
-                    int puerto= blackboard.getPuertoJugador(jugador.getNombre());
-                    if (ip == null) continue;
-
-                    EstadoPartidaDTO estado= new EstadoPartidaDTO();
-                    estado.setEstadoPartida("SOLICITUD_CANCELADA");
-                    estado.setJugadores(jugadores);
-                    enviar(estado, puerto, ip);
-
-                }
+            case "NEGAR_INICIO" -> {
+                EstadoPartidaDTO estado = new EstadoPartidaDTO();
+                estado.setEstadoPartida("SOLICITUD_CANCELADA");
+                estado.setJugadores(jugadores);
+                broadcastExcepto(estado, jugadores);
             }
+        }
+    }
 
+    private EstadoPartidaDTO crearEstadoSala(List<JugadorDTO> jugadores) {
+        EstadoPartidaDTO dto = new EstadoPartidaDTO();
+        dto.setEstadoPartida("NO_INICIADA");
+        dto.setJugadores(jugadores);
+        return dto;
+    }
+
+    private void broadcastExcepto(EstadoPartidaDTO dto, List<JugadorDTO> jugadores, String... excluidos) {
+        Set<String> excluir = new HashSet<>(Arrays.asList(excluidos));
+        for (JugadorDTO j : jugadores) {
+            if (excluir.contains(j.getNombre())) continue;
+            String ip = blackboard.getIpJugador(j.getNombre());
+            int puerto = blackboard.getPuertoJugador(j.getNombre());
+            if (ip == null) continue;
+            enviar(dto, puerto, ip);
         }
     }
 
@@ -160,7 +146,7 @@ public class ControlServidor implements IBlackboardObservador {
         TipoEventoRuletaDTO eventoRuleta = "GIRO_PENDIENTE".equals(blackboard.getEstadoPartida())
                 ? blackboard.getEventoRuleta()
                 : null;
-        return new EstadoPartidaDTO(
+         EstadoPartidaDTO dto = new EstadoPartidaDTO(
                 blackboard.getIndiceJugadorActual(),
                 blackboard.getEstadoPartida(),
                 eventoAbandono,
@@ -170,6 +156,9 @@ public class ControlServidor implements IBlackboardObservador {
                 blackboard.getIndiceJugadorActual() == indiceJugador,
                 eventoRuleta,
                 blackboard.isUltimaJugadaValida());
+        dto.setEventoFinalizacion(blackboard.getEventoFinalizacion());
+    return dto;  
+        
     }
 
     private void enviar(EstadoPartidaDTO dto, int puerto, String ip) {

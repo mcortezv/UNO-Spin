@@ -1,5 +1,4 @@
 package factory;
-
 import dominio.IDominio;
 import dominio.entidades.ConfiguracionPartida;
 import dominio.entidades.Jugador;
@@ -11,10 +10,14 @@ import interfaces.IBlackboardObservador;
 import mappers.CartaMapper;
 import mappers.ConfiguracionPartidaMapper;
 import mappers.JugadorMapper;
+import dto.CartaDTO;
+import dto.EventoFinalizacionDTO;
+import dto.JugadorDTO;
+import dto.SolicitudUnionDTO;
+import dto.TipoAccionDTO;
 import interfaces.IBlackboard;
 import interfaces.IReceptor;
 import interfaces.ISerializer;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -27,10 +30,11 @@ import java.util.stream.Collectors;
  * The type Blackboard.
  *
  */
-public class Blackboard implements IBlackboard, IReceptor {
+public class Blackboard implements IBlackboard, IReceptor{
 
     private static final int MIN_JUGADORES = 2;
     private static final int MAX_JUGADORES = 4;
+
     private static Blackboard instance;
     private final List<IBlackboardObservador> suscriptores = new ArrayList<>();
     private IDominio dominio;
@@ -45,6 +49,7 @@ public class Blackboard implements IBlackboard, IReceptor {
     private String hostNombre = null;
     private ConfiguracionPartida configuracion;
     private EventoAbandonoDTO eventoAbandono;
+    private EventoFinalizacionDTO eventoFinalizacion = null;
 
     /**
      * Instantiates a new Blackboard.
@@ -76,15 +81,20 @@ public class Blackboard implements IBlackboard, IReceptor {
         switch (tipo) {
             case CREAR_PARTIDA -> procesarCrearPartida(accion);
             case UNIRSE_PARTIDA -> procesarUnirse(accion);
-            case SOLICITAR_INICIO -> procesarSolicitudInicio(accion);
+            case SOLICITAR_INICIO   -> procesarSolicitudInicio(accion);
             case ACEPTAR_SOLICITUD -> procesarAceptarSolicitud(accion);
             case RECHAZAR_SOLICITUD -> procesarRechazarSolicitud(accion);
-            case CONFIRMAR_INICIO -> procesarConfirmarInicio(accion);
-            case RECHAZAR_INICIO -> procesarRechazarInicio(accion);
+            case CONFIRMAR_INICIO   -> procesarConfirmarInicio(accion);
+            case RECHAZAR_INICIO    -> procesarRechazarInicio(accion);
             case ABANDONAR_PARTIDA -> procesarAbandono(accion);
             default -> {
                 if (dominio == null || dominio.getEstadoPartida() == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA)
                     break;
+
+                if (tipo != TipoAccion.SOLICITAR_FINALIZAR) {
+                    eventoFinalizacion = null;
+                    dominio.resetearVotos();
+                }
                 switch (tipo) {
                     case JUGAR_CARTA -> dominio.aplicarJugada(CartaMapper.toEntity(accion.getCartaDTO()));
                     case PEDIR_CARTA -> dominio.robarCartaJugadorActual();
@@ -104,6 +114,7 @@ public class Blackboard implements IBlackboard, IReceptor {
                         dominio.aplicarEfectoRuleta(ev, parsearResultado(ev, accion.getResultadoEvento()));
                         dominio.avanzarTurno();
                     }
+                    case SOLICITAR_FINALIZAR -> procesarFinalizacion(accion);
                     default -> {
                     }
                 }
@@ -114,17 +125,16 @@ public class Blackboard implements IBlackboard, IReceptor {
 
     private void procesarCrearPartida(TipoAccionDTO dto) {
         if (dominio != null) return;
-        setDominio(new Partida(EstadoPartida.NO_INICIADA, 0, new ArrayList<>(), true, configuracion));
-
-
-
-        this.configuracion = dto.getConfiguracion() != null ? ConfiguracionPartidaMapper.toEntity(dto.getConfiguracion()) : configuracionDefault();
+        setDominio(new Partida(EstadoPartida.NO_INICIADA, 0, new ArrayList<>(), true));
+        this.configuracion = dto.getConfiguracion() != null
+            ? ConfiguracionPartidaMapper.toEntity(dto.getConfiguracion())
+            : configuracionDefault();
     }
 
 
     private void procesarUnirse(TipoAccionDTO accion) {
         if (dominio == null) {
-            setDominio(new Partida(EstadoPartida.NO_INICIADA, 0, new ArrayList<>(), true, configuracion));
+            setDominio(new Partida(EstadoPartida.NO_INICIADA, 0, new ArrayList<>(), true));
         }
         if (dominio.getEstadoPartida() != EstadoPartida.NO_INICIADA) return;
         if (jugadoresInscritos.size() >= MAX_JUGADORES) return;
@@ -142,7 +152,8 @@ public class Blackboard implements IBlackboard, IReceptor {
                 this.configuracion = ConfiguracionPartidaMapper.toEntity(accion.getConfiguracion());
             }
         } else {
-            SolicitudUnionDTO solicitud = new SolicitudUnionDTO(accion.getJugadorDTO(), accion.getIp(), accion.getPuerto(), "PENDIENTE");
+            SolicitudUnionDTO solicitud = new SolicitudUnionDTO(
+                    accion.getJugadorDTO(), accion.getIp(), accion.getPuerto(), "PENDIENTE");
             solicitudes.put(jugador.getNombre(), solicitud);
             ultimaAccionLobby = "SOLICITUD_NUEVA";
             nombreSolicitudResuelta = jugador.getNombre();
@@ -181,12 +192,12 @@ public class Blackboard implements IBlackboard, IReceptor {
         if (dominio == null || dominio.getEstadoPartida() != EstadoPartida.NO_INICIADA) return;
         if (accion.getJugadorDTO() == null) return;
         dominio.solicitarInicio();
-        String nombre = accion.getJugadorDTO().getNombre();
-        nombreSolicitudResuelta = nombre;
+        String nombre= accion.getJugadorDTO().getNombre();
+        nombreSolicitudResuelta= nombre;
 
-        // Jugador jugador= JugadorMapper.toEntity(accion.getJugadorDTO());
-        // dominio.agregarConfirmacion(jugador);
-        ultimaAccionLobby = "SOLICITAR_INICIO";
+       // Jugador jugador= JugadorMapper.toEntity(accion.getJugadorDTO());
+       // dominio.agregarConfirmacion(jugador);
+        ultimaAccionLobby= "SOLICITAR_INICIO";
 
 
 //        if (dominio.getCantidadConfirmaciones() >=  MIN_JUGADORES && jugadoresInscritos.size() >= MAX_JUGADORES){
@@ -194,22 +205,57 @@ public class Blackboard implements IBlackboard, IReceptor {
 //        }
     }
 
-    private void procesarConfirmarInicio(TipoAccionDTO accion) {
-        Jugador jugador = JugadorMapper.toEntity(accion.getJugadorDTO());
+    private void procesarConfirmarInicio(TipoAccionDTO accion){
+        Jugador jugador= JugadorMapper.toEntity(accion.getJugadorDTO());
         dominio.agregarConfirmacion(jugador);
-        ultimaAccionLobby = "CONFIRMAR_INICIO";
+        ultimaAccionLobby= "CONFIRMAR_INICIO";
 
-        if (dominio.getCantidadConfirmaciones() >= jugadoresInscritos.size() - 1 && jugadoresInscritos.size() >= MIN_JUGADORES) {
+        if (dominio.getCantidadConfirmaciones() >= jugadoresInscritos.size()-1 && jugadoresInscritos.size() >= MIN_JUGADORES){
             arrancarPartida();
         }
 
     }
 
-    private void procesarRechazarInicio(TipoAccionDTO accion) {
-        Jugador jugador = JugadorMapper.toEntity(accion.getJugadorDTO());
+    private void procesarRechazarInicio(TipoAccionDTO accion){
+        Jugador jugador= JugadorMapper.toEntity(accion.getJugadorDTO());
         dominio.cancelarConfirmaciones();
-        ultimaAccionLobby = "NEGAR_INICIO";
+        ultimaAccionLobby= "NEGAR_INICIO";
 
+    }
+
+    private void procesarFinalizacion(TipoAccionDTO accion) {
+        if (dominio == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA) return;
+
+        boolean acepta = Boolean.parseBoolean(accion.getResultadoEvento());
+        dominio.registrarVoto(acepta);
+
+        if (dominio.estaTerminada()) {
+            List<Jugador> jugadores = dominio.getJugadores();
+            List<Jugador> ordenados = jugadores.stream()
+                    .sorted((a, b) -> a.getMano().getCartas().size() - b.getMano().getCartas().size())
+                    .collect(Collectors.toList());
+
+            List<JugadorDTO> posiciones = new ArrayList<>();
+            for (int i = 0; i < ordenados.size(); i++) {
+                JugadorDTO dto = JugadorMapper.toDTO(ordenados.get(i), false);
+                int posicion = 1;
+                for (int j = 0; j < i; j++) {
+                    if (ordenados.get(j).getMano().getCartas().size() < ordenados.get(i).getMano().getCartas().size()) {
+                        posicion = j + 2;
+                    }
+                }
+                dto.setCantidadCartas(posicion);
+                posiciones.add(dto);
+            }
+            eventoFinalizacion = new EventoFinalizacionDTO(posiciones);
+        } else if (dominio.getVotosEnContra() > 0) {
+            eventoFinalizacion = new EventoFinalizacionDTO(false);
+            dominio.resetearVotos();
+        } else {
+            EventoFinalizacionDTO enCurso = new EventoFinalizacionDTO(false);
+            enCurso.setVotacionEnCurso(true);
+            eventoFinalizacion = enCurso;
+        }
     }
 
     private void arrancarPartida() {
@@ -245,23 +291,19 @@ public class Blackboard implements IBlackboard, IReceptor {
 
     @Override
     public List<SolicitudUnionDTO> getSolicitudesPendientes() {
-        return solicitudes.values().stream().filter(s -> "PENDIENTE".equals(s.getEstado())).collect(Collectors.toList());
+        return solicitudes.values().stream()
+                .filter(s -> "PENDIENTE".equals(s.getEstado()))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public String getUltimaAccionLobby() {
-        return ultimaAccionLobby;
-    }
+    public String getUltimaAccionLobby() { return ultimaAccionLobby; }
 
     @Override
-    public String getNombreSolicitudResuelta() {
-        return nombreSolicitudResuelta;
-    }
+    public String getNombreSolicitudResuelta() { return nombreSolicitudResuelta; }
 
     @Override
-    public String getHostNombre() {
-        return hostNombre;
-    }
+    public String getHostNombre() { return hostNombre; }
 
     @Override
     public CartaDTO getCartaCima() {
@@ -299,6 +341,11 @@ public class Blackboard implements IBlackboard, IReceptor {
     }
 
     @Override
+    public EventoFinalizacionDTO getEventoFinalizacion() {
+        return eventoFinalizacion;
+}
+
+    @Override
     public String getIpJugador(String nombre) {
         return ipsPorNombre.get(nombre);
     }
@@ -317,11 +364,7 @@ public class Blackboard implements IBlackboard, IReceptor {
     private Object parsearResultado(TipoEventoRuletaDTO evento, String raw) {
         if (raw == null || evento == null) return null;
         if (evento == TipoEventoRuletaDTO.DESCARTAR_POR_NUMERO) {
-            try {
-                return Integer.parseInt(raw);
-            } catch (NumberFormatException e) {
-                return null;
-            }
+            try { return Integer.parseInt(raw); } catch (NumberFormatException e) { return null; }
         }
         return raw;
     }

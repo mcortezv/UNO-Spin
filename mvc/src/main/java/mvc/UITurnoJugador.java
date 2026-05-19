@@ -1,18 +1,19 @@
-package op;
-import com.sun.tools.javac.Main;
+package mvc;
 import dto.TipoEventoRuletaDTO;
 import dto.CartaDTO;
 import dto.JugadorDTO;
 import dialogs.DialogoElegirColor;
 import dialogs.DialogoEventoRuleta;
 import dialogs.FabricaDialogosEvento;
+import dto.EventoFinalizacionDTO;
 import interfaces.IModeloLectura;
 import interfaces.ISuscriptor;
-import mvc.Controlador;
+import op.*;
 import styles.Button;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The type Ui turno jugador.
@@ -47,6 +48,13 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
     private boolean mostrandoDialogoEvento = false;
     private TipoEventoRuletaDTO ultimoEventoMostrado = null;
 
+    private final JButton btnFinalizarPartida;
+    private boolean mostrarDialogoVotacion = false;
+    private boolean mostrarDialogoEspera = false;
+    private JDialog dialogoEspera = null;
+    private boolean mostroRechazo = false;
+    private JDialog dialogoVotacion = null;
+
     /**
      * Instantiates a new Ui turno jugador.
      *
@@ -67,9 +75,10 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         this.btnTirarCarta = new Button("Tirar Carta", new Color(45, 45, 45));
         this.btnUno      = new Button("UNO", new Color(185, 25, 25));
         this.btnUno.setFont(new Font("Arial", Font.BOLD, 16));
+        this.btnFinalizarPartida = new Button("Finalizar Partida", new Color(45, 45, 45));
 
         ImageIcon iconoOriginal = new ImageIcon(
-                getClass().getResource("/exit.png")
+                Objects.requireNonNull(getClass().getResource("/exit.png"))
         );
         Image imagenEscalada = iconoOriginal.getImage()
                 .getScaledInstance(60, 30, Image.SCALE_SMOOTH);
@@ -165,6 +174,20 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
 
         panelFondo.add(construirZonaJugadorActivo(), gbc);
 
+        JPanel panelFinalizar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 8));
+        panelFinalizar.setOpaque(false);
+        panelFinalizar.add(btnFinalizarPartida);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
+        gbc.insets = new Insets(8, 0, 0, 8);
+        panelFondo.add(panelFinalizar, gbc);
+
         setContentPane(panelFondo);
     }
 
@@ -203,6 +226,7 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         tablero.setOnPedirCarta(controlador::onPedirCarta);
         tablero.setOnGiroCompleto(controlador::onSpinCompletado);
         btnAbandonar.addActionListener(e -> controlador.solicitarAbandono());
+        btnFinalizarPartida.addActionListener(e -> controlador.onSolicitarTerminar());
     }
 
     @Override
@@ -232,6 +256,10 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
             if (resultado == JOptionPane.YES_OPTION) {
                 controlador.abandonarPartida();
             }
+        }
+
+        if (!isVisible() && modelo.getCartaCima() != null) {
+            setVisible(true);
         }
 
         if (!modelo.getVistaActiva()) {
@@ -296,6 +324,45 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
             mostrandoDialogoEvento = false;
         }
 
+        EventoFinalizacionDTO eventoFin = modelo.getEventoFinalizacion();
+
+        if (eventoFin == null) {
+            mostrarDialogoVotacion = false;
+            mostrarDialogoEspera = false;
+            mostroRechazo = false;
+            if (dialogoEspera != null) {
+                dialogoEspera.dispose();
+                dialogoEspera = null;
+            }
+        } else if (eventoFin.getPosiciones() != null) {
+            if (dialogoEspera != null) {
+                dialogoEspera.dispose();
+                dialogoEspera = null;
+            }
+            mostrarTablaPosiciones(eventoFin.getPosiciones());
+        } else if (!eventoFin.isVotacionEnCurso() && !mostroRechazo) {
+            if (dialogoVotacion != null) {
+                dialogoVotacion.dispose();
+                dialogoVotacion = null;
+            }
+            if (dialogoEspera != null) {
+                dialogoEspera.dispose();
+                dialogoEspera = null;
+            }
+            mostroRechazo = true;
+            mostrarMensajeRechazo();
+        } else if (eventoFin.isVotacionEnCurso()) {
+            mostroRechazo = false;
+            if (modelo.isVotacionPendiente() && !mostrarDialogoVotacion) {
+                mostrarDialogoVotacion = true;
+                mostrarDialogoVotacion();
+                mostrarDialogoVotacion = false;
+            } else if (modelo.isVotoEnviado() && modelo.isYaVote() && !mostrarDialogoEspera) {
+                mostrarDialogoEspera = true;
+                mostrarEsperaVotacion();
+                mostrarDialogoEspera = false;
+            }
+        }
     }
 
     private void mostrarDialogoEvento(TipoEventoRuletaDTO evento, IModeloLectura modelo) {
@@ -308,6 +375,69 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         if (esTurnoPropio) {
             controlador.onResultadoEvento(evento.name(), dialogo.getResultado());
         }
+    }
+
+    private void mostrarDialogoVotacion() {
+        dialogoVotacion = new JDialog(this, "Votación en curso...", false);
+        dialogoVotacion.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+        JLabel label = new JLabel("¿Deseas que finalice la partida?", SwingConstants.CENTER);
+        label.setBorder(BorderFactory.createEmptyBorder(20, 30, 10, 30));
+
+        JButton btnSi = new JButton("SI");
+        JButton btnNo = new JButton("NO");
+
+        btnSi.addActionListener(e -> {
+            dialogoVotacion.dispose();
+            dialogoVotacion = null;
+            mostrarDialogoVotacion = false;
+            controlador.onVotoTerminar(true);
+        });
+        btnNo.addActionListener(e -> {
+            dialogoVotacion.dispose();
+            dialogoVotacion = null;
+            mostrarDialogoVotacion = false;
+            controlador.onVotoTerminar(false);
+        });
+
+        JPanel panelBotones = new JPanel(new FlowLayout());
+        panelBotones.add(btnSi);
+        panelBotones.add(btnNo);
+
+        dialogoVotacion.setLayout(new BorderLayout());
+        dialogoVotacion.add(label, BorderLayout.CENTER);
+        dialogoVotacion.add(panelBotones, BorderLayout.SOUTH);
+        dialogoVotacion.pack();
+        dialogoVotacion.setLocationRelativeTo(this);
+        dialogoVotacion.setVisible(true);
+    }
+
+    private void mostrarEsperaVotacion() {
+        dialogoEspera = new JDialog(this, "Votación en curso...", false);
+        dialogoEspera.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        JLabel label = new JLabel("Esperando a que el resto de jugadores voten", SwingConstants.CENTER);
+        label.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        dialogoEspera.add(label);
+        dialogoEspera.pack();
+        dialogoEspera.setLocationRelativeTo(this);
+        dialogoEspera.setVisible(true);
+    }
+
+    private void mostrarTablaPosiciones(List<JugadorDTO> posiciones) {
+        SwingUtilities.invokeLater(() -> {
+            UIScoreboard scoreboard = new UIScoreboard(posiciones);
+            scoreboard.setVisible(true);
+            this.dispose();
+        });
+    }
+
+    private void mostrarMensajeRechazo() {
+        JOptionPane.showMessageDialog(
+                this,
+                "La votación fue rechazada. La partida continúa.",
+                "Votación en curso...",
+                JOptionPane.INFORMATION_MESSAGE
+        );
     }
 
     private void actualizarRival(List<JugadorDTO> rivales, int idx, JPanel slot, UIJugador.Posicion posicion) {

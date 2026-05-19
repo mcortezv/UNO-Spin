@@ -61,6 +61,10 @@ public final class CargadorAssets {
     public ImageIcon getAvatar(int numero) {
         return cargar("avatares/avatar_" + numero + ".png");
     }
+    
+    public ImageIcon getLogo() {
+        return cargar("uno-logo.png");
+    }
 
     /**
      * Gets carta escalada.

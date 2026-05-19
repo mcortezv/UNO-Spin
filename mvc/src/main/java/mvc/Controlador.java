@@ -3,11 +3,12 @@ import dto.CartaDTO;
 import dto.ConfiguracionPartidaDTO;
 import dto.JugadorDTO;
 import interfaces.IModeloControlador;
+import interfaces.IOnJuegoIniciado;
 
 /**
  * The type Controlador.
  */
-public class Controlador {
+public class Controlador implements IOnJuegoIniciado {
 
     private final IModeloControlador modelo;
 
@@ -117,5 +118,26 @@ public class Controlador {
      */
     public void abandonarPartida() {
         modelo.abandonarPartida();
+    }
+
+    /**
+     * On solicitar terminar partida.
+     */
+    public void onSolicitarTerminar() {
+        modelo.solicitarTerminarPartida();
+    }
+
+    /**
+     * On enviar voto.
+     *
+     * @param acepta the desicion
+     */
+    public void onVotoTerminar(boolean acepta) {
+        modelo.enviarVotoTerminar(acepta);
+    }
+
+    @Override
+    public void iniciarJuego(String nombreJugador) {
+        modelo.setNombreJugador(nombreJugador);
     }
 }
