@@ -131,6 +131,7 @@ public class Blackboard implements IBlackboard, IReceptor{
         this.configuracion = dto.getConfiguracion() != null
             ? ConfiguracionPartidaMapper.toEntity(dto.getConfiguracion())
             : configuracionDefault();
+        procesarConfiguracionPartida(this.configuracion);
     }
 
 
@@ -152,6 +153,7 @@ public class Blackboard implements IBlackboard, IReceptor{
             nombreSolicitudResuelta = null;
             if (accion.getConfiguracion() != null) {
                 this.configuracion = ConfiguracionPartidaMapper.toEntity(accion.getConfiguracion());
+                procesarConfiguracionPartida(this.configuracion);
             }
         } else {
             SolicitudUnionDTO solicitud = new SolicitudUnionDTO(
