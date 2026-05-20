@@ -387,15 +387,8 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     }
 
     @Override
-    public String getNombreAbandono(){
-        return estadoPartida != null && estadoPartida.getEventoAbandono() != null
-                ? estadoPartida.getEventoAbandono().getNombreAbandono() : null;
-    }
-
-    @Override
-    public String getNombreGanador(){
-        return estadoPartida != null && estadoPartida.getEventoAbandono() != null
-                ? estadoPartida.getEventoAbandono().getNombreGanador() : null;
+    public EventoAbandonoDTO getEventoAbandono() {
+        return estadoPartida != null ? estadoPartida.getEventoAbandono() : null;
     }
 
     @Override
