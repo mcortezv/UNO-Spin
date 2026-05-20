@@ -125,7 +125,9 @@ public class Blackboard implements IBlackboard, IReceptor{
 
     private void procesarCrearPartida(TipoAccionDTO dto) {
         if (dominio != null) return;
-        setDominio(new Partida(EstadoPartida.NO_INICIADA, 0, new ArrayList<>(), true));
+        setDominio(
+
+                new Partida(EstadoPartida.NO_INICIADA, 0, new ArrayList<>(), true, null));
         this.configuracion = dto.getConfiguracion() != null
             ? ConfiguracionPartidaMapper.toEntity(dto.getConfiguracion())
             : configuracionDefault();
@@ -134,7 +136,7 @@ public class Blackboard implements IBlackboard, IReceptor{
 
     private void procesarUnirse(TipoAccionDTO accion) {
         if (dominio == null) {
-            setDominio(new Partida(EstadoPartida.NO_INICIADA, 0, new ArrayList<>(), true));
+            setDominio(new Partida(EstadoPartida.NO_INICIADA, 0, new ArrayList<>(), true, null));
         }
         if (dominio.getEstadoPartida() != EstadoPartida.NO_INICIADA) return;
         if (jugadoresInscritos.size() >= MAX_JUGADORES) return;
