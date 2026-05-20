@@ -1,6 +1,8 @@
 package lobby;
 
 import dto.ConfiguracionPartidaDTO;
+import mvc.Controlador;
+import mvc.Modelo;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,9 +24,10 @@ public class UICrearPartida extends JFrame {
     }
 
     private void construirUI() {
-        setTitle("UNO-Spin — Crear Partida");
+        setTitle("UNO-Spin Crear Partida");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1050, 620);
+        // Incrementamos ligeramente el alto de la ventana para que quepa todo el formulario holgadamente
+        setSize(1050, 680);
         setLocationRelativeTo(null);
         setUndecorated(true);
 
@@ -52,25 +55,28 @@ public class UICrearPartida extends JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2d.setColor(new Color(15, 15, 15));
                 g2d.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 35, 35));
             }
         };
         marcoOscuro.setOpaque(false);
         marcoOscuro.setLayout(new GridBagLayout());
-        marcoOscuro.setPreferredSize(new Dimension(870, 490));
+        // Ajustamos la dimensión sugerida para albergar todos los campos componentes
+        marcoOscuro.setPreferredSize(new Dimension(870, 590));
 
         JPanel panelAzul = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2d.setColor(AZUL_PANEL);
                 g2d.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 22, 22));
             }
         };
         panelAzul.setOpaque(false);
-        panelAzul.setPreferredSize(new Dimension(830, 450));
+        panelAzul.setPreferredSize(new Dimension(830, 550));
         panelAzul.setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -78,21 +84,22 @@ public class UICrearPartida extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
 
         JLabel titulo = new JLabel("CREAR NUEVA PARTIDA");
-        titulo.setFont(new Font("Arial Black", Font.BOLD, 42));
+        titulo.setFont(new Font("Arial Black", Font.BOLD, 36)); // Reducido ligeramente de 42 a 36 para balancear espacio
         titulo.setForeground(Color.WHITE);
-        gbc.insets = new Insets(30, 20, 20, 20);
+        gbc.insets = new Insets(20, 20, 15, 20);
         panelAzul.add(titulo, gbc);
 
+        // Optimizamos los márgenes (insets) inferiores para que el layout no colapse verticalmente
         campoMinimo = crearCampo(panelAzul, gbc, "Número Mínimo:");
         campoMaximo = crearCampo(panelAzul, gbc, "Número Máximo:");
         campoComodines = crearCampo(panelAzul, gbc, "Número Comodines:");
         campoAccion = crearCampo(panelAzul, gbc, "Número Cartas Acción:");
         campoTiempo = crearCampo(panelAzul, gbc, "Tiempo Mostrar Cartas (seg):");
 
-        JButton botonCrear = crearBotonAmarillo("CREAR", 170, 58);
-        botonCrear.setFont(new Font("Arial Black", Font.BOLD, 22));
+        JButton botonCrear = crearBotonAmarillo("CREAR", 170, 50);
+        botonCrear.setFont(new Font("Arial Black", Font.BOLD, 20));
         botonCrear.addActionListener(e -> onCrear());
-        gbc.insets = new Insets(20, 20, 30, 20);
+        gbc.insets = new Insets(15, 20, 20, 20);
         panelAzul.add(botonCrear, gbc);
 
         GridBagConstraints gbcInner = new GridBagConstraints();
@@ -103,9 +110,9 @@ public class UICrearPartida extends JFrame {
 
     private JTextField crearCampo(JPanel panel, GridBagConstraints gbc, String labelText) {
         JLabel label = new JLabel(labelText);
-        label.setFont(new Font("Arial", Font.BOLD, 18));
+        label.setFont(new Font("Arial", Font.BOLD, 14)); // Tamaño de fuente un poco más estilizado
         label.setForeground(Color.WHITE);
-        gbc.insets = new Insets(0, 20, 4, 20);
+        gbc.insets = new Insets(0, 20, 2, 20);
         panel.add(label, gbc);
 
         JTextField campo = new JTextField();
@@ -113,9 +120,11 @@ public class UICrearPartida extends JFrame {
         campo.setForeground(Color.WHITE);
         campo.setBackground(new Color(28, 28, 28));
         campo.setCaretColor(Color.WHITE);
-        campo.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
-        campo.setPreferredSize(new Dimension(300, 42));
-        gbc.insets = new Insets(0, 20, 25, 20);
+        campo.setBorder(BorderFactory.createEmptyBorder(6, 15, 6, 15));
+        campo.setPreferredSize(new Dimension(300, 36));
+
+        // Reducimos el margen inferior de 25 a 12 para rescatar espacio vertical útil
+        gbc.insets = new Insets(0, 20, 12, 20);
         panel.add(campo, gbc);
         return campo;
     }
@@ -128,8 +137,8 @@ public class UICrearPartida extends JFrame {
             int accion = Integer.parseInt(campoAccion.getText().trim());
             float tiempo = Float.parseFloat(campoTiempo.getText().trim());
 
-            if (min <= 0 || max <=0 || max < min) {
-                throw new IllegalArgumentException("Ingresa números válidos");
+            if (min < 0 || max > 9 || max < min) {
+                throw new IllegalArgumentException();
             }
 
             ConfiguracionPartidaDTO dto = new ConfiguracionPartidaDTO(min, max, comodines, accion, tiempo);
@@ -142,8 +151,9 @@ public class UICrearPartida extends JFrame {
                     "Partida creada", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception ex) {
+            System.out.println(ex.getMessage());
             JOptionPane.showMessageDialog(this,
-                    "Ingresa números válidos",
+                    "Ingresa números válidos. Asegúrate de rellenar todos los campos correctamente.",
                     "Error", JOptionPane.WARNING_MESSAGE);
         }
     }
@@ -153,15 +163,17 @@ public class UICrearPartida extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2d.setColor(getModel().isPressed() ? new Color(195, 155, 0) : AMARILLO);
                 g2d.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 20, 20));
                 g2d.dispose();
+
+                // IMPORTANTE: Llamar al super método AL FINAL para que pinte el texto del botón encima de la forma amarilla
                 super.paintComponent(g);
             }
             @Override
             protected void paintBorder(Graphics g) {}
         };
-        boton.setFont(new Font("Arial Black", Font.BOLD, 16));
         boton.setForeground(new Color(15, 15, 15));
         boton.setContentAreaFilled(false);
         boton.setBorderPainted(false);
@@ -186,9 +198,12 @@ public class UICrearPartida extends JFrame {
         c.addMouseMotionListener(ma);
     }
 
+
     public static void main(String[] args) {
+
         LobbyModelo modelo = new LobbyModelo(null, null, null, 0, 0, null);
         LobbyControlador controlador = new LobbyControlador(modelo);
         SwingUtilities.invokeLater(() -> new UICrearPartida(controlador).setVisible(true));
+
     }
 }
