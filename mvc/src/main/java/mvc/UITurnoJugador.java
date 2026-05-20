@@ -519,8 +519,14 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
 
     private void configurarVentana() {
         setSize(ANCHO_VENTANA, ALTO_VENTANA);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                controlador.solicitarAbandono();
+            }
+        });
     }
 
     private void mostrarDialogoSeleccionColor() {
