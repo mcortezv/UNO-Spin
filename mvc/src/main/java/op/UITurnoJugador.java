@@ -2,6 +2,7 @@ package op;
 import com.sun.tools.javac.Main;
 import dto.TipoEventoRuletaDTO;
 import dto.CartaDTO;
+import dto.EventoAbandonoDTO;
 import dto.JugadorDTO;
 import dialogs.DialogoElegirColor;
 import dialogs.DialogoEventoRuleta;
@@ -238,11 +239,12 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
             this.dispose();
         }
 
-        if (modelo.getNombreAbandono() != null){
-            if (modelo.getNombreGanador() != null){
+        EventoAbandonoDTO eventoAbandono = modelo.getEventoAbandono();
+        if (eventoAbandono != null) {
+            if (eventoAbandono.getNombreGanador() != null) {
                 JOptionPane.showMessageDialog(
                         this,
-                        modelo.getMiNombre() + " ha abandonado la partida, por lo que eres declarado ganador por defecto.",
+                        eventoAbandono.getNombreAbandono() + " ha abandonado la partida, por lo que eres declarado ganador por defecto.",
                         "¡Haz Ganado!",
                         JOptionPane.INFORMATION_MESSAGE
                 );
@@ -250,7 +252,7 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
                 JOptionPane.showMessageDialog(
                         this,
                         "Sus cartas han sido devueltas al mazo.",
-                        modelo.getMiNombre() + " ha abandonado la partida",
+                        eventoAbandono.getNombreAbandono() + " ha abandonado la partida",
                         JOptionPane.INFORMATION_MESSAGE
                 );
             }
