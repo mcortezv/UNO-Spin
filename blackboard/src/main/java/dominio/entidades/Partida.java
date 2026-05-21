@@ -62,6 +62,7 @@ public class Partida implements IDominio {
         this.jugadores = jugadoresIniciales;
         this.indiceJugadorActual = 0;
         this.sentidoHorario = true;
+        cancelarConfirmaciones();
 
         Mazo mazo = new Mazo(generarMazo(configuracion));
         mazo.mezclar();
@@ -152,13 +153,9 @@ public class Partida implements IDominio {
     }
 
     public void cancelarConfirmaciones() {
-
         confirmaciones.clear();
     }
 
-    public void solicitarInicio(){
-
-    }
 
     @Override
     public boolean aplicarJugada(Carta carta) {

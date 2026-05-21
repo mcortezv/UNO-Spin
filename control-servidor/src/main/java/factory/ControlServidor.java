@@ -96,10 +96,11 @@ public class ControlServidor implements IBlackboardObservador {
                 broadcastExcepto(estado, jugadores, solicitante);
             }
             case "NEGAR_INICIO" -> {
+                String clienteSolicitudNegada = blackboard.getNombreSolicitudResuelta();
                 EstadoPartidaDTO estado = new EstadoPartidaDTO();
                 estado.setEstadoPartida("SOLICITUD_CANCELADA");
                 estado.setJugadores(jugadores);
-                broadcastExcepto(estado, jugadores);
+                broadcastExcepto(estado, jugadores, clienteSolicitudNegada);
             }
         }
     }

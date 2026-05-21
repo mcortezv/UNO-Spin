@@ -27,6 +27,7 @@ public class UIPantallaCarga extends JFrame implements ISuscriptorLobby {
     private JLabel labelEstado;
     private DefaultTableModel tableModel;
     private JPanel panelSolicitudes;
+    private JDialog dialogoActivo= null;
 
     public UIPantallaCarga(LobbyControlador controlador) {
         this.controlador = controlador;
@@ -289,6 +290,10 @@ public class UIPantallaCarga extends JFrame implements ISuscriptorLobby {
                     dispose();
                     break;
                 case SOLICITUD_CANCELADA:
+                    if(dialogoActivo != null){
+                        dialogoActivo.dispose();
+                        dialogoActivo = null;
+                    }
                     labelTitulo.setText("JUGADORES EN SESION");
                     labelEstado.setText("Un jugador ha rechazado el inicio del juego");
                     actualizarSolicitudes(modelo.getSolicitudesPendientes());
@@ -298,13 +303,25 @@ public class UIPantallaCarga extends JFrame implements ISuscriptorLobby {
         });
     }
     
-    private void mostrarDialogoConfirmacion(){
-        int respuesta= JOptionPane.showConfirmDialog(this, "Un jugador quiere iniciar, confirmas?", "Solicitud de Inicio", JOptionPane.YES_NO_OPTION);
-        if(respuesta == JOptionPane.YES_OPTION){
-            controlador.confirmarInicio();
-        } else{
-            controlador.negarInicio();
-        }
+    private void mostrarDialogoConfirmacion() {
+        new Thread(() -> {
+            JOptionPane pane= new JOptionPane("Un jugador quiere iniciar, confirmas?", JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION);
+            dialogoActivo= pane.createDialog(this, "Solicitud de inicio");
+            dialogoActivo.setVisible(true);
+            dialogoActivo= null;
+
+            Integer respuesta= (Integer) pane.getValue();
+            SwingUtilities.invokeLater(() -> {
+                if (respuesta !=null && respuesta == JOptionPane.YES_OPTION) {
+                    controlador.confirmarInicio();
+                } else {
+                    controlador.negarInicio();
+                }
+            });
+
+        }).start();
+
+
     }
 
     private void habilitarArrastre(Component c) {
