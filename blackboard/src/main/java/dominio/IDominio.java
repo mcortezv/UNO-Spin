@@ -19,7 +19,7 @@ public interface IDominio {
 
     void cancelarConfirmaciones();
 
-    void solicitarInicio();
+
 
 
     /**

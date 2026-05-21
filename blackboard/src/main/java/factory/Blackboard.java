@@ -195,18 +195,11 @@ public class Blackboard implements IBlackboard, IReceptor{
     private void procesarSolicitudInicio(TipoAccionDTO accion) {
         if (dominio == null || dominio.getEstadoPartida() != EstadoPartida.NO_INICIADA) return;
         if (accion.getJugadorDTO() == null) return;
-        dominio.solicitarInicio();
         String nombre= accion.getJugadorDTO().getNombre();
         nombreSolicitudResuelta= nombre;
 
-       // Jugador jugador= JugadorMapper.toEntity(accion.getJugadorDTO());
-       // dominio.agregarConfirmacion(jugador);
         ultimaAccionLobby= "SOLICITAR_INICIO";
 
-
-//        if (dominio.getCantidadConfirmaciones() >=  MIN_JUGADORES && jugadoresInscritos.size() >= MAX_JUGADORES){
-//            arrancarPartida();
-//        }
     }
 
     private void procesarConfirmarInicio(TipoAccionDTO accion){
@@ -224,6 +217,8 @@ public class Blackboard implements IBlackboard, IReceptor{
         Jugador jugador= JugadorMapper.toEntity(accion.getJugadorDTO());
         dominio.cancelarConfirmaciones();
         ultimaAccionLobby= "NEGAR_INICIO";
+        String nombre= accion.getJugadorDTO().getNombre();
+        nombreSolicitudResuelta= nombre;
 
     }
 
