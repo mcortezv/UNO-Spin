@@ -3,7 +3,7 @@ import dto.*;
 
 import dto.CartaDTO;
 import dto.EventoFinalizacionDTO;
-import dto.JugadorDTO;
+
 import dto.SolicitudUnionDTO;
 import dto.TipoEventoRuletaDTO;
 import java.util.List;
@@ -119,4 +119,12 @@ public interface IBlackboard {
      * @return the evento abandono
      */
     EventoAbandonoDTO getEventoAbandono();
+
+    /**
+     * Registra/Crea un jugador en la partida
+     * @param dto DTO tipo jugadorDTO
+     */
+    JugadorDTO procesarRegistro(JugadorDTO dto);
+
+
 }
