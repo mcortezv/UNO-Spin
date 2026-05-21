@@ -19,5 +19,6 @@ public interface IModeloLobby {
 
     void setsConfiguracion(ConfiguracionPartidaDTO dto);
 
+    void registrarJugador(JugadorDTO jugador);
 
 }

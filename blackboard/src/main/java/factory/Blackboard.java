@@ -383,18 +383,18 @@ public class Blackboard implements IBlackboard, IReceptor {
         return temp;
     }
 
+    @Override
     public JugadorDTO procesarRegistro(JugadorDTO dto) {
         Jugador jugador = JugadorMapper.toEntity(dto);
-        if (jugador == null) return jugadorDefault();
+        if (jugador == null) {return jugadorDefault();}
         jugadoresInscritos.add(jugador);
         return dto;
     }
 
     //Nunca debería usarse, pero ahí está por si acaso :p
     private JugadorDTO jugadorDefault() {
-        return new JugadorDTO("DEFAULT", 0, 7, false);
+    return new JugadorDTO("DEFAULT", 0, 1, 7, false);
     }
-
     private void procesarAbandono(TipoAccionDTO accion) {
         eventoAbandono = dominio.removerJugador(JugadorMapper.toEntity(accion.getJugadorDTO()).getNombre());
     }

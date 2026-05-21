@@ -1,4 +1,3 @@
-
 package dto;
 
 /**
@@ -7,6 +6,8 @@ package dto;
 public class JugadorDTO {
     private String nombre;
     private int numeroAvatar;
+    private int colorCartas; // Nueva variable: Almacena el ID del color seleccionado (1 al 8)
+    
     private int cantidadCartas;
     private boolean esTurnoActual;
 
@@ -20,16 +21,19 @@ public class JugadorDTO {
      *
      * @param nombre         the nombre
      * @param numeroAvatar   the numero avatar
+     * @param colorCartas    the color cartas (1 al 8)
      * @param cantidadCartas the cantidad cartas
      * @param esTurnoActual  the es turno actual
      */
-    public JugadorDTO(String nombre, int numeroAvatar, int cantidadCartas, boolean esTurnoActual) {
+    public JugadorDTO(String nombre, int numeroAvatar, int colorCartas, int cantidadCartas, boolean esTurnoActual) {
         this.nombre = nombre;
         this.numeroAvatar = numeroAvatar;
+        this.colorCartas = colorCartas;
         this.cantidadCartas = cantidadCartas;
         this.esTurnoActual = esTurnoActual;
     }
 
+    
     /**
      * Gets nombre.
      *
@@ -82,6 +86,24 @@ public class JugadorDTO {
      */
     public void setNumeroAvatar(int numeroAvatar) {
         this.numeroAvatar = numeroAvatar;
+    }
+
+    /**
+     * Gets color cartas.
+     *
+     * @return the color cartas
+     */
+    public int getColorCartas() {
+        return colorCartas;
+    }
+
+    /**
+     * Sets color cartas.
+     *
+     * @param colorCartas the color cartas to set
+     */
+    public void setColorCartas(int colorCartas) {
+        this.colorCartas = colorCartas;
     }
 
     /**

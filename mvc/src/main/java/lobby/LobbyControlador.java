@@ -58,4 +58,9 @@ public class LobbyControlador implements ISuscriptorLobby {
     public void solicitarConfiguracion(ConfiguracionPartidaDTO dto) {
         modelo.setsConfiguracion(dto);
     }
+
+    public void solicitarRegistro(JugadorDTO dto){
+    modelo.registrarJugador(dto);
+    }
+
 }
