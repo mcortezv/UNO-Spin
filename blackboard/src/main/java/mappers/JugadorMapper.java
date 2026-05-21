@@ -20,13 +20,16 @@ public class JugadorMapper {
      */
     public static JugadorDTO toDTO(Jugador jugador, boolean esTurnoActual) {
         int colorId = colorListaAId(jugador.getColorCarta());
-        return new JugadorDTO(
+        JugadorDTO dto = new JugadorDTO(
                 jugador.getNombre(),
                 jugador.getNumeroAvatar(),
                 colorId,
                 jugador.getMano().getCartas().size(),
                 esTurnoActual
         );
+        dto.setColoresVisuales(new ArrayList<>(jugador.getColorCarta()));
+        dto.setPuntos(jugador.getPuntos());
+        return dto;
     }
 
     /**
@@ -54,7 +57,10 @@ public class JugadorMapper {
         String nombreReal;
         List<String> listaColor = new ArrayList<>();
 
-        if (nombreRaw.contains(SEP)) {
+        if (dto.getColoresVisuales() != null && !dto.getColoresVisuales().isEmpty()) {
+            nombreReal = nombreRaw;
+            listaColor.addAll(dto.getColoresVisuales());
+        } else if (nombreRaw.contains(SEP)) {
             // Formato: "NombreJugador\u0000AZUL,ROJO,VERDE,AMARILLO"
             String[] partes = nombreRaw.split(SEP, 2);
             nombreReal = partes[0];

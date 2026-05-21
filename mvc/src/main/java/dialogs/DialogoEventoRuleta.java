@@ -121,6 +121,7 @@ public abstract class DialogoEventoRuleta extends JDialog {
         JSeparator sep = new JSeparator();
         header.add(sep, BorderLayout.CENTER);
         JButton btnCerrar = new JButton("✕");
+        btnCerrar.setText("X");
         btnCerrar.setBorderPainted(false);
         btnCerrar.setContentAreaFilled(false);
         btnCerrar.setFont(new Font("Arial", Font.BOLD, 18));

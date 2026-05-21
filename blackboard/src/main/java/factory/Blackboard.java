@@ -169,7 +169,9 @@ public class Blackboard implements IBlackboard, IReceptor {
 
     private void procesarAceptarSolicitud(TipoAccionDTO accion) {
         if (accion.getJugadorDTO() == null) return;
-        String nombre = accion.getJugadorDTO().getNombre();
+        Jugador jugadorSolicitud = JugadorMapper.toEntity(accion.getJugadorDTO());
+        if (jugadorSolicitud == null) return;
+        String nombre = jugadorSolicitud.getNombre();
         SolicitudUnionDTO solicitud = solicitudes.get(nombre);
         if (solicitud == null) return;
 
@@ -186,7 +188,9 @@ public class Blackboard implements IBlackboard, IReceptor {
 
     private void procesarRechazarSolicitud(TipoAccionDTO accion) {
         if (accion.getJugadorDTO() == null) return;
-        String nombre = accion.getJugadorDTO().getNombre();
+        Jugador jugadorSolicitud = JugadorMapper.toEntity(accion.getJugadorDTO());
+        if (jugadorSolicitud == null) return;
+        String nombre = jugadorSolicitud.getNombre();
         SolicitudUnionDTO solicitud = solicitudes.get(nombre);
         if (solicitud == null) return;
 

@@ -92,7 +92,7 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
 
     @Override
     public void setsConfiguracion(ConfiguracionPartidaDTO dto) {
-        TipoAccionDTO accion= new TipoAccionDTO("NO_INICIADA");
+        TipoAccionDTO accion= new TipoAccionDTO("CREAR_PARTIDA");
         accion.setConfiguracion(dto);
         enviar(accion);
     }

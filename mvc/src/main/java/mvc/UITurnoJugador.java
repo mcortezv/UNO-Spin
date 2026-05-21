@@ -197,8 +197,11 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         zona.setOpaque(false);
         zona.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
 
-        zona.add(lblTurno, BorderLayout.WEST);
-        zona.add(lblCastigo, BorderLayout.NORTH);
+        JPanel estadoTurno = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        estadoTurno.setOpaque(false);
+        estadoTurno.add(lblTurno);
+        estadoTurno.add(lblCastigo);
+        zona.add(estadoTurno, BorderLayout.NORTH);
 
         int altoMano = UICarta.ALTO + UICarta.ELEVACION + 22;
         mano.setPreferredSize(new Dimension(0, altoMano));
@@ -239,8 +242,10 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
         boolean miTurno = modelo.isTurnoActivo();
         boolean spinActivo = modelo.isSpinActivo();
         boolean hayEvento = modelo.getEventoRuletaActual() != null;
+        boolean eventoRobarHastaColor = esEventoRobarHastaColor(modelo.getEventoRuletaActual());
         boolean puedeIntentar = modelo.puedeIntentarJugarCarta() && !spinActivo && !hayEvento;
-        boolean puedeUsarMazo = modelo.puedeUsarMazo() && !spinActivo && !hayEvento;
+        boolean puedeUsarMazo = modelo.puedeUsarMazo() && !spinActivo
+                && (!hayEvento || eventoRobarHastaColor);
 
         btnTirarCarta.setEnabled(puedeIntentar);
         btnUno.setEnabled(puedeIntentar);
@@ -370,13 +375,26 @@ public class UITurnoJugador extends JFrame implements ISuscriptor {
     private void mostrarDialogoEvento(TipoEventoRuletaDTO evento, IModeloLectura modelo) {
         boolean esTurnoPropio = modelo.isEventoRuletaPropio();
         DialogoEventoRuleta dialogo = FabricaDialogosEvento.crear(evento, this, modelo);
-        if (!esTurnoPropio) {
+        if (!esTurnoPropio || esEventoInformativo(evento)) {
             dialogo.setSoloLectura(true);
         }
         dialogo.setVisible(true);
-        if (esTurnoPropio) {
+        if (esTurnoPropio && !esEventoRobarHastaColor(evento)) {
             controlador.onResultadoEvento(evento.name(), dialogo.getResultado());
         }
+    }
+
+    private boolean esEventoRobarHastaColor(TipoEventoRuletaDTO evento) {
+        return evento == TipoEventoRuletaDTO.ROBAR_HASTA_AZUL
+                || evento == TipoEventoRuletaDTO.ROBAR_HASTA_ROJO;
+    }
+
+    private boolean esEventoInformativo(TipoEventoRuletaDTO evento) {
+        return evento == TipoEventoRuletaDTO.CASI_UNO
+                || evento == TipoEventoRuletaDTO.MOSTRAR_LA_MANO
+                || evento == TipoEventoRuletaDTO.INTERCAMBIO_DE_MANOS
+                || evento == TipoEventoRuletaDTO.GUERRA
+                || esEventoRobarHastaColor(evento);
     }
 
     private void mostrarDialogoVotacion() {

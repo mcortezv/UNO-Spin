@@ -1,5 +1,7 @@
 package dto;
 
+import java.util.List;
+
 /**
  * The type Jugador dto.
  */
@@ -7,8 +9,10 @@ public class JugadorDTO {
     private String nombre;
     private int numeroAvatar;
     private int colorCartas; // Nueva variable: Almacena el ID del color seleccionado (1 al 8)
+    private List<String> coloresVisuales;
     
     private int cantidadCartas;
+    private int puntos;
     private boolean esTurnoActual;
 
     /**
@@ -70,6 +74,14 @@ public class JugadorDTO {
         this.cantidadCartas = cantidadCartas;
     }
 
+    public int getPuntos() {
+        return puntos;
+    }
+
+    public void setPuntos(int puntos) {
+        this.puntos = puntos;
+    }
+
     /**
      * Gets numero avatar.
      *
@@ -104,6 +116,14 @@ public class JugadorDTO {
      */
     public void setColorCartas(int colorCartas) {
         this.colorCartas = colorCartas;
+    }
+
+    public List<String> getColoresVisuales() {
+        return coloresVisuales;
+    }
+
+    public void setColoresVisuales(List<String> coloresVisuales) {
+        this.coloresVisuales = coloresVisuales;
     }
 
     /**

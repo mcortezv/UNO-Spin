@@ -287,7 +287,7 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public boolean puedeUsarMazo() {
-        return isTurnoActivo();
+        return isTurnoActivo() || isRobarHastaColorPropio();
     }
 
     @Override
@@ -388,7 +388,12 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public EventoAbandonoDTO getEventoAbandono() {
-        return estadoPartida != null ? estadoPartida.getEventoAbandono() : null;
+        if (estadoPartida == null) {
+            return null;
+        }
+        EventoAbandonoDTO evento = estadoPartida.getEventoAbandono();
+        estadoPartida.setEventoAbandono(null);
+        return evento;
     }
 
     @Override
@@ -428,5 +433,17 @@ public class Modelo implements IModeloControlador, IModeloLectura {
     public boolean isVotoEnviado() { return votoEnviado; }
 
     public boolean isYaVote() { return yaVote; }
+
+    private boolean isRobarHastaColorPropio() {
+        return estadoPartida != null
+                && estadoPartida.isEsTuTurno()
+                && "GIRO_PENDIENTE".equals(estadoPartida.getEstadoPartida())
+                && esEventoRobarHastaColor(getEventoRuletaActual());
+    }
+
+    private boolean esEventoRobarHastaColor(TipoEventoRuletaDTO evento) {
+        return evento == TipoEventoRuletaDTO.ROBAR_HASTA_AZUL
+                || evento == TipoEventoRuletaDTO.ROBAR_HASTA_ROJO;
+    }
 
 }

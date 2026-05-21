@@ -187,6 +187,7 @@ public class Partida implements IDominio {
         if (!removida) return false;
 
         tablero.getDescarte().getCartas().add(carta);
+        sumarPuntos(jugadorActual, carta);
 
         if (cartasMano.isEmpty()) {
             estadoPartida = EstadoPartida.FINALIZADA;
@@ -194,7 +195,10 @@ public class Partida implements IDominio {
         }
 
         switch (carta.getTipoCarta()) {
-            case NUMERO_SPIN  -> estadoPartida = EstadoPartida.GIRO_PENDIENTE;
+            case NUMERO_SPIN  -> {
+                avanzarTurno();
+                estadoPartida = EstadoPartida.GIRO_PENDIENTE;
+            }
             case REVERSA      -> { sentidoHorario = !sentidoHorario; avanzarTurno(); }
             case BLOQUEO      -> { avanzarTurno(); avanzarTurno(); }
             case TOMA_DOS     -> avanzarTurno();
@@ -211,6 +215,7 @@ public class Partida implements IDominio {
         try {
             Carta cartaRobada = tablero.getMazo().robarCarta();
             jugadores.get(indiceJugadorActual).getMano().getCartas().add(cartaRobada);
+            completarRoboHastaColorSiCorresponde(cartaRobada);
         } catch (Exception e) {
         }
     }
@@ -268,16 +273,12 @@ public class Partida implements IDominio {
             }
             case DESCARTAR_POR_NUMERO -> {
                 if (resultado instanceof Integer num) {
-                    tablero.getDescarte().getCartas()
-                            .addAll(jugadorActual.getMano().descartarCartasPorNumero(num));
+                    List<Carta> descartadas = jugadorActual.getMano().descartarCartasPorNumero(num);
+                    tablero.getDescarte().getCartas().addAll(descartadas);
+                    sumarPuntos(jugadorActual, descartadas);
                 }
             }
-            case ROBAR_HASTA_AZUL -> {
-                try { robarHastaColor(jugadorActual, "AZUL"); } catch (Exception ignored) {}
-            }
-            case ROBAR_HASTA_ROJO -> {
-                try { robarHastaColor(jugadorActual, "ROJO"); } catch (Exception ignored) {}
-            }
+            case ROBAR_HASTA_AZUL, ROBAR_HASTA_ROJO -> { return; }
             case INTERCAMBIO_DE_MANOS -> intercambiarManos();
             case PUNTUACION_MAS_BAJA -> {
                 if (resultado instanceof String nombre) {
@@ -288,6 +289,7 @@ public class Partida implements IDominio {
             case CASI_UNO  -> aplicarCasiUno(jugadorActual);
             case MOSTRAR_LA_MANO -> { }
         }
+        tablero.getRuleta().setEventoRuleta(null);
         estadoPartida = EstadoPartida.EN_PROCESO;
     }
 
@@ -469,17 +471,9 @@ public class Partida implements IDominio {
     private void aplicarCasiUno(Jugador jugador) {
         List<Carta> mano = jugador.getMano().getCartas();
         while (mano.size() > 2) {
-            tablero.getDescarte().getCartas().add(mano.removeFirst());
-        }
-    }
-
-    private void robarHastaColor(Jugador jugador, String colorObjetivo) throws Exception {
-        int intentos = 0;
-        while (intentos++ < 60) {
-            reciclarDescarteSiNecesario();
-            Carta c = tablero.getMazo().robarCarta();
-            jugador.getMano().getCartas().add(c);
-            if (colorObjetivo.equalsIgnoreCase(c.getColor())) break;
+            Carta descartada = mano.removeFirst();
+            tablero.getDescarte().getCartas().add(descartada);
+            sumarPuntos(jugador, descartada);
         }
     }
 
@@ -520,9 +514,11 @@ public class Partida implements IDominio {
             final int num = numGanador;
             for (Jugador j : jugadores) {
                 Carta alta = j.getMano().getMasAlta();
-                if (alta != null && alta.getNumero() != null && alta.getNumero() == num)
-                    tablero.getDescarte().getCartas()
-                            .addAll(j.getMano().descartarCartasPorNumero(num));
+                if (alta != null && alta.getNumero() != null && alta.getNumero() == num) {
+                    List<Carta> descartadas = j.getMano().descartarCartasPorNumero(num);
+                    tablero.getDescarte().getCartas().addAll(descartadas);
+                    sumarPuntos(j, descartadas);
+                }
             }
         }
     }
@@ -535,6 +531,17 @@ public class Partida implements IDominio {
                 .toList();
         mano.removeAll(aDescartar);
         tablero.getDescarte().getCartas().addAll(aDescartar);
+        sumarPuntos(jugador, aDescartar);
+    }
+
+    private void sumarPuntos(Jugador jugador, Carta carta) {
+        if (jugador == null || carta == null) return;
+        jugador.setPuntos(jugador.getPuntos() + carta.getValor());
+    }
+
+    private void sumarPuntos(Jugador jugador, List<Carta> cartas) {
+        if (cartas == null) return;
+        cartas.forEach(carta -> sumarPuntos(jugador, carta));
     }
 
     private void aplicarCastigoPuntuacionBaja(String nombre) {
@@ -545,6 +552,28 @@ public class Partida implements IDominio {
                     try { j.getMano().getCartas().add(tablero.getMazo().robarCarta()); }
                     catch (Exception e) { System.out.println("Mazo vacio."); }
                 });
+    }
+
+    private void completarRoboHastaColorSiCorresponde(Carta cartaRobada) {
+        if (estadoPartida != EstadoPartida.GIRO_PENDIENTE || cartaRobada == null) {
+            return;
+        }
+
+        TipoEventoRuletaDTO evento = getEventoRuleta();
+        if (evento == null) {
+            return;
+        }
+        String colorObjetivo = switch (evento) {
+            case ROBAR_HASTA_AZUL -> "AZUL";
+            case ROBAR_HASTA_ROJO -> "ROJO";
+            default -> null;
+        };
+
+        if (colorObjetivo != null && colorObjetivo.equalsIgnoreCase(cartaRobada.getColor())) {
+            tablero.getRuleta().setEventoRuleta(null);
+            estadoPartida = EstadoPartida.EN_PROCESO;
+            avanzarTurno();
+        }
     }
 
     public void setGanador(String nombre){

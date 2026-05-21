@@ -3,7 +3,6 @@ package lobby;
 // Imports de tu arquitectura interna (DTOs y Controladores)
 import dto.JugadorDTO;
 import lobby.ISuscriptorLobby;
-import lobby.LobbyControlador;
 import lobby.LobbyModelo;
 import lobby.IModeloLobbyLectura;
 
@@ -24,36 +23,30 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
     private static final Color AMARILLO   = new Color(240, 200, 0);
     private static final Color AZUL_PANEL = new Color(52, 62, 125);
 
-    // 8 colores disponibles
-    private static final Color[] COLORES = {
-        new Color(30,  100, 195),  // Azul
-        new Color(204,  37,  37),  // Rojo
-        new Color(46,  153,  56),  // Verde
-        new Color(218, 180,   0),  // Amarillo
-        new Color(142,  68, 173),  // Morado
-        new Color(230, 126,  34),  // Naranja
-        new Color(232,  67, 147),  // Rosa
-        new Color(0,   180, 180)   // Cian
-    };
-    private static final String[] NOMBRES = {
-        "Azul", "Rojo", "Verde", "Amarillo", "Morado", "Naranja", "Rosa", "Cian"
-    };
-    private static final String[] NOMBRES_DOMINIO = {
-        "AZUL", "ROJO", "VERDE", "AMARILLO", "MORADO", "NARANJA", "ROSA", "CIAN"
+    private static final Color[] COLORES_PREDETERMINADOS = {
+        new Color(30, 100, 195),
+        new Color(204, 37, 37),
+        new Color(46, 153, 56),
+        new Color(218, 180, 0)
     };
 
-    private final LobbyControlador controlador;
+    private final CrearJugadorControlador controlador;
 
     private JTextField campoNombre;
     private int avatarSeleccionado = 1;
     
     // Lista fija para controlar los colores asignados en tiempo real (-1 = vacío)
-    private final List<Integer> coloresSeleccionados = new ArrayList<>(List.of(-1, -1, -1, -1));
+    private final List<Color> coloresSeleccionados = new ArrayList<>(List.of(
+        COLORES_PREDETERMINADOS[0],
+        COLORES_PREDETERMINADOS[1],
+        COLORES_PREDETERMINADOS[2],
+        COLORES_PREDETERMINADOS[3]
+    ));
     
     private JLabel visualizadorAvatar;
     private JButton[] botonesRanuras; 
 
-    public UICrearJugador(LobbyControlador controlador) {
+    public UICrearJugador(CrearJugadorControlador controlador) {
         this.controlador = controlador;
         construirUI();
     }
@@ -292,18 +285,8 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
                     Graphics2D g2 = (Graphics2D) g.create();
                     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                    int colorIdx = coloresSeleccionados.get(numeroRanura);
-                    
-                    if (colorIdx == -1) {
-                        g2.setColor(new Color(40, 40, 50));
-                        g2.fill(new Ellipse2D.Float(4, 4, getWidth() - 8, getHeight() - 24));
-                        g2.setColor(Color.LIGHT_GRAY);
-                        g2.setFont(new Font("Arial", Font.BOLD, 22));
-                        g2.drawString("?", getWidth()/2 - 6, getHeight()/2 - 2);
-                    } else {
-                        g2.setColor(COLORES[colorIdx]);
-                        g2.fill(new Ellipse2D.Float(4, 4, getWidth() - 8, getHeight() - 24));
-                    }
+                    g2.setColor(coloresSeleccionados.get(numeroRanura));
+                    g2.fill(new Ellipse2D.Float(4, 4, getWidth() - 8, getHeight() - 24));
                     g2.dispose();
 
                     g.setFont(new Font("Arial", Font.BOLD, 11));
@@ -335,6 +318,17 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
     }
 
     private void abrirSelectorDeColorParaRanura(int ranuraIdx) {
+        Color color = JColorChooser.showDialog(
+            this,
+            "Selecciona el color " + (ranuraIdx + 1),
+            coloresSeleccionados.get(ranuraIdx)
+        );
+        if (color == null) {
+            return;
+        }
+        coloresSeleccionados.set(ranuraIdx, color);
+        botonesRanuras[ranuraIdx].repaint();
+        /*
         JLayeredPane lp = getLayeredPane();
         if (lp == null) return;
 
@@ -357,8 +351,8 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
         tituloSel.setForeground(Color.WHITE);
         panelSelector.add(tituloSel, BorderLayout.NORTH);
 
-        JPanel rejilla8Colores = new JPanel(new GridLayout(2, 4, 12, 12));
-        rejilla8Colores.setOpaque(false);
+        JPanel rejillaColores = new JPanel(new GridLayout(2, 4, 12, 12));
+        rejillaColores.setOpaque(false);
 
         for (int i = 0; i < COLORES.length; i++) {
             final int colorIdx = i;
@@ -414,9 +408,9 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
                 });
             }
 
-            rejilla8Colores.add(btnColorOpcion);
+            rejillaColores.add(btnColorOpcion);
         }
-        panelSelector.add(rejilla8Colores, BorderLayout.CENTER);
+        panelSelector.add(rejillaColores, BorderLayout.CENTER);
 
         JButton btnCancelarSel = crearBotonAmarillo("CANCELAR", 100, 28);
         btnCancelarSel.setFont(new Font("Arial Black", Font.BOLD, 11));
@@ -429,6 +423,7 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
         lp.add(panelSelector, JLayeredPane.DRAG_LAYER);
         lp.revalidate();
         lp.repaint();
+        */
     }
 
     private void onUnirse() {
@@ -439,28 +434,17 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
             return;
         }
         
-        for (int i = 0; i < coloresSeleccionados.size(); i++) {
-            if (coloresSeleccionados.get(i) == -1) {
-                JOptionPane.showMessageDialog(this, "Por favor asigna un color a la ranura " + (i + 1) + ".", "Colores incompletos", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-        }
-
         JugadorDTO jugador = new JugadorDTO();
         jugador.setNumeroAvatar(avatarSeleccionado);
-
-        int primerColor = coloresSeleccionados.get(0);
-        jugador.setColorCartas(primerColor + 1);
-
-        StringBuilder coloresDominio = new StringBuilder();
-        for (int idx : coloresSeleccionados) {
-            if (coloresDominio.length() > 0) coloresDominio.append(",");
-            coloresDominio.append(NOMBRES_DOMINIO[idx]);
-        }
-        
-        jugador.setNombre(nombre + "\u0000" + coloresDominio.toString());
+        jugador.setColorCartas(1);
+        jugador.setColoresVisuales(coloresSeleccionados.stream().map(this::aHex).toList());
+        jugador.setNombre(nombre);
 
         controlador.solicitarUnion(jugador);
+    }
+
+    private String aHex(Color color) {
+        return String.format("#%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue());
     }
 
     @Override
@@ -541,7 +525,7 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
 
     public static void main(String[] args) {
         LobbyModelo modelo = new LobbyModelo(null, null, null, 0, 0, null);
-        LobbyControlador controlador = new LobbyControlador(modelo);
+        CrearJugadorControlador controlador = new CrearJugadorControlador(modelo::solicitarUnion);
         SwingUtilities.invokeLater(() -> new UICrearJugador(controlador).setVisible(true));
     }
 }

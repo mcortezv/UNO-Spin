@@ -83,6 +83,7 @@ public class UICarta extends JPanel {
         pintarFondoColor(g2, offsetY);
         pintarImagen(g2, offsetY);
         pintarTextoSinImagen(g2, offsetY);
+        pintarIndicadorSpin(g2, offsetY);
         pintarBordeBlanco(g2, offsetY);
 
         if (hover || seleccionada) {
@@ -136,12 +137,31 @@ public class UICarta extends JPanel {
 
     private static String resolverTextoTipo(String tipo) {
         if (tipo == null) return null;
+        if ("REVERSA".equals(tipo)) return "REV";
+        if ("CAMBIO_COLOR".equals(tipo)) return "COLOR";
         return switch (tipo) {
+            case "BLOQUEO"      -> "X";
+            case "TOMA_DOS"     -> "+2";
             case "REVERSA"      -> "↺";
             case "CAMBIO_COLOR" -> "★";
             case "TOMA_CUATRO"  -> "+4";
             default             -> null;
         };
+    }
+
+    private void pintarIndicadorSpin(Graphics2D g2, int y) {
+        if (!"NUMERO_SPIN".equals(carta.getTipoCarta())) {
+            return;
+        }
+        g2.setColor(new Color(20, 20, 20, 190));
+        g2.fillRoundRect(9, y + ALTO - 31, ANCHO - 18, 18, 10, 10);
+        g2.setColor(Color.WHITE);
+        g2.setFont(new Font("Arial", Font.BOLD, 10));
+        FontMetrics fm = g2.getFontMetrics();
+        String texto = "SPIN";
+        int tx = (ANCHO - fm.stringWidth(texto)) / 2;
+        int ty = y + ALTO - 18;
+        g2.drawString(texto, tx, ty);
     }
 
     private void pintarBordeBlanco(Graphics2D g2, int y) {

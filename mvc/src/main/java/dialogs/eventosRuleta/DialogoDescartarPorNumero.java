@@ -26,14 +26,17 @@ public class DialogoDescartarPorNumero extends DialogoEventoRuleta {
 
     @Override
     protected JPanel crearContenidoCentral() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 5));
+        JPanel panel = new JPanel(new GridLayout(2, 5, 8, 8));
         panel.setOpaque(false);
+        panel.setMaximumSize(new Dimension(250, 90));
 
         ButtonGroup grupo = new ButtonGroup();
         for (int i = 0; i <= 9; i++) {
             final int num = i;
             JToggleButton btn = new JToggleButton(String.valueOf(i));
-            btn.setPreferredSize(new Dimension(38, 38));
+            btn.setPreferredSize(new Dimension(42, 38));
+            btn.setMargin(new Insets(0, 0, 0, 0));
+            btn.setHorizontalAlignment(SwingConstants.CENTER);
             btn.setFont(new Font("Arial", Font.BOLD, 14));
             btn.addActionListener(e -> {
                 numeroElegido = num;

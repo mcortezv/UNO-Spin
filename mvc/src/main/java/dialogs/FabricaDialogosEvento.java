@@ -7,7 +7,6 @@ import dto.JugadorDTO;
 
 import javax.swing.*;
 import java.awt.Color;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +34,7 @@ public class FabricaDialogosEvento {
             case ROBAR_HASTA_ROJO -> new DialogoColorInformativo(owner, "¡ROBAR CARTAS HASTA ROJO!", Color.RED, "Rojo");
             case ROBAR_HASTA_AZUL -> new DialogoColorInformativo(owner, "¡ROBAR CARTAS HASTA AZUL!", new Color(0, 170, 255), "Azul");
             case GUERRA -> new DialogoGuerra(owner, extraerNombres(modelo));
-            case PUNTUACION_MAS_BAJA -> new DialogoPuntuacionMasBaja(owner, extraerNombres(modelo), Collections.nCopies(modelo.getTodosLosJugadores().size(), 0));
+            case PUNTUACION_MAS_BAJA -> new DialogoPuntuacionMasBaja(owner, extraerNombres(modelo), extraerPuntos(modelo));
             case MOSTRAR_LA_MANO -> new DialogoMostrarMano(owner, modelo.getNombreTurnoActual(), modelo.getManoJugador());
             case INTERCAMBIO_DE_MANOS -> new DialogoIntercambioDeManos(owner);
             case DESCARTAR_POR_NUMERO -> new DialogoDescartarPorNumero(owner);
@@ -45,6 +44,12 @@ public class FabricaDialogosEvento {
     private static List<String> extraerNombres(IModeloLectura modelo) {
         return modelo.getTodosLosJugadores().stream()
                 .map(JugadorDTO::getNombre)
+                .collect(Collectors.toList());
+    }
+
+    private static List<Integer> extraerPuntos(IModeloLectura modelo) {
+        return modelo.getTodosLosJugadores().stream()
+                .map(JugadorDTO::getPuntos)
                 .collect(Collectors.toList());
     }
 }
