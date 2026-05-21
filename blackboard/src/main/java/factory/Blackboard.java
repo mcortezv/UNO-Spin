@@ -1,7 +1,9 @@
 package factory;
+
 import dominio.IDominio;
 import dominio.entidades.ConfiguracionPartida;
 import dominio.entidades.Jugador;
+import dominio.entidades.Mano;
 import dominio.entidades.Partida;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoAccion;
@@ -18,6 +20,7 @@ import dto.TipoAccionDTO;
 import interfaces.IBlackboard;
 import interfaces.IReceptor;
 import interfaces.ISerializer;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -30,7 +33,7 @@ import java.util.stream.Collectors;
  * The type Blackboard.
  *
  */
-public class Blackboard implements IBlackboard, IReceptor{
+public class Blackboard implements IBlackboard, IReceptor {
 
     private static final int MIN_JUGADORES = 2;
     private static final int MAX_JUGADORES = 4;
@@ -81,11 +84,11 @@ public class Blackboard implements IBlackboard, IReceptor{
         switch (tipo) {
             case CREAR_PARTIDA -> procesarCrearPartida(accion);
             case UNIRSE_PARTIDA -> procesarUnirse(accion);
-            case SOLICITAR_INICIO   -> procesarSolicitudInicio(accion);
+            case SOLICITAR_INICIO -> procesarSolicitudInicio(accion);
             case ACEPTAR_SOLICITUD -> procesarAceptarSolicitud(accion);
             case RECHAZAR_SOLICITUD -> procesarRechazarSolicitud(accion);
-            case CONFIRMAR_INICIO   -> procesarConfirmarInicio(accion);
-            case RECHAZAR_INICIO    -> procesarRechazarInicio(accion);
+            case CONFIRMAR_INICIO -> procesarConfirmarInicio(accion);
+            case RECHAZAR_INICIO -> procesarRechazarInicio(accion);
             case ABANDONAR_PARTIDA -> procesarAbandono(accion);
             default -> {
                 if (dominio == null || dominio.getEstadoPartida() == null || dominio.getEstadoPartida() == EstadoPartida.NO_INICIADA)
@@ -129,8 +132,8 @@ public class Blackboard implements IBlackboard, IReceptor{
 
                 new Partida(EstadoPartida.NO_INICIADA, 0, new ArrayList<>(), true, null));
         this.configuracion = dto.getConfiguracion() != null
-            ? ConfiguracionPartidaMapper.toEntity(dto.getConfiguracion())
-            : configuracionDefault();
+                ? ConfiguracionPartidaMapper.toEntity(dto.getConfiguracion())
+                : configuracionDefault();
         procesarConfiguracionPartida(this.configuracion);
     }
 
@@ -378,6 +381,19 @@ public class Blackboard implements IBlackboard, IReceptor{
         EventoAbandonoDTO temp = this.eventoAbandono;
         eventoAbandono = null;
         return temp;
+    }
+
+    @Override
+    public JugadorDTO procesarRegistro(JugadorDTO dto) {
+        Jugador jugador = JugadorMapper.toEntity(dto);
+        if (jugador == null) return jugadorDefault();
+        jugadoresInscritos.add(jugador);
+        return dto;
+    }
+
+    //Nunca debería usarse, pero ahí está por si acaso :p
+    private JugadorDTO jugadorDefault() {
+        return new JugadorDTO("DEFAULT", 0, 7, false);
     }
 
     private void procesarAbandono(TipoAccionDTO accion) {
