@@ -34,7 +34,7 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
 
     private JTextField campoNombre;
     private int avatarSeleccionado = 1;
-    
+
     // Lista fija para controlar los colores asignados en tiempo real (-1 = vacío)
     private final List<Color> coloresSeleccionados = new ArrayList<>(List.of(
         COLORES_PREDETERMINADOS[0],
@@ -42,9 +42,9 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
         COLORES_PREDETERMINADOS[2],
         COLORES_PREDETERMINADOS[3]
     ));
-    
+
     private JLabel visualizadorAvatar;
-    private JButton[] botonesRanuras; 
+    private JButton[] botonesRanuras;
 
     public UICrearJugador(CrearJugadorControlador controlador) {
         this.controlador = controlador;
@@ -199,13 +199,13 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
             final int num = i;
             JButton btn = new JButton();
             ImageIcon ico = buscarIcono(num, 80, 80);
-            
+
             if (ico != null) {
                 btn.setIcon(ico);
-            } else { 
-                btn.setText("" + i); 
-                btn.setForeground(Color.WHITE); 
-                btn.setFont(new Font("Arial Black", Font.BOLD, 16)); 
+            } else {
+                btn.setText("" + i);
+                btn.setForeground(Color.WHITE);
+                btn.setFont(new Font("Arial Black", Font.BOLD, 16));
             }
 
             btn.setContentAreaFilled(false);
@@ -238,20 +238,20 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
 
     private void actualizarImagenAvatar() {
         ImageIcon ico = buscarIcono(avatarSeleccionado, 72, 72);
-        if (ico != null) { 
-            visualizadorAvatar.setIcon(ico); 
-            visualizadorAvatar.setText(""); 
-        } else { 
-            visualizadorAvatar.setIcon(null); 
-            visualizadorAvatar.setText("[" + avatarSeleccionado + "]"); 
-            visualizadorAvatar.setForeground(Color.LIGHT_GRAY); 
+        if (ico != null) {
+            visualizadorAvatar.setIcon(ico);
+            visualizadorAvatar.setText("");
+        } else {
+            visualizadorAvatar.setIcon(null);
+            visualizadorAvatar.setText("[" + avatarSeleccionado + "]");
+            visualizadorAvatar.setForeground(Color.LIGHT_GRAY);
         }
     }
 
     private ImageIcon buscarIcono(int n, int w, int h) {
         String ruta = "/avatares/avatar_" + n + ".png";
         java.net.URL url = getClass().getResource(ruta);
-        
+
         if (url == null) {
             url = Thread.currentThread().getContextClassLoader().getResource(ruta);
         }
@@ -259,7 +259,7 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
             url = ClassLoader.getSystemResource(ruta);
         }
         if (url == null) return null;
-        
+
         return new ImageIcon(new ImageIcon(url).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH));
     }
 
@@ -304,7 +304,7 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
             btn.setOpaque(false);
             btn.setPreferredSize(new Dimension(75, 85));
             btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            
+
             btn.addActionListener(e -> abrirSelectorDeColorParaRanura(numeroRanura));
 
             botonesRanuras[i] = btn;
@@ -342,7 +342,7 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
         };
         panelSelector.setOpaque(false);
         panelSelector.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-        
+
         int w = 360, h = 250;
         panelSelector.setBounds((getWidth() - w) / 2, (getHeight() - h) / 2, w, h);
 
@@ -356,7 +356,7 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
 
         for (int i = 0; i < COLORES.length; i++) {
             final int colorIdx = i;
-            
+
             // Validación anti-repetición de color
             boolean yaEstaTomado = false;
             for (int r = 0; r < coloresSeleccionados.size(); r++) {
@@ -372,7 +372,7 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
                 @Override protected void paintComponent(Graphics g) {
                     Graphics2D g2 = (Graphics2D) g.create(); // 🌟 Corregido casteo y paréntesis aquí
                     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                    
+
                     if (deshabilitado) {
                         g2.setColor(new Color(60, 60, 65));
                         g2.fill(new Ellipse2D.Float(2, 2, getWidth() - 4, getHeight() - 16));
@@ -392,7 +392,7 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
                 }
                 @Override protected void paintBorder(Graphics g) {}
             };
-            
+
             btnColorOpcion.setContentAreaFilled(false);
             btnColorOpcion.setOpaque(false);
 
@@ -401,8 +401,8 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
             } else {
                 btnColorOpcion.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                 btnColorOpcion.addActionListener(ev -> {
-                    coloresSeleccionados.set(ranuraIdx, colorIdx); 
-                    botonesRanuras[ranuraIdx].repaint();          
+                    coloresSeleccionados.set(ranuraIdx, colorIdx);
+                    botonesRanuras[ranuraIdx].repaint();
                     lp.remove(panelSelector);
                     lp.repaint();
                 });
@@ -433,7 +433,7 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
             campoNombre.requestFocusInWindow();
             return;
         }
-        
+
         JugadorDTO jugador = new JugadorDTO();
         jugador.setNumeroAvatar(avatarSeleccionado);
         jugador.setColorCartas(1);
@@ -528,4 +528,5 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
         CrearJugadorControlador controlador = new CrearJugadorControlador(modelo::solicitarUnion);
         SwingUtilities.invokeLater(() -> new UICrearJugador(controlador).setVisible(true));
     }
+
 }

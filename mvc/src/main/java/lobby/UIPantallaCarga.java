@@ -321,9 +321,4 @@ public class UIPantallaCarga extends JFrame implements ISuscriptorLobby {
         c.addMouseMotionListener(ma);
     }
 
-    public static void main(String[] args) {
-        LobbyModelo modelo = new LobbyModelo(null, null, null, 0, 0, null);
-        LobbyControlador controlador = new LobbyControlador(modelo);
-        SwingUtilities.invokeLater(() -> new UIPantallaCarga(controlador).setVisible(true));
-    }
 }
