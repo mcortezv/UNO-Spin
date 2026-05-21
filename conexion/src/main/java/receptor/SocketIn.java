@@ -1,46 +1,76 @@
 package receptor;
+import interfaces.IReceptorObserver;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * The type Socket in.
+ */
 public class SocketIn {
+    private record MensajeEntrada(String json, String ip, int port) {}
+    private static final MensajeEntrada POISON = new MensajeEntrada(null, null, 0);
+    private final BlockingQueue<MensajeEntrada> colaEntrada = new LinkedBlockingQueue<>();
     private ServerSocket server;
     private ExecutorService pool;
-    private int puertoEscucha;
+    private Thread procesador;
+    private final int puertoEscucha;
+    private final IReceptorObserver observador;
 
-    private ColaReceptor colaReceptor;
-
-    public SocketIn(int puerto, ColaReceptor cola) {
+    /**
+     * Instantiates a new Socket in.
+     *
+     * @param puerto     the puerto
+     * @param observador the observador
+     */
+    public SocketIn(int puerto, IReceptorObserver observador) {
         this.puertoEscucha = puerto;
-        this.colaReceptor = cola;
+        this.observador = observador;
     }
 
+    /**
+     * Start.
+     */
     public void start() {
         pool = Executors.newCachedThreadPool();
+        procesador = new Thread(this::drenar, "SocketIn-Procesador");
+        procesador.setDaemon(true);
+        procesador.start();
 
         new Thread(() -> {
             try {
-                server = new ServerSocket(puertoEscucha);
+                server = new ServerSocket();
+                server.setReuseAddress(true);
+                server.bind(new java.net.InetSocketAddress(puertoEscucha));
                 System.out.println("Servidor escuchando en puerto " + puertoEscucha);
 
                 while (!server.isClosed()) {
                     Socket clienteSocket = server.accept();
-                    pool.submit(new ClienteHandler(clienteSocket, colaReceptor));
+                    pool.submit(new ClienteHandler(clienteSocket, colaEntrada));
                 }
             } catch (IOException e) {
-                if (!server.isClosed()) {
+                if (server == null || !server.isClosed()) {
                     System.err.println("Error en el ServerSocket - " + e.getMessage());
                 }
             }
         }).start();
     }
 
+    /**
+     * Close.
+     */
     public void close() {
         try {
+            colaEntrada.offer(POISON);
+            if (procesador != null) {
+                procesador.interrupt();
+            }
             if (pool != null && !pool.isShutdown()) {
                 pool.shutdown();
             }
@@ -52,14 +82,33 @@ public class SocketIn {
         }
     }
 
+    private void drenar() {
+        while (true) {
+            try {
+                MensajeEntrada m = colaEntrada.take();
+                if (m == POISON) break;
+                observador.update(m.json(), m.port(), m.ip());
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+    }
+
     private static class ClienteHandler implements Runnable {
 
-        private Socket socket;
-        private ColaReceptor colaReceptor;
+        private final Socket socket;
+        private final BlockingQueue<MensajeEntrada> colaEntrada;
 
-        public ClienteHandler(Socket socket, ColaReceptor cola) {
+        /**
+         * Instantiates a new Cliente handler.
+         *
+         * @param socket       the socket
+         * @param colaEntrada  the cola entrada
+         */
+        public ClienteHandler(Socket socket, BlockingQueue<MensajeEntrada> colaEntrada) {
             this.socket = socket;
-            this.colaReceptor = cola;
+            this.colaEntrada = colaEntrada;
         }
 
         @Override
@@ -72,7 +121,7 @@ public class SocketIn {
                 String json;
                 while ((json = in.readLine()) != null) {
                     System.out.println("JSON recibido '" + json + "'");
-                    colaReceptor.recibir(json, port, ip);
+                    colaEntrada.offer(new MensajeEntrada(json, ip, port));
                 }
             } catch (IOException e) {
                 System.err.println("Error de lectura - " + e.getMessage());

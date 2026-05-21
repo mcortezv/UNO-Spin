@@ -1,6 +1,8 @@
 package interfaces;
+import dto.TipoEventoRuletaDTO;
 import dto.CartaDTO;
-import dto.EventoRuletaDTO;
+import dto.EventoAbandonoDTO;
+import dto.EventoFinalizacionDTO;
 import dto.JugadorDTO;
 import java.util.List;
 
@@ -9,92 +11,169 @@ import java.util.List;
  */
 public interface IModeloLectura {
 
-     /**
-      * Gets descarte.
-      *
-      * @return the descarte
-      */
-     List<CartaDTO> getDescarte();
+    /**
+     * Gets descarte.
+     *
+     * @return the descarte
+     */
+    List<CartaDTO> getDescarte();
 
-     /**
-      * Gets mano jugador.
-      *
-      * @return the mano jugador
-      */
-     List<CartaDTO> getManoJugador();
+    /**
+     * Gets mano jugador.
+     *
+     * @return the mano jugador
+     */
+    List<CartaDTO> getManoJugador();
 
+    /**
+     * Gets carta cima.
+     *
+     * @return the carta cima
+     */
+    CartaDTO getCartaCima();
 
-     CartaDTO getCartaCima();
+    /**
+     * Gets nombre turno actual.
+     *
+     * @return the nombre turno actual
+     */
+    String getNombreTurnoActual();
 
-     /**
-      * Gets nombre turno actual.
-      *
-      * @return the nombre turno actual
-      */
-     String getNombreTurnoActual();
+    /**
+     * Gets jugadores rivales.
+     *
+     * @return the jugadores rivales
+     */
+    List<JugadorDTO> getJugadoresRivales();
 
-     /**
-      * Gets jugadores rivales.
-      *
-      * @return the jugadores rivales
-      */
-     List<JugadorDTO> getJugadoresRivales();
+    /**
+     * Gets todos los jugadores.
+     *
+     * @return the todos los jugadores
+     */
+    List<JugadorDTO> getTodosLosJugadores();
 
-     /**
-      * Gets todos los jugadores.
-      *
-      * @return the todos los jugadores
-      */
-     List<JugadorDTO> getTodosLosJugadores();
+    /**
+     * Is turno activo boolean.
+     *
+     * @return the boolean
+     */
+    boolean isTurnoActivo();
 
-     /**
-      * Is turno activo boolean.
-      *
-      * @return the boolean
-      */
-     boolean isTurnoActivo();
+    /**
+     * Is spin activo boolean.
+     *
+     * @return the boolean
+     */
+    boolean isSpinActivo();
 
-     /**
-      * Is spin activo boolean.
-      *
-      * @return the boolean
-      */
-     boolean isSpinActivo();
+    /**
+     * Gets evento ruleta actual.
+     *
+     * @return the evento ruleta actual
+     */
+    TipoEventoRuletaDTO getEventoRuletaActual();
 
-     /**
-      * Gets mano jugador especifico.
-      *
-      * @param indiceJugador the indice jugador
-      * @return the mano jugador especifico
-      */
-     List<CartaDTO> getManoJugadorEspecifico(int indiceJugador);
+    /**
+     * Is ultima jugada valida boolean.
+     *
+     * @return the boolean
+     */
+    boolean isUltimaJugadaValida();
 
-     /**
-      * Is turno activo especifico boolean.
-      *
-      * @param indiceJugador the indice jugador
-      * @return the boolean
-      */
-     boolean isTurnoActivoEspecifico(int indiceJugador);
+    /**
+     * Is seleccion color pendiente boolean.
+     *
+     * @return the boolean
+     */
+    boolean isSeleccionColorPendiente();
 
-     /**
-      * Gets evento ruleta actual.
-      *
-      * @return the evento ruleta actual
-      */
-     EventoRuletaDTO getEventoRuletaActual();
+    /**
+     * Is seleccion color propia boolean.
+     *
+     * @return the boolean
+     */
+    boolean isSeleccionColorPropia();
 
-     /**
-      * Is ultima jugada valida boolean.
-      *
-      * @return the boolean
-      */
-     boolean isUltimaJugadaValida();
+    /**
+     * Is evento ruleta propio boolean.
+     *
+     * @return the boolean
+     */
+    boolean isEventoRuletaPropio();
 
-     /**
-      * Is seleccion color pendiente boolean.
-      *
-      * @return the boolean
-      */
-     boolean isSeleccionColorPendiente();
+    /**
+     * Carta cima es castigo boolean.
+     *
+     * @return the boolean
+     */
+    boolean cartaCimaEsCastigo();
+
+    /**
+     * Tiene castigo pendiente local boolean.
+     *
+     * @return the boolean
+     */
+    boolean tieneCastigoPendienteLocal();
+
+    /**
+     * Gets cartas pendientes castigo local.
+     *
+     * @return the cartas pendientes castigo local
+     */
+    int getCartasPendientesCastigoLocal();
+
+    /**
+     * Puede usar mazo boolean.
+     *
+     * @return the boolean
+     */
+    boolean puedeUsarMazo();
+
+    /**
+     * Puede intentar jugar carta boolean.
+     *
+     * @return the boolean
+     */
+    boolean puedeIntentarJugarCarta();
+
+    /**
+     * Puede jugar carta boolean.
+     *
+     * @param carta the carta
+     * @return the boolean
+     */
+    boolean puedeJugarCarta(CartaDTO carta);
+
+    /**
+     * Gets vista activa.
+     *
+     * @return the vista activa
+     */
+    boolean getVistaActiva();
+
+    /**
+     * Gets abandono.
+     *
+     * @return the abandono
+     */
+    boolean getAbandono();
+
+    /**
+     * Gets mi nombre.
+     *
+     * @return the mi nombre
+     */
+    String getMiNombre();
+
+    /**
+     * Gets evento abandono.
+     *
+     * @return the evento abandono
+     */
+    EventoAbandonoDTO getEventoAbandono();
+    EventoFinalizacionDTO getEventoFinalizacion();
+    boolean isYaVote();
+    boolean isVotoEnviado();
+    boolean isVotacionPendiente();
 }
