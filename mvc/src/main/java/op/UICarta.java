@@ -1,6 +1,10 @@
 package op;
 import dto.CartaDTO;
+<<<<<<<< HEAD:agent/src/main/java/mvc/UICarta.java
+import interfaces.IComponent;
+========
 
+>>>>>>>> origin/main:mvc/src/main/java/op/UICarta.java
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -80,7 +84,7 @@ public class UICarta extends JPanel {
         int offsetY = (hover || seleccionada) ? 0 : ELEVACION;
 
         pintarSombra(g2, offsetY);
-        pintarFondoColor(g2, offsetY);
+       // pintarFondoColor(g2, offsetY);
         pintarImagen(g2, offsetY);
         pintarTextoSinImagen(g2, offsetY);
         pintarBordeBlanco(g2, offsetY);
@@ -110,11 +114,19 @@ public class UICarta extends JPanel {
         g2.setColor(COLOR_SOMBRA);
         g2.fillRoundRect(4, y + 4, ANCHO - 2, ALTO - 2, ARCO, ARCO);
     }
+<<<<<<<< HEAD:agent/src/main/java/mvc/UICarta.java
+//
+//    private void pintarFondoColor(Graphics2D g2, int y) {
+//        g2.setColor(ColorCarta.toAWT(carta.getColor()));
+//        g2.fillRoundRect(1, y + 1, ANCHO - 2, ALTO - 2, ARCO, ARCO);
+//    }
+========
 
     private void pintarFondoColor(Graphics2D g2, int y) {
         g2.setColor(resolverColorCarta(carta.getColor()));
         g2.fillRoundRect(1, y + 1, ANCHO - 2, ALTO - 2, ARCO, ARCO);
     }
+>>>>>>>> origin/main:mvc/src/main/java/op/UICarta.java
 
     private void pintarImagen(Graphics2D g2, int y) {
         if (imagenArte == null) return;

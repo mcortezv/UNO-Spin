@@ -1,4 +1,8 @@
 package op;
+<<<<<<<< HEAD:agent/src/main/java/mvc/UIMazo.java
+import interfaces.IComponent;
+========
+>>>>>>>> origin/main:mvc/src/main/java/op/UIMazo.java
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;

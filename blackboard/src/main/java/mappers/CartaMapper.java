@@ -1,10 +1,24 @@
 package mappers;
+<<<<<<<< HEAD:mappers/src/main/java/mappers/CartaMapper.java
+<<<<<<<< HEAD:control/src/main/java/mappers/CartaMapper.java
+import dominio.Carta;
+import dominio.enums.TipoCarta;
+========
 import dominio.entidades.Carta;
 import dominio.entidades.enums.TipoCarta;
+>>>>>>>> main:mappers/src/main/java/mappers/CartaMapper.java
+========
+import dominio.entidades.Carta;
+import dominio.entidades.enums.TipoCarta;
+>>>>>>>> origin/main:blackboard/src/main/java/mappers/CartaMapper.java
 import dto.CartaDTO;
 import java.util.ArrayList;
 import java.util.List;
 
+<<<<<<<< HEAD:mappers/src/main/java/mappers/CartaMapper.java
+public class CartaMapper {
+
+========
 /**
  * The type Carta mapper.
  */
@@ -16,6 +30,7 @@ public class CartaMapper {
      * @param cartas the cartas
      * @return the list
      */
+>>>>>>>> origin/main:blackboard/src/main/java/mappers/CartaMapper.java
     public static List<CartaDTO> toDTO(List<Carta> cartas) {
         List<CartaDTO> listaDTO = new ArrayList<>();
         if (cartas != null) {
@@ -26,12 +41,6 @@ public class CartaMapper {
         return listaDTO;
     }
 
-    /**
-     * To dto carta dto.
-     *
-     * @param c the c
-     * @return the carta dto
-     */
     public static CartaDTO toDTO(Carta c) {
         if (c == null) return null;
         CartaDTO dto = new CartaDTO();

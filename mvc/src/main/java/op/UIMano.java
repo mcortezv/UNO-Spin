@@ -1,4 +1,8 @@
 package op;
+<<<<<<<< HEAD:agent/src/main/java/mvc/UIMano.java
+import interfaces.IComponent;
+========
+>>>>>>>> origin/main:mvc/src/main/java/op/UIMano.java
 import styles.CustomScrollPane;
 import dto.CartaDTO;
 import javax.swing.*;

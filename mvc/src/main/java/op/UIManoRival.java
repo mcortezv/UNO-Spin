@@ -1,4 +1,8 @@
 package op;
+<<<<<<<< HEAD:agent/src/main/java/mvc/UIManoRival.java
+import interfaces.IComponent;
+========
+>>>>>>>> origin/main:mvc/src/main/java/op/UIManoRival.java
 import javax.swing.*;
 import java.awt.*;
 

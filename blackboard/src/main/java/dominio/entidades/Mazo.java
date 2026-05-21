@@ -1,4 +1,8 @@
 package dominio.entidades;
+<<<<<<<< HEAD:dominio/src/main/java/dominio/entidades/Mazo.java
+
+========
+>>>>>>>> origin/main:blackboard/src/main/java/dominio/entidades/Mazo.java
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,9 +57,17 @@ public class Mazo {
     /**
      * Robar carta carta.
      * Toma la ultima carta de la bajara y la descarta
+<<<<<<<< HEAD:dominio/src/main/java/dominio/entidades/Mazo.java
+     *
+     * @return the last carta
+     * @throws Exception the exception Cuando el mazo de las cartas se encuentra vacio, significa que no hay más cartas
+     * en el mazo
+     *
+========
      *
      * @return the last carta
      * @throws Exception the exception Cuando el mazo de las cartas se encuentra vacio, significa que no hay más cartas en el mazo
+>>>>>>>> origin/main:blackboard/src/main/java/dominio/entidades/Mazo.java
      */
     public Carta robarCarta() throws Exception {
         if (this.cartas.isEmpty()) {

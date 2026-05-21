@@ -1,6 +1,10 @@
 package op;
 import dto.CartaDTO;
+<<<<<<<< HEAD:agent/src/main/java/mvc/UITablero.java
+import interfaces.IComponent;
+========
 
+>>>>>>>> origin/main:mvc/src/main/java/op/UITablero.java
 import javax.swing.*;
 import java.awt.*;
 

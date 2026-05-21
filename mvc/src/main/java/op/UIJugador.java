@@ -1,6 +1,10 @@
 package op;
 import dto.JugadorDTO;
+<<<<<<<< HEAD:agent/src/main/java/mvc/UIJugador.java
+import interfaces.IComponent;
+========
 
+>>>>>>>> origin/main:mvc/src/main/java/op/UIJugador.java
 import javax.swing.Icon;
 import javax.swing.*;
 import java.awt.*;

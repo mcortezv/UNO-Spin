@@ -1,4 +1,8 @@
 package op;
+<<<<<<<< HEAD:agent/src/main/java/mvc/UIRuleta.java
+import interfaces.IComponent;
+========
+>>>>>>>> origin/main:mvc/src/main/java/op/UIRuleta.java
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -220,7 +224,10 @@ public class UIRuleta extends JPanel {
     }
 
 
+<<<<<<<< HEAD:agent/src/main/java/mvc/UIRuleta.java
+========
 
+>>>>>>>> origin/main:mvc/src/main/java/op/UIRuleta.java
     /**
      * Sets active.
      *
