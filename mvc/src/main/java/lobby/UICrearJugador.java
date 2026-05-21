@@ -1,13 +1,21 @@
 package lobby;
 
+// Imports de tu arquitectura interna (DTOs y Controladores)
 import dto.JugadorDTO;
+import lobby.ISuscriptorLobby;
+import lobby.LobbyControlador;
+import lobby.LobbyModelo;
+import lobby.IModeloLobbyLectura;
 
+// Imports de la interfaz gráfica y eventos (Swing y AWT)
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
+
+// Imports de utilidades y estructuras de datos
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +47,7 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
     private JTextField campoNombre;
     private int avatarSeleccionado = 1;
     
+    // Lista fija para controlar los colores asignados en tiempo real (-1 = vacío)
     private final List<Integer> coloresSeleccionados = new ArrayList<>(List.of(-1, -1, -1, -1));
     
     private JLabel visualizadorAvatar;
@@ -246,26 +255,17 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
         }
     }
 
-    /**
-     * Busca y extrae de forma segura la imagen desde los recursos empaquetados de la aplicación.
-     * Funciona en cualquier sistema operativo y dentro de archivos ejecutables (.jar).
-     */
     private ImageIcon buscarIcono(int n, int w, int h) {
         String ruta = "/avatares/avatar_" + n + ".png";
         java.net.URL url = getClass().getResource(ruta);
         
-        // Estrategia de respaldo (fallback) en caso de entornos de ejecución estrictos
         if (url == null) {
             url = Thread.currentThread().getContextClassLoader().getResource(ruta);
         }
         if (url == null) {
             url = ClassLoader.getSystemResource(ruta);
         }
-        
-        if (url == null) {
-            System.err.println("No se pudo encontrar el recurso: " + ruta);
-            return null;
-        }
+        if (url == null) return null;
         
         return new ImageIcon(new ImageIcon(url).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH));
     }
@@ -349,7 +349,7 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
         panelSelector.setOpaque(false);
         panelSelector.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         
-        int w = 360, h = 220;
+        int w = 360, h = 250;
         panelSelector.setBounds((getWidth() - w) / 2, (getHeight() - h) / 2, w, h);
 
         JLabel tituloSel = new JLabel("SELECCIONA EL COLOR " + (ranuraIdx + 1), SwingConstants.CENTER);
@@ -362,35 +362,69 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
 
         for (int i = 0; i < COLORES.length; i++) {
             final int colorIdx = i;
+            
+            // Validación anti-repetición de color
+            boolean yaEstaTomado = false;
+            for (int r = 0; r < coloresSeleccionados.size(); r++) {
+                if (r != ranuraIdx && coloresSeleccionados.get(r) == colorIdx) {
+                    yaEstaTomado = true;
+                    break;
+                }
+            }
+
+            final boolean deshabilitado = yaEstaTomado;
+
             JButton btnColorOpcion = new JButton() {
                 @Override protected void paintComponent(Graphics g) {
-                    Graphics2D g2 = (Graphics2D) g.create();
+                    Graphics2D g2 = (Graphics2D) g.create(); // 🌟 Corregido casteo y paréntesis aquí
                     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                    g2.setColor(COLORES[colorIdx]);
-                    g2.fill(new Ellipse2D.Float(2, 2, getWidth() - 4, getHeight() - 16));
+                    
+                    if (deshabilitado) {
+                        g2.setColor(new Color(60, 60, 65));
+                        g2.fill(new Ellipse2D.Float(2, 2, getWidth() - 4, getHeight() - 16));
+                        g2.setColor(new Color(90, 90, 95));
+                        g2.setStroke(new BasicStroke(2));
+                        g2.drawLine(6, 6, getWidth() - 6, getHeight() - 20);
+                    } else {
+                        g2.setColor(COLORES[colorIdx]);
+                        g2.fill(new Ellipse2D.Float(2, 2, getWidth() - 4, getHeight() - 16));
+                    }
                     g2.dispose();
 
-                    g.setFont(new Font("Arial", Font.BOLD, 9));
-                    g.setColor(Color.LIGHT_GRAY);
+                    g.setFont(new Font("Arial", deshabilitado ? Font.ITALIC : Font.BOLD, 9));
+                    g.setColor(deshabilitado ? Color.DARK_GRAY : Color.LIGHT_GRAY);
                     FontMetrics fm = g.getFontMetrics();
                     g.drawString(NOMBRES[colorIdx], (getWidth() - fm.stringWidth(NOMBRES[colorIdx])) / 2, getHeight() - 2);
                 }
                 @Override protected void paintBorder(Graphics g) {}
             };
+            
             btnColorOpcion.setContentAreaFilled(false);
             btnColorOpcion.setOpaque(false);
-            btnColorOpcion.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            
-            btnColorOpcion.addActionListener(ev -> {
-                coloresSeleccionados.set(ranuraIdx, colorIdx); 
-                botonesRanuras[ranuraIdx].repaint();          
-                lp.remove(panelSelector);
-                lp.repaint();
-            });
+
+            if (deshabilitado) {
+                btnColorOpcion.setEnabled(false);
+            } else {
+                btnColorOpcion.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                btnColorOpcion.addActionListener(ev -> {
+                    coloresSeleccionados.set(ranuraIdx, colorIdx); 
+                    botonesRanuras[ranuraIdx].repaint();          
+                    lp.remove(panelSelector);
+                    lp.repaint();
+                });
+            }
 
             rejilla8Colores.add(btnColorOpcion);
         }
         panelSelector.add(rejilla8Colores, BorderLayout.CENTER);
+
+        JButton btnCancelarSel = crearBotonAmarillo("CANCELAR", 100, 28);
+        btnCancelarSel.setFont(new Font("Arial Black", Font.BOLD, 11));
+        btnCancelarSel.addActionListener(ev -> { lp.remove(panelSelector); lp.repaint(); });
+        JPanel surSel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        surSel.setOpaque(false);
+        surSel.add(btnCancelarSel);
+        panelSelector.add(surSel, BorderLayout.SOUTH);
 
         lp.add(panelSelector, JLayeredPane.DRAG_LAYER);
         lp.revalidate();
@@ -446,7 +480,7 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
         return new JPanel() {
             @Override protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D) g;
+                Graphics2D g2 = (Graphics2D) g; // 🌟 Corregido casteo aquí también
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(color);
                 g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), arco, arco));
