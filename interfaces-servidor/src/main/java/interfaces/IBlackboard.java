@@ -119,4 +119,8 @@ public interface IBlackboard {
      * @return the evento abandono
      */
     EventoAbandonoDTO getEventoAbandono();
+
+    void procesarRegistro(JugadorDTO dto);
+
+
 }
