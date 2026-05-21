@@ -581,6 +581,14 @@ public class Partida implements IDominio {
         this.configuracionPartida= new ConfiguracionPartida(configuracion);
     }
 
+    @Override
+    public void crearJugador(String nombre, Mano mano, List<String> colorCarta, int puntos, int numeroAvatar) {
+        Jugador jugador = new Jugador(nombre, mano, colorCarta, puntos, numeroAvatar);
+        jugadores.add(jugador);
+        setEstadoPartida(EstadoPartida.NO_INICIADA);
+
+    }
+
     private void devolverCartas(String nombre) {
         for (Jugador j : jugadores) {
             if (j.getNombre().equalsIgnoreCase(nombre)){

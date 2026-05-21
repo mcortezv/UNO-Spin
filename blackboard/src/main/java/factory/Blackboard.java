@@ -2,6 +2,7 @@ package factory;
 import dominio.IDominio;
 import dominio.entidades.ConfiguracionPartida;
 import dominio.entidades.Jugador;
+import dominio.entidades.Mano;
 import dominio.entidades.Partida;
 import dominio.entidades.enums.EstadoPartida;
 import dominio.entidades.enums.TipoAccion;
@@ -378,6 +379,18 @@ public class Blackboard implements IBlackboard, IReceptor{
         EventoAbandonoDTO temp = this.eventoAbandono;
         eventoAbandono = null;
         return temp;
+    }
+
+    @Override
+    public void procesarRegistro(JugadorDTO dto) {
+        Jugador jugador= JugadorMapper.toEntity(dto);
+
+        String nombre = jugador.getNombre();
+        Mano mano = jugador.getMano();
+        List<String> colorCarta = jugador.getColorCarta();
+        int puntos = jugador.getPuntos();
+        int numeroAvatar =  jugador.getNumeroAvatar();
+        dominio.crearJugador(nombre, mano, colorCarta, puntos, numeroAvatar);
     }
 
     private void procesarAbandono(TipoAccionDTO accion) {

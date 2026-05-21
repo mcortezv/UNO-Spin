@@ -98,6 +98,13 @@ public class LobbyModelo implements IModeloLobby, IModeloLobbyLectura, IModeloLo
     }
 
     @Override
+    public void registrarJugador(JugadorDTO jugador) {
+        TipoAccionDTO accion = new TipoAccionDTO("NO_INICIADA");
+        accion.setJugadorDTO(jugador);
+        enviar(accion);
+    }
+
+    @Override
     public void solicitarInicio() {
         TipoAccionDTO accion = new TipoAccionDTO("SOLICITAR_INICIO");
         accion.setJugadorDTO(jugadorLocal);
