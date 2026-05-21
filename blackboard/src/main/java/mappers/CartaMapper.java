@@ -1,6 +1,6 @@
 package mappers;
-import dominio.Carta;
-import dominio.enums.TipoCarta;
+import dominio.entidades.Carta;
+import dominio.entidades.enums.TipoCarta;
 import dominio.entidades.Carta;
 import dominio.entidades.enums.TipoCarta;
 import dominio.entidades.Carta;
@@ -8,8 +8,6 @@ import dominio.entidades.enums.TipoCarta;
 import dto.CartaDTO;
 import java.util.ArrayList;
 import java.util.List;
-
-public class CartaMapper {
 
 /**
  * The type Carta mapper.

@@ -383,7 +383,6 @@ public class Blackboard implements IBlackboard, IReceptor {
         return temp;
     }
 
-    @Override
     public JugadorDTO procesarRegistro(JugadorDTO dto) {
         Jugador jugador = JugadorMapper.toEntity(dto);
         if (jugador == null) return jugadorDefault();
