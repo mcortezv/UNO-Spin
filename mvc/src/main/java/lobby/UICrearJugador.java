@@ -146,7 +146,6 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
         return campo;
     }
 
-
     private JPanel construirSeccionAvatar() {
         JPanel seccion = new JPanel(new BorderLayout(0, 8));
         seccion.setOpaque(false);
@@ -191,15 +190,21 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
         tit.setForeground(Color.WHITE);
         panel.add(tit, BorderLayout.NORTH);
 
-        JPanel rejilla = new JPanel(new GridLayout(3, 3, 12, 12));
-        rejilla.setOpaque(false);
+        JPanel gridAvatares = new JPanel(new GridLayout(3, 3, 12, 12));
+        gridAvatares.setOpaque(false);
 
         for (int i = 1; i <= 9; i++) {
             final int num = i;
             JButton btn = new JButton();
             ImageIcon ico = buscarIcono(num, 80, 80);
-            if (ico != null) btn.setIcon(ico);
-            else { btn.setText("" + i); btn.setForeground(Color.WHITE); btn.setFont(new Font("Arial Black", Font.BOLD, 16)); }
+            
+            if (ico != null) {
+                btn.setIcon(ico);
+            } else { 
+                btn.setText("" + i); 
+                btn.setForeground(Color.WHITE); 
+                btn.setFont(new Font("Arial Black", Font.BOLD, 16)); 
+            }
 
             btn.setContentAreaFilled(false);
             btn.setFocusPainted(false);
@@ -212,9 +217,9 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
                 lp.remove(panel);
                 lp.repaint();
             });
-            rejilla.add(btn);
+            gridAvatares.add(btn);
         }
-        panel.add(rejilla, BorderLayout.CENTER);
+        panel.add(gridAvatares, BorderLayout.CENTER);
 
         JButton btnCancelar = crearBotonAmarillo("CANCELAR", 120, 34);
         btnCancelar.setFont(new Font("Arial Black", Font.BOLD, 12));
@@ -231,15 +236,37 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
 
     private void actualizarImagenAvatar() {
         ImageIcon ico = buscarIcono(avatarSeleccionado, 72, 72);
-        if (ico != null) { visualizadorAvatar.setIcon(ico); visualizadorAvatar.setText(""); }
-        else             { visualizadorAvatar.setIcon(null); visualizadorAvatar.setText("[" + avatarSeleccionado + "]"); visualizadorAvatar.setForeground(Color.LIGHT_GRAY); }
+        if (ico != null) { 
+            visualizadorAvatar.setIcon(ico); 
+            visualizadorAvatar.setText(""); 
+        } else { 
+            visualizadorAvatar.setIcon(null); 
+            visualizadorAvatar.setText("[" + avatarSeleccionado + "]"); 
+            visualizadorAvatar.setForeground(Color.LIGHT_GRAY); 
+        }
     }
 
+    /**
+     * Busca y extrae de forma segura la imagen desde los recursos empaquetados de la aplicación.
+     * Funciona en cualquier sistema operativo y dentro de archivos ejecutables (.jar).
+     */
     private ImageIcon buscarIcono(int n, int w, int h) {
         String ruta = "/avatares/avatar_" + n + ".png";
         java.net.URL url = getClass().getResource(ruta);
-        if (url == null) url = Thread.currentThread().getContextClassLoader().getResource(ruta);
-        if (url == null) return null;
+        
+        // Estrategia de respaldo (fallback) en caso de entornos de ejecución estrictos
+        if (url == null) {
+            url = Thread.currentThread().getContextClassLoader().getResource(ruta);
+        }
+        if (url == null) {
+            url = ClassLoader.getSystemResource(ruta);
+        }
+        
+        if (url == null) {
+            System.err.println("No se pudo encontrar el recurso: " + ruta);
+            return null;
+        }
+        
         return new ImageIcon(new ImageIcon(url).getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH));
     }
 
@@ -267,7 +294,6 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
 
                     int colorIdx = coloresSeleccionados.get(numeroRanura);
                     
-                    // Si no tiene color asignado, se dibuja gris punteado, si tiene, se pinta su color
                     if (colorIdx == -1) {
                         g2.setColor(new Color(40, 40, 50));
                         g2.fill(new Ellipse2D.Float(4, 4, getWidth() - 8, getHeight() - 24));
@@ -280,7 +306,6 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
                     }
                     g2.dispose();
 
-                    // Etiqueta inferior ("Color 1", "Color 2", etc.)
                     g.setFont(new Font("Arial", Font.BOLD, 11));
                     g.setColor(Color.WHITE);
                     FontMetrics fm = g.getFontMetrics();
@@ -297,7 +322,6 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
             btn.setPreferredSize(new Dimension(75, 85));
             btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             
-            // Al dar clic a la ranura, abrimos el selector de los 8 colores en la misma pantalla
             btn.addActionListener(e -> abrirSelectorDeColorParaRanura(numeroRanura));
 
             botonesRanuras[i] = btn;
@@ -333,7 +357,6 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
         tituloSel.setForeground(Color.WHITE);
         panelSelector.add(tituloSel, BorderLayout.NORTH);
 
-        // Rejilla de los 8 colores completos
         JPanel rejilla8Colores = new JPanel(new GridLayout(2, 4, 12, 12));
         rejilla8Colores.setOpaque(false);
 
@@ -374,7 +397,6 @@ public class UICrearJugador extends JFrame implements ISuscriptorLobby {
         lp.repaint();
     }
 
-    
     private void onUnirse() {
         String nombre = campoNombre.getText().trim();
         if (nombre.isEmpty()) {
