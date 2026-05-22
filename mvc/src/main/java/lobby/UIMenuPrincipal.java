@@ -2,6 +2,8 @@ package lobby;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 
 public class UIMenuPrincipal extends JFrame {
@@ -38,6 +40,7 @@ public class UIMenuPrincipal extends JFrame {
         };
         fondo.setLayout(new GridBagLayout());
         setContentPane(fondo);
+        habilitarArrastre(fondo);
 
         JPanel panel = new JPanel() {
             @Override
@@ -73,6 +76,20 @@ public class UIMenuPrincipal extends JFrame {
         panel.add(unirse, gbc);
 
         fondo.add(panel);
+    }
+
+    private void habilitarArrastre(Component c) {
+        MouseAdapter ma = new MouseAdapter() {
+            private Point inicio;
+            @Override public void mousePressed(MouseEvent e) { inicio = e.getLocationOnScreen(); }
+            @Override public void mouseDragged(MouseEvent e) {
+                Point p = e.getLocationOnScreen();
+                setLocation(getX() + p.x - inicio.x, getY() + p.y - inicio.y);
+                inicio = p;
+            }
+        };
+        c.addMouseListener(ma);
+        c.addMouseMotionListener(ma);
     }
 
     private JButton crearBoton(String texto) {

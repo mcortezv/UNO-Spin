@@ -141,12 +141,6 @@ public class UICrearPartida extends JFrame {
             ConfiguracionPartidaDTO dto = new ConfiguracionPartidaDTO(min, max, comodines, accion, tiempo);
             controlador.crearPartida(dto);
 
-            JOptionPane.showMessageDialog(this,
-                    "Partida creada con éxito:\nMin=" + min + ", Max=" + max +
-                            ", Comodines=" + comodines + ", Acción=" + accion +
-                            ", Tiempo=" + tiempo + " seg",
-                    "Partida creada", JOptionPane.INFORMATION_MESSAGE);
-
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             JOptionPane.showMessageDialog(this,
