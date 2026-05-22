@@ -40,7 +40,7 @@ public class Blackboard implements IBlackboard, IReceptor{
     private IDominio dominio;
     private final ISerializer serializer;
     private final List<Jugador> jugadoresInscritos = new ArrayList<>();
-    //private final Set<String> confirmaciones = new HashSet<>();
+    private final List<Jugador> confirmaciones = new ArrayList<>();
     private final Map<String, String> ipsPorNombre = new LinkedHashMap<>();
     private final Map<String, Integer> puertosPorNombre = new LinkedHashMap<>();
     private final Map<String, SolicitudUnionDTO> solicitudes = new LinkedHashMap<>();
@@ -204,10 +204,10 @@ public class Blackboard implements IBlackboard, IReceptor{
 
     private void procesarConfirmarInicio(TipoAccionDTO accion){
         Jugador jugador= JugadorMapper.toEntity(accion.getJugadorDTO());
-        dominio.agregarConfirmacion(jugador);
+        confirmaciones.add(jugador);
         ultimaAccionLobby= "CONFIRMAR_INICIO";
 
-        if (dominio.getCantidadConfirmaciones() >= jugadoresInscritos.size()-1 && jugadoresInscritos.size() >= MIN_JUGADORES){
+        if (confirmaciones.size() >= jugadoresInscritos.size()-1 && jugadoresInscritos.size() >= MIN_JUGADORES){
             arrancarPartida();
         }
 
@@ -215,7 +215,7 @@ public class Blackboard implements IBlackboard, IReceptor{
 
     private void procesarRechazarInicio(TipoAccionDTO accion){
         Jugador jugador= JugadorMapper.toEntity(accion.getJugadorDTO());
-        dominio.cancelarConfirmaciones();
+        confirmaciones.clear();
         ultimaAccionLobby= "NEGAR_INICIO";
         String nombre= accion.getJugadorDTO().getNombre();
         nombreSolicitudResuelta= nombre;
@@ -261,6 +261,7 @@ public class Blackboard implements IBlackboard, IReceptor{
         if (configuracion == null) {
             configuracion = configuracionDefault();
         }
+        confirmaciones.clear();
         dominio.iniciarPartida(new ArrayList<>(jugadoresInscritos), configuracion);
     }
 

@@ -302,26 +302,56 @@ public class UIPantallaCarga extends JFrame implements ISuscriptorLobby {
             }
         });
     }
-    
+
     private void mostrarDialogoConfirmacion() {
         new Thread(() -> {
-            JOptionPane pane= new JOptionPane("Un jugador quiere iniciar, confirmas?", JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION);
-            dialogoActivo= pane.createDialog(this, "Solicitud de inicio");
-            dialogoActivo.setVisible(true);
-            dialogoActivo= null;
+            JDialog dialogo = new JDialog(this, true);
+            dialogo.setUndecorated(true);
+            dialogo.setSize(380, 180);
+            dialogo.setLocationRelativeTo(this);
 
-            Integer respuesta= (Integer) pane.getValue();
-            SwingUtilities.invokeLater(() -> {
-                if (respuesta !=null && respuesta == JOptionPane.YES_OPTION) {
-                    controlador.confirmarInicio();
-                } else {
-                    controlador.negarInicio();
+            JPanel panel = new JPanel() {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    Graphics2D g2d = (Graphics2D) g;
+                    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g2d.setColor(new Color(52, 62, 125));
+                    g2d.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 22, 22));
                 }
-            });
+            };
+            panel.setOpaque(false);
+            panel.setLayout(new GridBagLayout());
+            dialogo.setContentPane(panel);
 
+            habilitarArrastre(panel);
+
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridwidth = GridBagConstraints.REMAINDER;
+            gbc.insets = new Insets(20, 20, 10, 20);
+
+            JLabel msg = new JLabel("Un jugador quiere iniciar, confirmas?");
+            msg.setFont(new Font("Arial Black", Font.BOLD, 14));
+            msg.setForeground(Color.WHITE);
+            panel.add(msg, gbc);
+
+            JPanel botones = new JPanel(new FlowLayout(FlowLayout.CENTER, 16, 0));
+            botones.setOpaque(false);
+
+            JButton btnSi = crearBotonPequeno("SÍ", VERDE);
+            btnSi.setPreferredSize(new Dimension(110, 36));
+            btnSi.addActionListener(e -> { dialogoActivo = null; dialogo.dispose(); controlador.confirmarInicio(); });
+
+            JButton btnNo = crearBotonPequeno("NO", ROJO);
+            btnNo.setPreferredSize(new Dimension(110, 36));
+            btnNo.addActionListener(e -> { dialogoActivo = null; dialogo.dispose(); controlador.negarInicio(); });
+
+            botones.add(btnSi); botones.add(btnNo);
+            gbc.insets = new Insets(0, 20, 20, 20);
+            panel.add(botones, gbc);
+
+            dialogoActivo = dialogo;
+            dialogo.setVisible(true);
         }).start();
-
-
     }
 
     private void habilitarArrastre(Component c) {
@@ -337,6 +367,7 @@ public class UIPantallaCarga extends JFrame implements ISuscriptorLobby {
         c.addMouseListener(ma);
         c.addMouseMotionListener(ma);
     }
+
 
     public static void main(String[] args) {
         LobbyModelo modelo = new LobbyModelo(null, null, null, 0, 0, null);

@@ -62,7 +62,7 @@ public class Partida implements IDominio {
         this.jugadores = jugadoresIniciales;
         this.indiceJugadorActual = 0;
         this.sentidoHorario = true;
-        cancelarConfirmaciones();
+
 
         Mazo mazo = new Mazo(generarMazo(configuracion));
         mazo.mezclar();
@@ -142,19 +142,7 @@ public class Partida implements IDominio {
         return cartas.isEmpty() ? null : cartas.removeLast();
     }
 
-    public void agregarConfirmacion(Jugador jugador) {
-    confirmaciones.add(jugador);
-    }
 
-    public boolean todosConfirmaron() {
-        return jugadores.stream()
-                .allMatch(j -> confirmaciones.stream()
-                        .anyMatch(c -> c.getNombre().equals(j.getNombre())));
-    }
-
-    public void cancelarConfirmaciones() {
-        confirmaciones.clear();
-    }
 
 
     @Override
@@ -383,9 +371,6 @@ public class Partida implements IDominio {
         this.tablero = t;
     }
 
-    public int getCantidadConfirmaciones() {
-        return confirmaciones.size();
-    }
 
     /**
      * Sets estado partida.
