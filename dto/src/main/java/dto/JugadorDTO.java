@@ -1,12 +1,18 @@
 package dto;
 
+import java.util.List;
+
 /**
  * The type Jugador dto.
  */
 public class JugadorDTO {
     private String nombre;
     private int numeroAvatar;
+    private int colorCartas; // Nueva variable: Almacena el ID del color seleccionado (1 al 8)
+    private List<String> coloresVisuales;
+    
     private int cantidadCartas;
+    private int puntos;
     private boolean esTurnoActual;
 
     /**
@@ -19,16 +25,19 @@ public class JugadorDTO {
      *
      * @param nombre         the nombre
      * @param numeroAvatar   the numero avatar
+     * @param colorCartas    the color cartas (1 al 8)
      * @param cantidadCartas the cantidad cartas
      * @param esTurnoActual  the es turno actual
      */
-    public JugadorDTO(String nombre, int numeroAvatar, int cantidadCartas, boolean esTurnoActual) {
+    public JugadorDTO(String nombre, int numeroAvatar, int colorCartas, int cantidadCartas, boolean esTurnoActual) {
         this.nombre = nombre;
         this.numeroAvatar = numeroAvatar;
+        this.colorCartas = colorCartas;
         this.cantidadCartas = cantidadCartas;
         this.esTurnoActual = esTurnoActual;
     }
 
+    
     /**
      * Gets nombre.
      *
@@ -65,6 +74,14 @@ public class JugadorDTO {
         this.cantidadCartas = cantidadCartas;
     }
 
+    public int getPuntos() {
+        return puntos;
+    }
+
+    public void setPuntos(int puntos) {
+        this.puntos = puntos;
+    }
+
     /**
      * Gets numero avatar.
      *
@@ -81,6 +98,32 @@ public class JugadorDTO {
      */
     public void setNumeroAvatar(int numeroAvatar) {
         this.numeroAvatar = numeroAvatar;
+    }
+
+    /**
+     * Gets color cartas.
+     *
+     * @return the color cartas
+     */
+    public int getColorCartas() {
+        return colorCartas;
+    }
+
+    /**
+     * Sets color cartas.
+     *
+     * @param colorCartas the color cartas to set
+     */
+    public void setColorCartas(int colorCartas) {
+        this.colorCartas = colorCartas;
+    }
+
+    public List<String> getColoresVisuales() {
+        return coloresVisuales;
+    }
+
+    public void setColoresVisuales(List<String> coloresVisuales) {
+        this.coloresVisuales = coloresVisuales;
     }
 
     /**

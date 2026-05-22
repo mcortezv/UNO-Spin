@@ -1,6 +1,10 @@
 package mappers;
 import dominio.entidades.Carta;
 import dominio.entidades.enums.TipoCarta;
+import dominio.entidades.Carta;
+import dominio.entidades.enums.TipoCarta;
+import dominio.entidades.Carta;
+import dominio.entidades.enums.TipoCarta;
 import dto.CartaDTO;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +30,6 @@ public class CartaMapper {
         return listaDTO;
     }
 
-    /**
-     * To dto carta dto.
-     *
-     * @param c the c
-     * @return the carta dto
-     */
     public static CartaDTO toDTO(Carta c) {
         if (c == null) return null;
         CartaDTO dto = new CartaDTO();

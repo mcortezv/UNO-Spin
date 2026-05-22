@@ -81,15 +81,16 @@ public interface IBlackboard {
 
     /**
      * Gets evento finalizacion.
+     *
+     * @return the evento finalizacion
+     */
+    EventoFinalizacionDTO getEventoFinalizacion();
 
     /**
      * Gets solicitudes pendientes.
      *
      * @return the solicitudes pendientes
      */
-
-    EventoFinalizacionDTO getEventoFinalizacion();
-
     List<SolicitudUnionDTO> getSolicitudesPendientes();
 
     /**
@@ -119,4 +120,6 @@ public interface IBlackboard {
      * @return the evento abandono
      */
     EventoAbandonoDTO getEventoAbandono();
+
+    public JugadorDTO procesarRegistro(JugadorDTO dto);
 }

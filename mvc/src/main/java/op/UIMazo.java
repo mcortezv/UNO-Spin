@@ -124,5 +124,9 @@ public class UIMazo extends JPanel {
      */
     public void setActive(boolean active) {
         isActive = active;
+        if (!active) {
+            hover = false;
+        }
+        repaint();
     }
 }

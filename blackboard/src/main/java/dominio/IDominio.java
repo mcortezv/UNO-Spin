@@ -2,6 +2,7 @@ package dominio;
 import dominio.entidades.Carta;
 import dominio.entidades.ConfiguracionPartida;
 import dominio.entidades.Jugador;
+import dominio.entidades.Mano;
 import dominio.entidades.enums.EstadoPartida;
 import dto.EventoAbandonoDTO;
 import dto.TipoEventoRuletaDTO;
@@ -180,6 +181,6 @@ public interface IDominio {
      */
     void procesarConfiguracion(ConfiguracionPartida configuracion);
 
-
+    void crearJugador(String nombre, Mano mano, List<String> colorCarta, int puntos, int numeroAvatar);
 
 }

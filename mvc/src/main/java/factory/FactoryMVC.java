@@ -5,9 +5,15 @@ import interfaces.IReceptor;
 import interfaces.ISerializer;
 import lobby.LobbyControlador;
 import lobby.LobbyModelo;
+import lobby.CrearJugadorControlador;
+import lobby.CrearPartidaControlador;
+import lobby.MenuControlador;
+import lobby.NavegadorLobby;
 import mvc.Controlador;
 import mvc.Modelo;
 import lobby.UICrearJugador;
+import lobby.UICrearPartida;
+import lobby.UIMenuPrincipal;
 import lobby.UIPantallaCarga;
 import mvc.UITurnoJugador;
 import javax.swing.*;
@@ -36,13 +42,21 @@ public class FactoryMVC implements IFactoryMVC {
         LobbyModelo lobbyModelo = new LobbyModelo(dispatcher, serializer, IP_SERVIDOR, PUERTO_SERVIDOR, puertoCliente, ipLocal);
         LobbyControlador lobbyControlador = new LobbyControlador(lobbyModelo);
         lobbyControlador.setControladorJuego(gameControlador);
-        UICrearJugador lobbyUI = new UICrearJugador(lobbyControlador);
+
+        NavegadorLobby navegadorLobby = new NavegadorLobby();
+        MenuControlador menuControlador = new MenuControlador(navegadorLobby, navegadorLobby);
+        CrearPartidaControlador crearPartidaControlador = new CrearPartidaControlador(lobbyModelo, navegadorLobby);
+        CrearJugadorControlador crearJugadorControlador = new CrearJugadorControlador(lobbyControlador);
+        UIMenuPrincipal menuUI = new UIMenuPrincipal(menuControlador);
+        UICrearPartida crearPartidaUI = new UICrearPartida(crearPartidaControlador);
+        UICrearJugador lobbyUI = new UICrearJugador(crearJugadorControlador);
         UIPantallaCarga pantallaCarga = new UIPantallaCarga(lobbyControlador);
+        navegadorLobby.setPantallas(menuUI, crearPartidaUI, lobbyUI);
         lobbyModelo.suscribir(lobbyControlador);
         lobbyModelo.suscribir(lobbyUI);
         lobbyModelo.suscribir(pantallaCarga);
 
-        SwingUtilities.invokeLater(() -> lobbyUI.setVisible(true));
+        SwingUtilities.invokeLater(navegadorLobby::mostrarMenu);
 
         return new MVC(serializer, lobbyModelo, gameModelo);
     }

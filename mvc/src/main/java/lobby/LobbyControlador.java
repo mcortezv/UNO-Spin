@@ -4,7 +4,7 @@ import dto.ConfiguracionPartidaDTO;
 import dto.JugadorDTO;
 import interfaces.IOnJuegoIniciado;
 
-public class LobbyControlador implements ISuscriptorLobby {
+public class LobbyControlador implements ISuscriptorLobby, IControlUnionJugador {
 
     private final IModeloLobby modelo;
     private IOnJuegoIniciado controladorJuego;
@@ -30,6 +30,7 @@ public class LobbyControlador implements ISuscriptorLobby {
         }
     }
 
+    @Override
     public void solicitarUnion(JugadorDTO jugador) {
         this.miNombre = jugador.getNombre();
         modelo.solicitarUnion(jugador);
@@ -58,4 +59,9 @@ public class LobbyControlador implements ISuscriptorLobby {
     public void solicitarConfiguracion(ConfiguracionPartidaDTO dto) {
         modelo.setsConfiguracion(dto);
     }
+
+    public void solicitarRegistro(JugadorDTO dto){
+    modelo.registrarJugador(dto);
+    }
+
 }

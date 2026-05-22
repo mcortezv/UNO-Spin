@@ -1,9 +1,6 @@
 package lobby;
 
 import dto.ConfiguracionPartidaDTO;
-import mvc.Controlador;
-import mvc.Modelo;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -16,9 +13,9 @@ public class UICrearPartida extends JFrame {
     private static final Color AZUL_PANEL = new Color(52, 62, 125);
 
     private JTextField campoMinimo, campoMaximo, campoComodines, campoAccion, campoTiempo;
-    private final LobbyControlador controlador;
+    private final CrearPartidaControlador controlador;
 
-    public UICrearPartida(LobbyControlador controlador) {
+    public UICrearPartida(CrearPartidaControlador controlador) {
         this.controlador = controlador;
         construirUI();
     }
@@ -90,8 +87,8 @@ public class UICrearPartida extends JFrame {
         panelAzul.add(titulo, gbc);
 
         // Optimizamos los márgenes (insets) inferiores para que el layout no colapse verticalmente
-        campoMinimo = crearCampo(panelAzul, gbc, "Número Mínimo:");
-        campoMaximo = crearCampo(panelAzul, gbc, "Número Máximo:");
+        campoMinimo = crearCampo(panelAzul, gbc, "Número Mínimo Cartas:");
+        campoMaximo = crearCampo(panelAzul, gbc, "Número Máximo Cartas:");
         campoComodines = crearCampo(panelAzul, gbc, "Número Comodines:");
         campoAccion = crearCampo(panelAzul, gbc, "Número Cartas Acción:");
         campoTiempo = crearCampo(panelAzul, gbc, "Tiempo Mostrar Cartas (seg):");
@@ -142,13 +139,7 @@ public class UICrearPartida extends JFrame {
             }
 
             ConfiguracionPartidaDTO dto = new ConfiguracionPartidaDTO(min, max, comodines, accion, tiempo);
-            controlador.solicitarConfiguracion(dto);
-
-            JOptionPane.showMessageDialog(this,
-                    "Partida creada con éxito:\nMin=" + min + ", Max=" + max +
-                            ", Comodines=" + comodines + ", Acción=" + accion +
-                            ", Tiempo=" + tiempo + " seg",
-                    "Partida creada", JOptionPane.INFORMATION_MESSAGE);
+            controlador.crearPartida(dto);
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -202,7 +193,7 @@ public class UICrearPartida extends JFrame {
     public static void main(String[] args) {
 
         LobbyModelo modelo = new LobbyModelo(null, null, null, 0, 0, null);
-        LobbyControlador controlador = new LobbyControlador(modelo);
+        CrearPartidaControlador controlador = new CrearPartidaControlador(modelo, () -> {});
         SwingUtilities.invokeLater(() -> new UICrearPartida(controlador).setVisible(true));
 
     }

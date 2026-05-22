@@ -125,6 +125,7 @@ public class ControlServidor implements IBlackboardObservador {
 
     private void broadcastEstado() {
         List<JugadorDTO> jugadores = blackboard.getJugadores();
+        EventoAbandonoDTO eventoAbandono = blackboard.getEventoAbandono();
         System.out.println("[CS] broadcastEstado jugadores=" + jugadores.size());
         for (int i = 0; i < jugadores.size(); i++) {
             JugadorDTO jugador = jugadores.get(i);
@@ -135,15 +136,14 @@ public class ControlServidor implements IBlackboardObservador {
                 continue;
             }
             System.out.println("[CS] Enviando estado[" + i + "] a " + jugador.getNombre() + " -> " + ip + ":" + puerto);
-            enviar(buildEstadoPartida(i), puerto, ip);
+            enviar(buildEstadoPartida(i, eventoAbandono), puerto, ip);
         }
     }
 
-    private EstadoPartidaDTO buildEstadoPartida(int indiceJugador) {
+    private EstadoPartidaDTO buildEstadoPartida(int indiceJugador, EventoAbandonoDTO eventoAbandono) {
         List<JugadorDTO> jugadores = blackboard.getJugadores();
         CartaDTO cartaCima = blackboard.getCartaCima();
         List<CartaDTO> mano = blackboard.getManoJugador(indiceJugador);
-        EventoAbandonoDTO eventoAbandono = blackboard.getEventoAbandono();
         TipoEventoRuletaDTO eventoRuleta = "GIRO_PENDIENTE".equals(blackboard.getEstadoPartida())
                 ? blackboard.getEventoRuleta()
                 : null;
