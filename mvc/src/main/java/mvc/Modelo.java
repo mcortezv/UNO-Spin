@@ -376,6 +376,11 @@ public class Modelo implements IModeloControlador, IModeloLectura {
 
     @Override
     public EventoAbandonoDTO getEventoAbandono() {
-        return estadoPartida != null ? estadoPartida.getEventoAbandono() : null;
+        if (estadoPartida == null) {
+            return null;
+        }
+        EventoAbandonoDTO evento = estadoPartida.getEventoAbandono();
+        estadoPartida.setEventoAbandono(null);
+        return evento;
     }
 }
