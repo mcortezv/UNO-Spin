@@ -224,7 +224,6 @@ public class Blackboard implements IBlackboard, IReceptor {
         if (dominio.getCantidadConfirmaciones() >= jugadoresInscritos.size()-1 && jugadoresInscritos.size() >= MIN_JUGADORES){
             arrancarPartida();
         }
-
     }
 
     private void procesarRechazarInicio(TipoAccionDTO accion){
@@ -241,24 +240,7 @@ public class Blackboard implements IBlackboard, IReceptor {
         dominio.registrarVoto(acepta);
 
         if (dominio.estaTerminada()) {
-            List<Jugador> jugadores = dominio.getJugadores();
-            List<Jugador> ordenados = jugadores.stream()
-                    .sorted((a, b) -> a.getMano().getCartas().size() - b.getMano().getCartas().size())
-                    .collect(Collectors.toList());
-
-            List<JugadorDTO> posiciones = new ArrayList<>();
-            for (int i = 0; i < ordenados.size(); i++) {
-                JugadorDTO dto = JugadorMapper.toDTO(ordenados.get(i), false);
-                int posicion = 1;
-                for (int j = 0; j < i; j++) {
-                    if (ordenados.get(j).getMano().getCartas().size() < ordenados.get(i).getMano().getCartas().size()) {
-                        posicion = j + 2;
-                    }
-                }
-                dto.setCantidadCartas(posicion);
-                posiciones.add(dto);
-            }
-            eventoFinalizacion = new EventoFinalizacionDTO(posiciones);
+            eventoFinalizacion = construirEventoFinalizacion();
         } else if (dominio.getVotosEnContra() > 0) {
             eventoFinalizacion = new EventoFinalizacionDTO(false);
             dominio.resetearVotos();
@@ -267,6 +249,26 @@ public class Blackboard implements IBlackboard, IReceptor {
             enCurso.setVotacionEnCurso(true);
             eventoFinalizacion = enCurso;
         }
+    }
+
+    private EventoFinalizacionDTO construirEventoFinalizacion() {
+        List<Jugador> ordenados = dominio.getJugadores().stream()
+                .sorted((a, b) -> a.getMano().getCartas().size() - b.getMano().getCartas().size())
+                .collect(Collectors.toList());
+
+        List<JugadorDTO> posiciones = new ArrayList<>();
+        for (int i = 0; i < ordenados.size(); i++) {
+            JugadorDTO dto = JugadorMapper.toDTO(ordenados.get(i), false);
+            int posicion = 1;
+            for (int j = 0; j < i; j++) {
+                if (ordenados.get(j).getMano().getCartas().size() < ordenados.get(i).getMano().getCartas().size()) {
+                    posicion = j + 2;
+                }
+            }
+            dto.setCantidadCartas(posicion);
+            posiciones.add(dto);
+        }
+        return new EventoFinalizacionDTO(posiciones);
     }
 
     private void arrancarPartida() {
@@ -401,6 +403,9 @@ public class Blackboard implements IBlackboard, IReceptor {
     }
     private void procesarAbandono(TipoAccionDTO accion) {
         eventoAbandono = dominio.removerJugador(JugadorMapper.toEntity(accion.getJugadorDTO()).getNombre());
+        if (eventoAbandono != null && eventoAbandono.getNombreGanador() != null) {
+            eventoFinalizacion = construirEventoFinalizacion();
+        }
     }
 
     private void procesarConfiguracionPartida(ConfiguracionPartida configuracionPartida) {

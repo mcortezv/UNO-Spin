@@ -87,8 +87,8 @@ public class UICrearPartida extends JFrame {
         panelAzul.add(titulo, gbc);
 
         // Optimizamos los márgenes (insets) inferiores para que el layout no colapse verticalmente
-        campoMinimo = crearCampo(panelAzul, gbc, "Número Mínimo:");
-        campoMaximo = crearCampo(panelAzul, gbc, "Número Máximo:");
+        campoMinimo = crearCampo(panelAzul, gbc, "Número Mínimo Cartas:");
+        campoMaximo = crearCampo(panelAzul, gbc, "Número Máximo Cartas:");
         campoComodines = crearCampo(panelAzul, gbc, "Número Comodines:");
         campoAccion = crearCampo(panelAzul, gbc, "Número Cartas Acción:");
         campoTiempo = crearCampo(panelAzul, gbc, "Tiempo Mostrar Cartas (seg):");
